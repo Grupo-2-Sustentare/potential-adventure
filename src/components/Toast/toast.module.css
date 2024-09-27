@@ -1,0 +1,19 @@
+.success, .alert, .error {
+    border: var(--borda-fina-branca);
+    border-radius: 10px;
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 16px;
+    font-size: 1.3em;
+}
+
+.success > span path, .alert > span {
+    color: var(--gunmetal);
+}
+
+.success{background-color: var(--toast-verde);}
+.alert {background-color: var(--toast-amarelo);}
+.error {background-color: var(--toast-vermelho);}
+.error > span {color: var(--white);}

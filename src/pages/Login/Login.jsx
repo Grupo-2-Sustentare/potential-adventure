@@ -5,10 +5,12 @@ import React, { useState } from "react"; // Importa React e o hook useState para
 import Button from "../../components/Button/Button";
 import TextInput from "../../components/TextInput/TextInput";
 import api from "../../api";
+import { errorToast, successToast, alertToast} from "../../components/Toast/Toast";    
 /* import RedirectionList from "../../../components/RedirectionList/RedirectionList"
 import MainMenu from "../MainMenu/MainMenu" */
 
 const Login = () => {
+
 
     const navigate = useNavigate(); // Inicializa o hook de navegação
     const [nome, setNome] = useState(""); // Estado para armazenar o ano da música
@@ -29,8 +31,8 @@ const Login = () => {
         // }).catch(() => {
         //     toast.error("Ocorreu um erro ao tentar realizar o login-e-entrada, por favor, tente novamente."); // Exibe uma mensagem de erro se a requisição falhar
         // })
-        sessionStorage.setItem("nome_usuario", nome)
-        navigate("/dashboardGeral"); // Redireciona para a página de músicas
+        //sessionStorage.setItem("nome_usuario", nome)
+        //navigate("/dashboardGeral"); // Redireciona para a página de músicas
     };
 
     const handleInputChange = (event, setStateFunction) => { // Função para manipular as mudanças nos inputs
@@ -41,6 +43,11 @@ const Login = () => {
         "icone_usuario", "https://i0.wp.com/ochin.com.br/wp-content/uploads/2023/04/1.jpg?fit=1024%2C974&ssl=1"
     )
 
+    const finalizar = () => {
+        successToast("Login realizado com sucesso!");
+        setTimeout(() => navigate("/dashboardGeral"), 2000);
+    }
+
     return (
         <div className={styles.login}>
             <h1>Paralelo 19</h1>
@@ -48,7 +55,7 @@ const Login = () => {
                 <TextInput label={"Nome:"} value={nome} onChange={(e) => handleInputChange(e, setNome)}/>
                 <TextInput label={"Senha:"} value={senha} type="password" onChange={(e) => handleInputChange(e, setSenha)}/>
             </form>
-            <Button insideText="Entrar" onClick={handleSave} />
+            <Button insideText="Entrar" onClick={finalizar} />
         </div>
 
     );
