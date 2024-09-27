@@ -29,12 +29,17 @@ alterando-o apenas aqui, assim como com as variáveis do Figma!!!
         var(--carvao),
         var(--gunmetal)
     );
+        /* Cores dos Toasts */
+        --toast-verde:#2DD36F;
+        --toast-amarelo: #FFCA3A;
+        --toast-vermelho:#EE6123;
 
     /* Bordas */
     --borda-branca:  1px solid var(--white);
     --borda-grossa-branca:  2px solid var(--white);
     --borda-fina-branca: 0.5px 8px solid var(--white);
     --borda-cinza:  0.5px solid var(--cinza-transparente);
+    --borda-fina-branca: 0.5px 8px solid var(--white);
 
     /*  Sombras */
     /* IN = Interna; EX = Com espaçamento adicional, para acomodar bordas*/
