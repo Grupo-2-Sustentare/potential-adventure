@@ -8,15 +8,12 @@ import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarListasChecaveis} from "./backend";
 import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
-import {ENTRADAS_E_SAIDAS} from "./configGraficos";
 
 const Dashboard = () => {
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
-
-    // Dados dos gráficos
-    let [entradasSaidas, setEntradasSaidas] = useState(ENTRADAS_E_SAIDAS)
+    let [entradasSaidas, setEntradasSaidas] = useState(ENTRADAS_E_SAIDAS.dataset)
 
     function carregarDados(){
         // Listas checáveis
@@ -25,18 +22,35 @@ const Dashboard = () => {
         setProdutos(dadosListas["produtos"])
 
         // Dados de gráficos
-        let mudanca = entradasSaidas
-        mudanca.dataset[0].data = gerarNumerosAleatorios(12, 0 , 5000)
-        console.log(mudanca)
-        setEntradasSaidas(mudanca)
+        setEntradasSaidas([
+                {
+                    label: 'Entrada',
+                    data: gerarNumerosAleatorios(12, 0, 50000),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Saída',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                }
+        ])
     }
 
     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
+    let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
     const [loadingClass, setLoadingClass] = useState(null)
     function atualizarDashboard(){
+        // Evita atualizar de novo se já estiver no meio de uma atualização.
+        if(atualizando){ return }
+
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
+        atualizando = true
         carregarDados()
 
         setTimeout(()=>{
@@ -45,6 +59,7 @@ const Dashboard = () => {
 
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
+            atualizando = false
         }, 1500)
     }
     useEffect(() => atualizarDashboard, []); /*Executar 1 vez, no carregamento*/
@@ -67,8 +82,11 @@ const Dashboard = () => {
                 <div className={styles.Chart}>
                     <div className={styles.Charts}>
                         <ChartBar
-                            labels={entradasSaidas.labels}
-                            datasets={entradasSaidas.dataset}
+                            labels={[
+                                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+                                'Novembro', 'Dezembro'
+                            ]}
+                            datasets={entradasSaidas}
                             title="Entrada e Saída"
                             width="49%"
                             height="90%"
@@ -114,6 +132,29 @@ const Dashboard = () => {
             </div>
         </div>
     );
+}
+
+const ENTRADAS_E_SAIDAS = {
+    labels: [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+        'Novembro', 'Dezembro'
+    ],
+    dataset: [
+        {
+            label: 'Entrada',
+            data: [0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Saída',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
+    ]
 }
 
 export default Dashboard;

@@ -6,7 +6,7 @@ export const ENTRADAS_E_SAIDAS = {
     dataset: [
         {
             label: 'Entrada',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0],
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
