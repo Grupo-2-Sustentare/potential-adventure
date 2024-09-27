@@ -21,7 +21,6 @@ function renderToast(text, variant){
         className: styles[variant], iconTheme: {primary: white, secondary: gunmetal}
     }
     let component = <Toast title={text} variant={variant}/>
-    console.log("teste")
 
     switch (variant){
         case "success":
