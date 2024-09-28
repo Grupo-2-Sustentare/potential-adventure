@@ -72,8 +72,6 @@ const Dashboard = () => {
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
-                        {/*<Button insideText={"Categoria"} icon={"chevron-down"} />*/}
-                        {/*<Button insideText={"Produto"} icon={"chevron-down"} />*/}
                         <CheckableList textoBase={"Categorias"} opcoes={categorias}/>
                         <CheckableList textoBase={"Produtos"} opcoes={produtos}/>
                         <Button insideText={"Alterar período"} />
