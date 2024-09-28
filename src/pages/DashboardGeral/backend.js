@@ -1,4 +1,4 @@
-import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
+import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
 
 function carregarListasChecaveis(){
     return {
@@ -12,7 +12,7 @@ function carregarListasChecaveis(){
 
 function carregarGraficos(){
     return {
-        "entradas e saídas": [
+        "entradasEhSaidas": [
                 {
                     label: 'Entrada',
                     data: gerarNumerosAleatorios(12, 0, 50000)
@@ -22,7 +22,7 @@ function carregarGraficos(){
                     data: gerarNumerosAleatorios(12, 0, 50000)
                 }
         ],
-        "compras e desperdícios": [
+        "comprasEhDesperdicios": [
             {
                 label: 'Compras de Arroz',
                 data: gerarNumerosAleatorios(12, 0, 50000)
@@ -44,7 +44,7 @@ function carregarGraficos(){
                 data: gerarNumerosAleatorios(12, 0, 50000)
             }
         ],
-        "categorias de compra": [
+        "categoriasCompras": [
         {
             label: 'Quantidade de Compras',
             data: gerarNumerosAleatorios(12, 0, 250)
@@ -58,7 +58,20 @@ function carregarGraficos(){
 }
 
 function carregarKPIs(){
-    return null
+    const METRICAS = {
+
+    }
+    return {
+        "aVencer": {
+            "quantidade": gerarNumeroAleatorio(0, 5)
+        },
+        "vencidos": {
+            "quantidade": gerarNumeroAleatorio(0, 8)
+        },
+        "naoPlaneajadas": {
+            "quantidade": gerarNumeroAleatorio(0, 14)
+        }
+    }
 }
 
-export {carregarListasChecaveis, carregarGraficos}
+export {carregarListasChecaveis, carregarGraficos, carregarKPIs}
