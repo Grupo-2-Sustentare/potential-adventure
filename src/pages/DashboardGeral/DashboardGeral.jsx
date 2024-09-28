@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from "../../components/RefactoredSideMenu/SideMenu";
 import Button from "../../components/Button/Button"
@@ -6,8 +6,7 @@ import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
-import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./backend";
-import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
+import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralService";
 
 const Dashboard = () => {
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -18,7 +17,7 @@ const Dashboard = () => {
 
     // === Dados dos gráficos
     // Entradas e saídas
-    const [entradasSaidas, setEntradasSaidas] = useState([
+const [entradasSaidas, setEntradasSaidas] = useState([
                 {
                     label: 'Entrada',
                     data: SEM_DADOS,
@@ -99,17 +98,17 @@ const Dashboard = () => {
     const [vencidos, setVencidos] = useState(null)
     const [naoPlanejados, setNaoPlanejados] = useState(null)
 
-    function carregarDados(){
+    async function carregarDados(){
         // Listas checáveis
         let dadosListas = carregarListasChecaveis()
         setCategorias(dadosListas["categorias"])
         setProdutos(dadosListas["produtos"])
 
-        let dadosGraficos = carregarGraficos()
+        let d = await carregarGraficos()
         // Dados de gráficos
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas)
-        setCompras(dadosGraficos.comprasEhDesperdicios)
-        setComprasCategorias(dadosGraficos.categoriasCompras)
+        setEntradasSaidas(d.entradasEhSaidas)
+        // setCompras(dadosGraficos.comprasEhDesperdicios)
+        // setComprasCategorias(dadosGraficos.categoriasCompras)
 
         let dadosKpis = carregarKPIs()
         setAVencer(dadosKpis.aVencer.quantidade)
@@ -121,28 +120,27 @@ const Dashboard = () => {
     let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
     const [loadingClass, setLoadingClass] = useState(null)
-    function atualizarDashboard(){
+    const atualizarDashboard = useCallback(async () =>{
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
 
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
         atualizando = true
-        carregarDados()
-
-        setTimeout(()=>{
+        carregarDados().then((d)=>{
             let agora =  new Date()
             let horarioFormat = `${agora.getHours()}:${agora.getMinutes()}`
 
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
             atualizando = false
-        }, 1500)
-    }
-    useEffect(() => {
-        atualizarDashboard()
+        })
+
+    }, [])
+    useEffect( () => {
+        atualizarDashboard().catch(console.error)
         setInterval(atualizarDashboard, 10000) /*Executar à cada 30 seg*/
-    }, []); /*Executar 1 vez, no carregamento*/
+    }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
     return (
         <div className={styles.group}>
@@ -188,7 +186,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className={styles.SideMenu}>
-                <div onClick={()=>atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
+                <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
                     <p>Dados em tempo real.</p>
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>

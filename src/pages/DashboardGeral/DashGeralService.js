@@ -1,4 +1,5 @@
 import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
+import {getEntradasEhSaidas} from "./DashGeralController";
 
 function carregarListasChecaveis(){
     return {
@@ -10,16 +11,17 @@ function carregarListasChecaveis(){
     }
 }
 
-function carregarGraficos(){
+async function carregarGraficos(){
+    let entradasEhSaidas = await getEntradasEhSaidas()
     return {
         "entradasEhSaidas": [
                 {
                     label: 'Entrada',
-                    data: gerarNumerosAleatorios(12, 0, 50000)
+                    data: entradasEhSaidas.entradas
                 },
                 {
                     label: 'Saída',
-                    data: gerarNumerosAleatorios(12, 0, 50000)
+                    data: entradasEhSaidas.saidas
                 }
         ],
         "comprasEhDesperdicios": [
