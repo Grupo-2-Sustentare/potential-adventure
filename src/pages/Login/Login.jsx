@@ -4,7 +4,6 @@ import { toast } from "react-toastify"; // Importa toast para exibir mensagens d
 import React, { useState } from "react"; // Importa React e o hook useState para gerenciamento de estado
 import Button from "../../components/Button/Button";
 import TextInput from "../../components/TextInput/TextInput";
-import api from "../../api";
 /* import RedirectionList from "../../../components/RedirectionList/RedirectionList"
 import MainMenu from "../MainMenu/MainMenu" */
 
