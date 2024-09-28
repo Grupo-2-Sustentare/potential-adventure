@@ -6,14 +6,93 @@ import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
-import {carregarListasChecaveis} from "./backend";
+import {carregarGraficos, carregarListasChecaveis} from "./backend";
 import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
 
 const Dashboard = () => {
+    const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
-    let [entradasSaidas, setEntradasSaidas] = useState(ENTRADAS_E_SAIDAS.dataset)
+
+    // === Dados dos gráficos
+    // Entradas e saídas
+    const [entradasSaidas, setEntradasSaidas] = useState([
+                {
+                    label: 'Entrada',
+                    data: SEM_DADOS,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Saída',
+                    data: SEM_DADOS,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                }
+        ])
+    // Compras
+    const MESES = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+        'Outubro', 'Novembro', 'Dezembro'
+    ];
+    const [compras, setCompras] = useState([
+        {
+            label: 'Compras de Arroz',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Compras de Feijão',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Compras de Carne',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Compras de Frango',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(255, 159, 64, 0.6)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Compras de Vegetais',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(153, 102, 255, 0.6)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1,
+        }
+    ])
+    // Compras por categorias
+    const [comprasCategorias, setComprasCategorias] = useState([
+        {
+            label: 'Quantidade de Compras',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Desperdícios',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
+    ])
 
     function carregarDados(){
         // Listas checáveis
@@ -21,23 +100,11 @@ const Dashboard = () => {
         setCategorias(dadosListas["categorias"])
         setProdutos(dadosListas["produtos"])
 
+        let dadosGraficos = carregarGraficos()
         // Dados de gráficos
-        setEntradasSaidas([
-                {
-                    label: 'Entrada',
-                    data: gerarNumerosAleatorios(12, 0, 50000),
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                },
-                {
-                    label: 'Saída',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                }
-        ])
+        setEntradasSaidas(dadosGraficos["entradas e saídas"])
+        setCompras(dadosGraficos["compras e desperdícios"])
+        setComprasCategorias(dadosGraficos["categorias de compra"])
     }
 
     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
@@ -80,35 +147,32 @@ const Dashboard = () => {
                 <div className={styles.Chart}>
                     <div className={styles.Charts}>
                         <ChartBar
-                            labels={[
-                                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
-                                'Novembro', 'Dezembro'
-                            ]}
+                            labels={MESES}
                             datasets={entradasSaidas}
                             title="Entrada e Saída"
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
                         />
-                    {/*    <ChartBar*/}
-                    {/*        labels={labels_mes}*/}
-                    {/*        datasets={datasets_compras}*/}
-                    {/*        title=" Compras e Desperdícios"*/}
-                    {/*        width="49%"*/}
-                    {/*        height="90%"*/}
-                    {/*        backgroundColor="#f0f0f0"*/}
-                    {/*    />*/}
+                        <ChartBar
+                            labels={MESES}
+                            datasets={compras}
+                            title=" Compras e Desperdícios"
+                            width="49%"
+                            height="90%"
+                            backgroundColor="#f0f0f0"
+                        />
                     </div>
-                    {/*<ChartBar*/}
-                    {/*    labels={labels_categorias}*/}
-                    {/*    datasets={datasets_categorias}*/}
-                    {/*    title="Compra de Produtos por Categoria"*/}
-                    {/*    width="100%"*/}
-                    {/*    height="40%"*/}
-                    {/*    backgroundColor="#f0f0f0"*/}
-                    {/*    margin="auto"*/}
-                    {/*    alignItems="center"*/}
-                    {/*/>*/}
+                    <ChartBar
+                        labels={categorias}
+                        datasets={comprasCategorias}
+                        title="Compra de Produtos por Categoria"
+                        width="100%"
+                        height="40%"
+                        backgroundColor="#f0f0f0"
+                        margin="auto"
+                        alignItems="center"
+                    />
                 </div>
             </div>
             <div className={styles.SideMenu}>
@@ -130,29 +194,6 @@ const Dashboard = () => {
             </div>
         </div>
     );
-}
-
-const ENTRADAS_E_SAIDAS = {
-    labels: [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
-        'Novembro', 'Dezembro'
-    ],
-    dataset: [
-        {
-            label: 'Entrada',
-            data: [0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Saída',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-    ]
 }
 
 export default Dashboard;
