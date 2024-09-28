@@ -139,8 +139,10 @@ const Dashboard = () => {
             atualizando = false
         }, 1500)
     }
-    useEffect(() => atualizarDashboard, []); /*Executar 1 vez, no carregamento*/
-    setInterval(atualizarDashboard, 10000) /*Executar à cada 30 seg*/
+    useEffect(() => {
+        atualizarDashboard()
+        setInterval(atualizarDashboard, 10000) /*Executar à cada 30 seg*/
+    }, []); /*Executar 1 vez, no carregamento*/
 
     return (
         <div className={styles.group}>
