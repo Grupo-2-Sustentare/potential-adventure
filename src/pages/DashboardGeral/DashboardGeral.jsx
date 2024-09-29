@@ -234,7 +234,8 @@ const Dashboard = () => {
                     {/*<Kpi status={statusPlanejados} name="Compras não planejadas." value={kpiNaoPlanejados} />*/}
                     <Kpi type={"simples"} name={""} value={12}/>
                     <Kpi type={"unidade"} name={""} auxiliaryTexts={"KG"} value={24}/>
-                    <Kpi type={"unidade"} name={""} auxiliaryTexts={"KG"} value={24}/>
+                    <Kpi type={"textual"} name={""} auxiliaryTexts={["Perda de", "peixes"]} value={12}/>
+                    <Kpi type={"monetária"} name={""} value={55.99}/>
                 </div>
             </div>
         </div>

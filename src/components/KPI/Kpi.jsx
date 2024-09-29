@@ -6,7 +6,7 @@ const TIPOS_KPI = ["simples", "unidade", "textual", "monetária"]
 function Kpi({
     type = "simples",
     name = "Nome do KPI",
-    value = 0,
+    value = 0.0,
     auxiliaryTexts = ""||[""],
     status = EnumStatusKpis.LOADING,
   }) {
@@ -17,26 +17,38 @@ function Kpi({
     throw new Error("Status de KPI inválido.")
   }
 
+  let classeTipo = styles.desconsiderar
   let auxiliares = {
-    "anterior": {"valor": "", "classe": styles.desconsiderar},
-    "posterior": {"valor": "", "classe": styles.desconsiderar}
+    "anterior": {"valor": ""},
+    "posterior": {"valor": ""}
   }
 
   switch (type){
-    case "unidade":
-      auxiliares.posterior.valor = styles.unidadeMedida
-      auxiliares.posterior.valor = auxiliaryTexts
+      case "unidade":
+          classeTipo = styles.unidadeMedida
+          auxiliares.posterior.valor = auxiliaryTexts
+          break
+      case "textual":
+          classeTipo = styles.textual
+          auxiliares.anterior.valor = auxiliaryTexts[0]
+          auxiliares.posterior.valor = auxiliaryTexts[1]
+          break
+      case "monetária":
+          classeTipo = styles.monetaria
+          auxiliares.anterior.valor = "R$"
+          value = `${value},`
+          auxiliares.posterior.valor = "00"
   }
 
 
   return (
     <div className={styles.kpi}>
-      <div>
-        <span className={styles.textoAuxiliar + "" + auxiliares.anterior.classe}>
+      <div className={styles.infoKpi + " " + classeTipo}>
+        <span className={styles.textoAuxiliar + " " + auxiliares.anterior.classe}>
           {auxiliares.anterior.valor}
         </span>
         <span className={styles.valorKpi}>{value}</span>
-        <span className={styles.textoAuxiliar + "" +auxiliares.posterior.classe}>
+        <span className={styles.textoAuxiliar + " " +auxiliares.posterior.classe}>
           {auxiliares.posterior.valor}
         </span>
       </div>

@@ -1,4 +1,10 @@
 .kpi{
+  .infoKpi{
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: baseline;
+  }
 }
 
 .valorKpi{
@@ -6,14 +12,30 @@
   font-size: 32px;
 }
 
-.textoAuxiliar{
-}
-.desconsiderar{
+.desconsiderar > .textoAuxiliar{
   display: none;
 }
 
-.unidadeMedida{
-  display: block;
+.textoAuxiliar{
   font-family: var(--fonte-destaque), system-ui;
 }
 
+.textual > .textoAuxiliar,
+.unidadeMedida > .textoAuxiliar,
+.monetaria > .textoAuxiliar{
+  display: block;
+}
+.unidadeMedida > span{
+
+}
+.textual > .textoAuxiliar{
+  font-family: var(--fonte-corpo), sans-serif;
+  font-size: 0.8em;
+}
+
+.monetaria{
+  gap: 0;
+}
+.monetaria > .textoAuxiliar:last-child{
+  align-self: start;
+}
