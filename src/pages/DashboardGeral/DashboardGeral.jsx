@@ -9,7 +9,19 @@ import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 
 const Dashboard = () => {
+    // == Constantes
+    // Gerais
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    const SUFIXO_SEM_DADOS = " - sem dados"
+    const MESES = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+        'Outubro', 'Novembro', 'Dezembro'
+    ];
+
+    // Dos gráficos
+    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const TITULO_PERDAS = "Perdas por tipo"
+    const TITULO_COMPRAS_X_ULTIMA_HORA = "Compras regulares X Compras de última hora"
 
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
@@ -17,28 +29,26 @@ const Dashboard = () => {
 
     // === Dados dos gráficos
     // Entradas e saídas
-const [entradasSaidas, setEntradasSaidas] = useState([
-                {
-                    label: 'Entrada',
-                    data: SEM_DADOS,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                },
-                {
-                    label: 'Saída',
-                    data: SEM_DADOS,
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                }
+    const [entradasSaidas, setEntradasSaidas] = useState([
+        {
+            label: 'Entrada',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Saída',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
         ])
+    const [tituloEntradasEhSaidas, setTituloEntradasEhSaidas] = useState(TITULO_ENTRADAS_E_SAIDAS)
+
     // Compras
-    const MESES = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-        'Outubro', 'Novembro', 'Dezembro'
-    ];
-    const [compras, setCompras] = useState([
+    const [perdas, setPerdas] = useState([
         {
             label: 'Compras de Arroz',
             data: SEM_DADOS,
@@ -75,23 +85,26 @@ const [entradasSaidas, setEntradasSaidas] = useState([
             borderWidth: 1,
         }
     ])
+    const [tituloPerdas, setTituloPerdas] = useState(TITULO_PERDAS)
+
     // Compras por categorias
-    const [comprasCategorias, setComprasCategorias] = useState([
+    const [comprasVsUltimaHora, setComprasVsUltimaHora] = useState([
         {
-            label: 'Quantidade de Compras',
+            label: 'Compras regulares',
             data: SEM_DADOS,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Desperdícios',
+            label: 'Compras de última hora',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
         }
     ])
+    const [tituloComprasVsUltimaHora, setTituloComprasVsUltimaHora] = useState(TITULO_COMPRAS_X_ULTIMA_HORA)
 
     // == Dados das KPIS
     const [aVencer, setAVencer] = useState(null)
@@ -104,11 +117,26 @@ const [entradasSaidas, setEntradasSaidas] = useState([
         setCategorias(dadosListas["categorias"])
         setProdutos(dadosListas["produtos"])
 
-        // Dados de gráficos
+        // == Dados de gráficos
         let dadosGraficos = await carregarGraficos()
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas)
-        setCompras(dadosGraficos.comprasEhDesperdicios)
-        setComprasCategorias(dadosGraficos.categoriasCompras)
+
+        // Entradas e saídas
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
+        setTituloEntradasEhSaidas(
+            TITULO_ENTRADAS_E_SAIDAS +
+            (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
+        ) // Info de "sem dados" no título
+
+        // Perdas por tipo
+        setPerdas(dadosGraficos.perdas)
+        setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
+
+        // Compras x última hora
+        setComprasVsUltimaHora(dadosGraficos.comprasVsUltimaHora)
+        setTituloEntradasEhSaidas(
+            TITULO_COMPRAS_X_ULTIMA_HORA +
+            (dadosGraficos.comprasVsUltimaHora === null ? SUFIXO_SEM_DADOS : "")
+        )
 
         let dadosKpis = carregarKPIs()
         setAVencer(dadosKpis.aVencer.quantidade)
@@ -159,15 +187,15 @@ const [entradasSaidas, setEntradasSaidas] = useState([
                         <ChartBar
                             labels={MESES}
                             datasets={entradasSaidas}
-                            title="Entrada e Saída"
+                            title={tituloEntradasEhSaidas}
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
                         />
                         <ChartBar
                             labels={MESES}
-                            datasets={compras}
-                            title=" Compras e Desperdícios"
+                            datasets={perdas}
+                            title={TITULO_PERDAS}
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
@@ -175,8 +203,8 @@ const [entradasSaidas, setEntradasSaidas] = useState([
                     </div>
                     <ChartBar
                         labels={categorias}
-                        datasets={comprasCategorias}
-                        title="Compra de Produtos por Categoria"
+                        datasets={comprasVsUltimaHora}
+                        title={TITULO_COMPRAS_X_ULTIMA_HORA}
                         width="100%"
                         height="40%"
                         backgroundColor="#f0f0f0"
