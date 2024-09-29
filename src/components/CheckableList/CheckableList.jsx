@@ -7,6 +7,8 @@ export default function CheckableList({textoBase = "Selecione opções", opcoes 
     // o nome do dict e outra informando se essa opção está selecionada ou não.
     opcoes = opcoes.map((o)=>({"nome": o, "selecionado": false}))
 
+    let infoSemDados = opcoes.length === 0
+
     // Hook de referência. Recebe um dict, onde cada chave será um valor da lista de opções.
     const ref = useRef({})
 
@@ -33,6 +35,7 @@ export default function CheckableList({textoBase = "Selecione opções", opcoes 
                 <FontAwesomeIcon icon={"chevron-down"}/>
             </span>
             <div className={styles.opcoes}>
+                {infoSemDados && (<span>Sem dados</span>)}
                 {/*Mapeamos um span para cada opção informada*/}
                 {opcoes.map((o) =>{
                     // Apesar de termos transformado as opções enviadas (lista de strings) em
