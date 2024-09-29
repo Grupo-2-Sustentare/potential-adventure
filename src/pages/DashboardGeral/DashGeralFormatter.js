@@ -40,40 +40,22 @@ async function carregarGraficos(){
         entradasEhSaidas = [{label: 'Entrada', data: entradas}, {label: 'Saída', data: saidas}]
     }
 
+    let perdasBrutas = await get("perdas")
+    let perdas = null
+    if (perdasBrutas !== null){
+        // Consumir...
+    }
+
+    let comprasVsUltimaHoraBrutas = await get("compras_vs_ultima_hora")
+    let comprasVsUltimaHora = null
+    if (comprasVsUltimaHoraBrutas !== null){
+        // ...
+    }
+
     return {
         "entradasEhSaidas": entradasEhSaidas,
-        "perdas": [
-            {
-                label: 'Compras de Arroz',
-                data: gerarNumerosAleatorios(12, 0, 50000)
-            },
-            {
-                label: 'Compras de Feijão',
-                data: gerarNumerosAleatorios(12, 0, 50000)
-            },
-            {
-                label: 'Compras de Carne',
-                data: gerarNumerosAleatorios(12, 0, 50000)
-            },
-            {
-                label: 'Compras de Frango',
-                data: gerarNumerosAleatorios(12, 0, 50000)
-            },
-            {
-                label: 'Compras de Vegetais',
-                data: gerarNumerosAleatorios(12, 0, 50000)
-            }
-        ],
-        "comprasVsUltimaHora": [
-        {
-            label: 'Compras regulares',
-            data: gerarNumerosAleatorios(12, 0, 250)
-        },
-        {
-            label: 'Compras de última hora',
-            data: gerarNumerosAleatorios(12, 0, 250)
-        }
-    ]
+        "perdas": perdas,
+        "comprasVsUltimaHora": comprasVsUltimaHora
     }
 }
 

@@ -195,7 +195,7 @@ const Dashboard = () => {
                         <ChartBar
                             labels={MESES}
                             datasets={perdas}
-                            title={TITULO_PERDAS}
+                            title={tituloPerdas}
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
@@ -204,7 +204,7 @@ const Dashboard = () => {
                     <ChartBar
                         labels={categorias}
                         datasets={comprasVsUltimaHora}
-                        title={TITULO_COMPRAS_X_ULTIMA_HORA}
+                        title={tituloComprasVsUltimaHora}
                         width="100%"
                         height="40%"
                         backgroundColor="#f0f0f0"
