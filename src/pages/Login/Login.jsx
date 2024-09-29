@@ -4,13 +4,9 @@ import { toast } from "react-toastify"; // Importa toast para exibir mensagens d
 import React, { useState } from "react"; // Importa React e o hook useState para gerenciamento de estado
 import Button from "../../components/Button/Button";
 import TextInput from "../../components/TextInput/TextInput";
-import api from "../../api";
-import { errorToast, successToast, alertToast} from "../../components/Toast/Toast";    
-/* import RedirectionList from "../../../components/RedirectionList/RedirectionList"
-import MainMenu from "../MainMenu/MainMenu" */
+import { errorToast, successToast, alertToast} from "../../components/Toast/Toast";
 
 const Login = () => {
-
 
     const navigate = useNavigate(); // Inicializa o hook de navegação
     const [nome, setNome] = useState(""); // Estado para armazenar o ano da música
