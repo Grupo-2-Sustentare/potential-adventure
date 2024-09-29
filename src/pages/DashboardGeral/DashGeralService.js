@@ -1,13 +1,12 @@
 import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
-import {getEntradasEhSaidas} from "./DashGeralController";
+import {getEntradasEhSaidas, getProdutos} from "./DashGeralController";
 
-function carregarListasChecaveis(){
+async function carregarListasChecaveis(){
+    let produtos = await getProdutos()
+    console.log(produtos)
     return {
         "categorias": ["Ingrediente de self-service", "Frente de caixa", "Doces por encomenda", "Produtos de limpeza"],
-        "produtos": [
-            "Feijão carioquinha", "Arroz", "Detergente", "Papel higiênico", "Maçã", "Coca Zero 300", "Garrafa d'água",
-            "Peito de frango", "Guaraná Jesus 300"
-        ]
+        "produtos": produtos
     }
 }
 

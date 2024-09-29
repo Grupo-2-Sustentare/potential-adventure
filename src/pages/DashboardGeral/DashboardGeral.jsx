@@ -100,15 +100,15 @@ const [entradasSaidas, setEntradasSaidas] = useState([
 
     async function carregarDados(){
         // Listas checáveis
-        let dadosListas = carregarListasChecaveis()
+        let dadosListas = await carregarListasChecaveis()
         setCategorias(dadosListas["categorias"])
         setProdutos(dadosListas["produtos"])
 
-        let d = await carregarGraficos()
         // Dados de gráficos
-        setEntradasSaidas(d.entradasEhSaidas)
-        // setCompras(dadosGraficos.comprasEhDesperdicios)
-        // setComprasCategorias(dadosGraficos.categoriasCompras)
+        let dadosGraficos = await carregarGraficos()
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas)
+        setCompras(dadosGraficos.comprasEhDesperdicios)
+        setComprasCategorias(dadosGraficos.categoriasCompras)
 
         let dadosKpis = carregarKPIs()
         setAVencer(dadosKpis.aVencer.quantidade)
