@@ -6,6 +6,9 @@
 }
 .titulo{
     font-size: 1.4em;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
 }
 .Global{
     display: flex;

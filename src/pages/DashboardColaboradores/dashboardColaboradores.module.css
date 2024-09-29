@@ -5,7 +5,10 @@
     gap:4%;  
 }
 .titulo{
-    font-size: 1.4em;
+    font-size: 1.5em;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
 }
 .Global{
     display: flex;

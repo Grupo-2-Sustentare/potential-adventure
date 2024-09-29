@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from "../../components/RefactoredSideMenu/SideMenu";
 import Button from "../../components/Button/Button"
@@ -6,7 +6,6 @@ import styles from './dashboardColaboradores.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import ExpandedOperationLog from "../../components/ExpandedOperationLog/ExpandedOperationLog"
-import CheckableList from "../../components/CheckableList/CheckableList";
 
 const DashboardColaboradores = () => {
     const labels = ['Sofia', 'Flávio', 'Carlos', 'Luiza', 'Marcos', 'Rafael', 'Manuel', 'Diego', 'Clara'];
@@ -15,29 +14,19 @@ const DashboardColaboradores = () => {
         {
             label: 'Entradas',
             data: [12, 5, 8, 12, 30, 25, 40, 8, 5],
-            backgroundColor: 'rgba(54, 162, 235, 0.6)', // Cor das barras
+            backgroundColor: 'rgba(54, 162, 235, 0.6)', // Cor das barras das entradas
             borderColor: 'rgba(54, 162, 235, 1)', // Cor da borda das barras
             borderWidth: 1,
         },
+        {
+            label: 'Saídas',
+            data: [8, 7, 5, 10, 20, 15, 35, 12, 4],
+            backgroundColor: 'rgba(255, 99, 132, 0.6)', // Cor das barras das saídas
+            borderColor: 'rgba(255, 99, 132, 1)', // Cor da borda das barras
+            borderWidth: 1,
+        },
     ];
-
-     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
-    const [lastUpdateText, setUpdateText] = useState("")
-    const [loadingClass, setLoadingClass] = useState(null)
-    function atualizarDados(){
-        setUpdateText("atualizando...")
-        setLoadingClass(styles.loading)
-
-        setTimeout(()=>{
-            let agora =  new Date()
-            let horarioFormat = `${agora.getHours()}:${agora.getMinutes()}`
-
-            setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
-            setLoadingClass(null)
-        }, 1500)
-    }
-    useEffect(() => atualizarDados, []); /*Executar 1 vez, no carregamento*/
-    setInterval(atualizarDados, 30000) /*Executar à cada 30 seg*/
+    const [inputValue, setInputValue] = useState('');
 
     return (
         <div className={styles.group}>
@@ -46,7 +35,8 @@ const DashboardColaboradores = () => {
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel dos colaboradores</span>
                     <div className={styles.buttons}>
-                        <CheckableList textoBase={"Nome"} opcoes={labels}/>
+                        <Button insideText={"Nome"} icon={"chevron-down"} />
+                        <Button insideText={"Função"} icon={"chevron-down"} />
                         <Button insideText={"Período"} icon={"chevron-down"} />
                     </div>
                 </div>
@@ -75,19 +65,16 @@ const DashboardColaboradores = () => {
                 </div>
             </div>
             <div className={styles.SideMenu}>
-                <div onClick={() => atualizarDados()} className={styles.updateInfo + " " + loadingClass}>
-                    <p>Dados em tempo real.</p>
-                    <span>
-                        <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
-                        <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
-                        <p>{lastUpdateText}</p>
-                    </span>
+                <div className={styles.icons}>
+                    <FontAwesomeIcon icon="moon" />
+                    <FontAwesomeIcon icon="fa-solid fa-gear" />
+                    <FontAwesomeIcon icon="fa-solid fa-bell" />
                 </div>
                 <div className={styles.DivKpis}>
-                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel"/>
-                    <Kpi name="Total de entradas" value="145"/>
-                    <Kpi status="ruim" name="Total de Saídas" value="129"/>
-                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel"/>
+                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel" />
+                    <Kpi name="Total de entradas" value="145" />
+                    <Kpi status="ruim" name="Total de Saídas" value="129" />
+                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel" />
 
 
                 </div>
