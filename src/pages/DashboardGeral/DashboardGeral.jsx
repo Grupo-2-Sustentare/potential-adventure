@@ -7,6 +7,7 @@ import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
+import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 
 const Dashboard = () => {
     // == Constantes
@@ -107,9 +108,14 @@ const Dashboard = () => {
     const [tituloComprasVsUltimaHora, setTituloComprasVsUltimaHora] = useState(TITULO_COMPRAS_X_ULTIMA_HORA)
 
     // == Dados das KPIS
-    const [aVencer, setAVencer] = useState(null)
-    const [vencidos, setVencidos] = useState(null)
-    const [naoPlanejados, setNaoPlanejados] = useState(null)
+    const [kpiVaoVencer, setKpiVaoVencer] = useState(null)
+    const [statusVaoVencer, setStatusVaoVencer] = useState(EnumStatusKpis.LOADING)
+
+    const [kpiVencidos, setKpiVencidos] = useState(null)
+    const [statusVencidos, setStatusVencidos] = useState(EnumStatusKpis.LOADING)
+
+    const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState(null)
+    const [statusPlanejados, setStatusNaoPlanejados] = useState(EnumStatusKpis.LOADING)
 
     async function carregarDados(){
         // Listas checáveis
@@ -139,9 +145,9 @@ const Dashboard = () => {
         )
 
         let dadosKpis = carregarKPIs()
-        setAVencer(dadosKpis.aVencer.quantidade)
-        setVencidos(dadosKpis.vencidos.quantidade)
-        setNaoPlanejados(dadosKpis.naoPlaneajadas.quantidade)
+        setKpiVaoVencer(dadosKpis.aVencer.quantidade)
+        setKpiVencidos(dadosKpis.vencidos.quantidade)
+        setKpiNaoPlanejados(dadosKpis.naoPlaneajadas.quantidade)
     }
 
     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
@@ -223,9 +229,12 @@ const Dashboard = () => {
                     </span>
                 </div>
                 <div className={styles.DivKpis}>
-                    <Kpi name="Produtos próximos de vencer" value={aVencer}/>
-                    <Kpi status="ruim" name="Produtos vencidos ou descartados" value={vencidos}/>
-                    <Kpi status="bom" name="Compras não planejadas." value={naoPlanejados} />
+                    {/*<Kpi status={statusVaoVencer} name="Produtos próximos de vencer" value={kpiVaoVencer}/>*/}
+                    {/*<Kpi status={statusVencidos} name="Produtos vencidos ou descartados" value={kpiVencidos}/>*/}
+                    {/*<Kpi status={statusPlanejados} name="Compras não planejadas." value={kpiNaoPlanejados} />*/}
+                    <Kpi type={"simples"} name={""} value={12}/>
+                    <Kpi type={"unidade"} name={""} auxiliaryTexts={"KG"} value={24}/>
+                    <Kpi type={"unidade"} name={""} auxiliaryTexts={"KG"} value={24}/>
                 </div>
             </div>
         </div>

@@ -1,94 +1,19 @@
-.kpi {
-  height: 18vh;
-  width: 15.6vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  border-radius: 8px;
-  border: var(--borda-grossa-branca)
+.kpi{
 }
 
-.bom{
-  background: var(--green);
+.valorKpi{
+  font-family: var(--fonte-destaque), system-ui;
+  font-size: 32px;
 }
 
-.bom span{
-  color: var(--preto) !important;
+.textoAuxiliar{
 }
-.medio{
-  background: var(--yellow);
-}
-
-.medio span{
-  color: var(--preto) !important;
+.desconsiderar{
+  display: none;
 }
 
-.ruim{
-  background: var(--vermelho);
-  color: var(--white) !important;
+.unidadeMedida{
+  display: block;
+  font-family: var(--fonte-destaque), system-ui;
 }
 
-.kpi #spanKpiValueH1 {
-  font-family: var(--fonte-destaque);
-  font-size: 2.67em;
-  font-weight: bolder;
-}
-
-.kpi #spanKpiValueH3 {
-  font-family: var(--fonte-destaque);
-  font-size: 1.1em;
-  font-weight: bolder;
-  align-self: flex-end;
-  padding-left: 4px
-}
-
-.kpi #spanP {
-  font-size: 1em;
-  font-family: var(--fonte-corpo);
-}
-
-.kpi #spanBold {
-  font-weight: bolder;
-  font-family: var(--fonte-destaque);
-}
-
-.icon {
-  width: 80%;
-  height: 80%;
-}
-
-.kpiContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 32.5%;
-  width: 100%;
-}
-
-.kpiValue {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 60%;
-}
-
-.kpiContainerDiv {
-  width: 20%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.kpiDescription {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  width: 100%;
-  height: 67.5%;
-}
