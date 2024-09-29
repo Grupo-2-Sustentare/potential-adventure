@@ -6,7 +6,7 @@ import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
-import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralService";
+import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 
 const Dashboard = () => {
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

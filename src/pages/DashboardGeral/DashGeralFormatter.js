@@ -1,9 +1,14 @@
 import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
-import {getEntradasEhSaidas, getProdutos} from "./DashGeralController";
+import {get} from "../../tools/api";
 
 async function carregarListasChecaveis(){
-    let produtos = await getProdutos()
-    console.log(produtos)
+    let produtos_brutos = await get("produtos")
+
+    let produtos = []
+    for (let i in produtos_brutos){
+        produtos.push(produtos_brutos[i].nome)
+    }
+
     return {
         "categorias": ["Ingrediente de self-service", "Frente de caixa", "Doces por encomenda", "Produtos de limpeza"],
         "produtos": produtos
@@ -11,18 +16,20 @@ async function carregarListasChecaveis(){
 }
 
 async function carregarGraficos(){
-    let entradasEhSaidas = await getEntradasEhSaidas()
+    let entradasEhSaidasBrutas = await get("entradasEhSaidas")
+
+    let entradas = []
+    let saidas = []
+    for (let i in entradasEhSaidasBrutas){
+        if (entradasEhSaidasBrutas[i].tipo === "Entradas"){
+            entradas = entradasEhSaidasBrutas[i].valores
+        } else {
+            saidas = entradasEhSaidasBrutas[i].valores
+        }
+    }
+
     return {
-        "entradasEhSaidas": [
-                {
-                    label: 'Entrada',
-                    data: entradasEhSaidas.entradas
-                },
-                {
-                    label: 'Saída',
-                    data: entradasEhSaidas.saidas
-                }
-        ],
+        "entradasEhSaidas": [{label: 'Entrada', data: entradas}, {label: 'Saída', data: saidas}],
         "comprasEhDesperdicios": [
             {
                 label: 'Compras de Arroz',
