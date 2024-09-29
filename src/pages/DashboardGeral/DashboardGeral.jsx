@@ -133,7 +133,7 @@ const Dashboard = () => {
 
         // Compras x última hora
         setComprasVsUltimaHora(dadosGraficos.comprasVsUltimaHora)
-        setTituloEntradasEhSaidas(
+        setTituloComprasVsUltimaHora(
             TITULO_COMPRAS_X_ULTIMA_HORA +
             (dadosGraficos.comprasVsUltimaHora === null ? SUFIXO_SEM_DADOS : "")
         )

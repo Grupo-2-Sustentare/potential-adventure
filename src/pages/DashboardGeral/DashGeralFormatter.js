@@ -2,15 +2,22 @@ import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramen
 import {get} from "../../tools/api";
 
 async function carregarListasChecaveis(){
-    let produtos_brutos = await get("produtos")
-    let produtos = []
+    let categorias = []
+    let categorias_brutas = await get("categorias")
+    if (categorias_brutas !== null){
+        // Consumir categorias...
+    }
 
-    for (let i in produtos_brutos){
-        produtos.push(produtos_brutos[i].nome)
+    let produtos = []
+    let produtos_brutos = await get("produtos")
+    if (produtos_brutos !== null){
+        for (let i in produtos_brutos){
+            produtos.push(produtos_brutos[i].nome)
+        }
     }
 
     return {
-        "categorias": ["Ingrediente de self-service", "Frente de caixa", "Doces por encomenda", "Produtos de limpeza"],
+        "categorias": categorias,
         "produtos": produtos
     }
 }
@@ -74,17 +81,13 @@ function carregarKPIs(){
     const METRICAS = {
 
     }
-    return {
-        "aVencer": {
-            "quantidade": gerarNumeroAleatorio(0, 5)
-        },
-        "vencidos": {
-            "quantidade": gerarNumeroAleatorio(0, 8)
-        },
-        "naoPlaneajadas": {
-            "quantidade": gerarNumeroAleatorio(0, 14)
-        }
+    let KPIs = {
+        "aVencer": { "status": "", "quantidade": 0},
+        "vencidos": { "status": "", "quantidade": 0},
+        "naoPlaneajadas": { "status": "", "quantidade": 0}
     }
+
+    return KPIs
 }
 
 export {carregarListasChecaveis, carregarGraficos, carregarKPIs}
