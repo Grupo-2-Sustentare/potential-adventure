@@ -12,7 +12,7 @@ library.add(fas, fab)
 function App() {
   return (
     <>
-      <Toaster position="bottom-center" />
+      <Toaster position="top-right" />
       {<Rotas />}
     </>
   );
