@@ -32,14 +32,14 @@ const Dashboard = () => {
     // Entradas e saídas
     const [entradasSaidas, setEntradasSaidas] = useState([
         {
-            label: 'Entrada',
+            label: 'Entradas',
             data: SEM_DADOS,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Saída',
+            label: 'Saídas',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
             borderColor: 'rgba(255, 99, 132, 1)',

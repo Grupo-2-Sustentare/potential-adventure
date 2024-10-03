@@ -33,12 +33,12 @@ async function carregarGraficos(){
         for (let i in entradasEhSaidasBrutas){
             if (entradasEhSaidasBrutas[i].tipo === "Entradas"){
                 entradas = entradasEhSaidasBrutas[i].valores
-            } else {
+            } else if (entradasEhSaidasBrutas[i].tipo === "Saídas"){
                 saidas = entradasEhSaidasBrutas[i].valores
             }
         }
         if (entradas.length > 0 || saidas.length > 0){
-            entradasEhSaidas = [{label: 'Entrada', data: entradas}, {label: 'Saída', data: saidas}]
+            entradasEhSaidas = [{label: 'Entradas', data: entradas}, {label: 'Saídas', data: saidas}]
         }
     }
 
