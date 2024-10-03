@@ -8,7 +8,7 @@ async function carregarListasChecaveis(){
         // Consumir categorias...
     }
 
-    let produtos = []
+    let produtos = ["Coca-cola", "Arroz", "Açúcar", "Feijão carioquinha", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]
     let produtos_brutos = await get("produtos")
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
@@ -42,10 +42,35 @@ async function carregarGraficos(){
         }
     }
 
-    let perdasBrutas = await get("perdas")
+    let perdasBrutas = await get("perdasPorTipo")
     let perdas = null
-    if (perdasBrutas !== null){
-        // Consumir...
+    if (perdasBrutas !== null) {
+        let tiposPerdas = {
+            "validade": [], "extraviado": [], "sumiu": []
+        }
+        for (let i in perdasBrutas) {
+            switch (perdasBrutas[i].tipo) {
+                case "validade":
+                    tiposPerdas.validade = perdasBrutas[i].data
+                    break
+                case "extraviado":
+                    tiposPerdas.extraviado = perdasBrutas[i].data
+                    break
+                case "sumiu":
+                    tiposPerdas.sumiu = perdasBrutas[i].data
+                    break
+            }
+        }
+
+        if ((tiposPerdas.validade.length > 0) ||
+            (tiposPerdas.sumiu.length > 0) ||
+            (tiposPerdas.extraviado.length > 0)) {
+            perdas = [
+                {label: 'Prazo de validade', data: tiposPerdas.validade},
+                {label: 'Contaminado ou extraviado', data: tiposPerdas.sumiu},
+                {label: 'Não se sabe o paradeiro', data: tiposPerdas.extraviado}
+            ]
+        }
     }
 
     let comprasVsUltimaHoraBrutas = await get("compras_vs_ultima_hora")

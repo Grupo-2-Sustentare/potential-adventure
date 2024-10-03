@@ -8,6 +8,7 @@ import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
+import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
 
 const Dashboard = () => {
     // == Constantes
@@ -51,38 +52,24 @@ const Dashboard = () => {
     // Compras
     const [perdas, setPerdas] = useState([
         {
-            label: 'Compras de Arroz',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Compras de Feijão',
+            label: 'Prazo de validade',
             data: SEM_DADOS,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Compras de Carne',
+            label: 'Contaminado ou extraviado',
             data: SEM_DADOS,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Compras de Frango',
+            label: 'Não se sabe o paradeiro',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 159, 64, 0.6)',
             borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Compras de Vegetais',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(153, 102, 255, 0.6)',
-            borderColor: 'rgba(153, 102, 255, 1)',
             borderWidth: 1,
         }
     ])
@@ -128,7 +115,6 @@ const Dashboard = () => {
 
         // Entradas e saídas
         setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
-        console.log(dadosGraficos.entradasEhSaidas)
         setTituloEntradasEhSaidas(
             TITULO_ENTRADAS_E_SAIDAS +
             (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
@@ -136,6 +122,7 @@ const Dashboard = () => {
 
         // Perdas por tipo
         setPerdas(dadosGraficos.perdas)
+        console.log(dadosGraficos.perdas)
         setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
 
         // Compras x última hora
@@ -198,6 +185,7 @@ const Dashboard = () => {
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
+                            yLabel={"Valor em reais (R$)"}
                         />
                         <ChartBar
                             labels={MESES}
@@ -206,6 +194,7 @@ const Dashboard = () => {
                             width="49%"
                             height="90%"
                             backgroundColor="#f0f0f0"
+                            yLabel={"Quantidade de perdas"}
                         />
                     </div>
                     <ChartBar
