@@ -1,12 +1,14 @@
-.success, .alert, .error {
+.toast{
     border: var(--borda-fina-branca);
     border-radius: 10px;
     flex-direction: row;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    padding: 16px;
-    font-size: 1.3em;
+    padding: 8px 16px;
+    span{
+        font-size: 0.75em;
+    }
 }
 
 .success > span path, .alert > span {

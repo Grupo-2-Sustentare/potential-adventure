@@ -6,7 +6,7 @@ import {toast} from "react-hot-toast";
 
 export function Toast ({title, variant = "success"}){
     return (
-    <div className={styles[variant]}>
+    <div className={`${styles.toast} ${styles[variant]}`}>
       <span>{title}</span>
     </div>
   );
