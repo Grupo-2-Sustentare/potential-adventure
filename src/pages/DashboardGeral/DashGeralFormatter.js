@@ -37,7 +37,9 @@ async function carregarGraficos(){
                 saidas = entradasEhSaidasBrutas[i].valores
             }
         }
-        entradasEhSaidas = [{label: 'Entrada', data: entradas}, {label: 'Saída', data: saidas}]
+        if (entradas.length > 0 || saidas.length > 0){
+            entradasEhSaidas = [{label: 'Entrada', data: entradas}, {label: 'Saída', data: saidas}]
+        }
     }
 
     let perdasBrutas = await get("perdas")

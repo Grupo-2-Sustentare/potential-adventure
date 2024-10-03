@@ -128,6 +128,7 @@ const Dashboard = () => {
 
         // Entradas e saídas
         setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
+        console.log(dadosGraficos.entradasEhSaidas)
         setTituloEntradasEhSaidas(
             TITULO_ENTRADAS_E_SAIDAS +
             (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
@@ -173,7 +174,7 @@ const Dashboard = () => {
     }, [])
     useEffect( () => {
         atualizarDashboard().catch(console.error)
-        setInterval(atualizarDashboard, 10000) /*Executar à cada 30 seg*/
+        setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
     return (
