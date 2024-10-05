@@ -1,6 +1,6 @@
 export const EnumStatusKpis = {
-    NEUTRAL: "loading",
+    NEUTRAL: "neutral",
     BAD: "bad",
-    MEDIUM: "neutral",
+    MEDIUM: "medium",
     GOOD: "good"
 }

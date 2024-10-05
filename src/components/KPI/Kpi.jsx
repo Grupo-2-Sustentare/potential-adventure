@@ -1,5 +1,6 @@
 import styles from './kpi.module.css';
 import {EnumStatusKpis} from "./EnumStatusKpis";
+import {useState} from "react";
 
 const TIPOS_KPI = ["simples", "unidade", "textual", "monetária"]
 
@@ -14,10 +15,11 @@ function Kpi({
     throw new Error("Tipo de KPI inválido.")
   }
   if (!Object.values(EnumStatusKpis).includes(status)){
-    throw new Error("Status de KPI inválido.")
+      console.log(status)
+      throw new Error("Status de KPI inválido.")
   }
 
-  let classeStatus = styles.loading
+  let classeStatus = useState(styles.neutral)
   let classeTipo = styles.desconsiderar
   let auxiliares = {
     "anterior": {"valor": ""},
@@ -26,13 +28,13 @@ function Kpi({
 
   switch (status){
       case EnumStatusKpis.NEUTRAL:
-          classeStatus = styles.loading
+          classeStatus = styles.neutral
           break
       case EnumStatusKpis.BAD:
           classeStatus = styles.bad
           break
       case EnumStatusKpis.MEDIUM:
-          classeStatus = styles.neutral
+          classeStatus = styles.medium
           break
       case EnumStatusKpis.GOOD:
           classeStatus = styles.good

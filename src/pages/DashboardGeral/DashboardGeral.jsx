@@ -96,18 +96,10 @@ const Dashboard = () => {
     const [tituloComprasVsUltimaHora, setTituloComprasVsUltimaHora] = useState(TITULO_COMPRAS_X_ULTIMA_HORA)
 
     // == Dados das KPIS
-
-    const [kpiPerdas, setKpiPerdas] = useState(null)
-    const [statusPerdas, setStatusPerdas] = useState(EnumStatusKpis.NEUTRAL)
-
-    const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState(null)
-    const [statusNaoPlanejados, setStatusNaoPlanejados] = useState(EnumStatusKpis.NEUTRAL)
-    
-    const [kpiValorEntradas, setKpiValorEntradas] = useState(null)
-    const [statusValorEntradas, setStatusValorEntradas] = useState(EnumStatusKpis.NEUTRAL)
-
-    const [kpiValorSaidas, setKpiValorSaidas] = useState(null)
-    const [statusValorSaidas, setStatusValorSaidas] = useState(EnumStatusKpis.NEUTRAL)
+    const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiValorEntradas, setKpiValorEntradas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiValorSaidas, setKpiValorSaidas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
 
     async function carregarDados(){
         // Listas checáveis
@@ -136,11 +128,11 @@ const Dashboard = () => {
             (dadosGraficos.comprasVsUltimaHora === null ? SUFIXO_SEM_DADOS : "")
         )
 
-        let dadosKpis = carregarKPIs()
-        setKpiPerdas(dadosKpis.perdas.quantidade)
-        setKpiNaoPlanejados(dadosKpis.naoPlanejadas.quantidade)
-        setKpiValorEntradas(dadosKpis.valorEntradas.quantidade)
-        setKpiValorSaidas(dadosKpis.valorSaidas.quantidade)
+        let dadosKpis = await carregarKPIs()
+        setKpiPerdas(dadosKpis.perdas)
+        setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
+        setKpiValorEntradas(dadosKpis.valorEntradas)
+        setKpiValorSaidas(dadosKpis.valorSaidas)
     }
 
     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
@@ -230,14 +222,20 @@ const Dashboard = () => {
                 <div className={styles.DivKpis}>
                     <h3>Informes desse período</h3>
                     <div>
-                        <Kpi type={"simples"} name={"Perdas"} value={kpiPerdas} status={statusPerdas}/>
-                        <Kpi type={"simples"} name={"Quantidade de compras não planejadas"} value={kpiNaoPlanejados} status={statusNaoPlanejados}/>
-                        <Kpi type={"monetária"} name={"Valor total das entradas"} value={kpiValorEntradas} status={statusValorEntradas}/>
-                        <Kpi type={"monetária"} name={"Valor total das saídas"} value={kpiValorSaidas} status={statusValorSaidas}/>
+                        <Kpi type={"simples"} name={"Perdas"} value={kpiPerdas.quantidade} status={kpiPerdas.status}/>
+                        <Kpi
+                            type={"simples"} name={"Quantidade de compras não planejadas"}
+                            value={kpiNaoPlanejados.quantidade} status={kpiNaoPlanejados.status}
+                        />
+                        <Kpi
+                            type={"monetária"} name={"Valor total das entradas"} value={kpiValorEntradas.quantidade}
+                            status={kpiValorEntradas.status}
+                        />
+                        <Kpi
+                            type={"monetária"} name={"Valor total das saídas"} value={kpiValorSaidas.quantidade}
+                            status={kpiValorSaidas.status}
+                        />
                     </div>
-                    {/*<Kpi status={statusVaoVencer} name="Produtos próximos de vencer" value={kpiVaoVencer}/>*/}
-                    {/*<Kpi status={statusVencidos} name="Produtos vencidos ou descartados" value={kpiVencidos}/>*/}
-                    {/*<Kpi status={statusPlanejados} name="Compras não planejadas." value={kpiNaoPlanejados} />*/}
                 </div>
             </div>
         </div>

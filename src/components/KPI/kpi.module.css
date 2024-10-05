@@ -24,13 +24,13 @@
   font-size: 0.8em;
 }
 
-.loading{
+.neutral{
   border: var(--borda-branca);
 }
 .bad{
   background-color: var(--toast-vermelho);
 }
-.neutral{
+.medium{
   background-color: var(--toast-amarelo);
   span {color: var(--preto)};
 }
@@ -53,10 +53,6 @@
 
 .textoAuxiliar{
   font-family: var(--fonte-destaque), system-ui;
-}
-
-.semDados{
-
 }
 
 .textual > .textoAuxiliar,

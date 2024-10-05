@@ -5,6 +5,7 @@ import {
     MOCK_TIPOS_PERDAS
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
+import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 
 async function carregarListasChecaveis(){
     let categorias = []
@@ -94,16 +95,21 @@ async function carregarGraficos(){
     }
 }
 
-function carregarKPIs(){
+async function carregarKPIs(){
+    // 1. Estruturas fixas
     const METRICAS = {
-
+        // 0: Valor mínimo para ficar amarelo; 1: Valor mínimo para ficar vermelho
+        "perdas": [2, 4],
+        "naoPlanejadas": [10, 20]
     }
     let KPIs = {
-        "perdas": { "status": "", "quantidade": null},
-        "naoPlanejadas": { "status": "", "quantidade": null},
-        "valorEntradas": { "status": "", "quantidade": null},
-        "valorSaidas": { "status": "", "quantidade": null}
+        "perdas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
+        "naoPlanejadas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
+        "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
+        "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""}
     }
+
+    // 2. Dados vindos do back-end
     let kpiPerdasBruta = MOCK_KPI_PERDAS()
     let kpiNaoPlanejadasBruta = MOCK_KPI_NAO_PLANEJADAS()
     let kpiEntradasBruta = MOCK_KPI_ENTRADAS()
@@ -114,6 +120,16 @@ function carregarKPIs(){
     KPIs.valorEntradas.quantidade = kpiEntradasBruta !== null ? kpiEntradasBruta : null
     KPIs.valorSaidas.quantidade = kpiSaidasBruta !== null ? kpiSaidasBruta : null
 
+    // 3. Aplicação das métricas sob os valores do back
+    const aplicarMetrica = (metrica, valor) =>{
+        let statusKpi = EnumStatusKpis.GOOD
+        if (valor >= metrica[0]) statusKpi = EnumStatusKpis.MEDIUM
+        if (valor >= metrica[1]) statusKpi = EnumStatusKpis.BAD
+        return statusKpi
+    }
+
+    KPIs.perdas.status = aplicarMetrica(METRICAS.perdas, KPIs.perdas.quantidade)
+    KPIs.naoPlanejadas.status = aplicarMetrica(METRICAS.naoPlanejadas, KPIs.naoPlanejadas.quantidade)
     return KPIs
 }
 
