@@ -76,7 +76,10 @@
 }
 
 .monetaria{
-  gap: 0;
+  gap: 0 !important;
+  :first-child{
+    margin-right: 4px;
+  }
 }
 .monetaria > .textoAuxiliar:last-child{
   align-self: start;
