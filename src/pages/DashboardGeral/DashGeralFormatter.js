@@ -1,4 +1,9 @@
-import {gerarNumeroAleatorio, gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
+import {
+    gerarNumeroAleatorio,
+    gerarNumerosAleatorios,
+    MOCK_ENTRADAS_E_SAIDAS, MOCK_KPI_ENTRADAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_PERDAS, MOCK_KPI_SAIDAS, MOCK_PRODUTOS,
+    MOCK_TIPOS_PERDAS
+} from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 
 async function carregarListasChecaveis(){
@@ -8,8 +13,9 @@ async function carregarListasChecaveis(){
         // Consumir categorias...
     }
 
-    let produtos = ["Coca-cola", "Arroz", "Açúcar", "Feijão carioquinha", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]
-    let produtos_brutos = await get("produtos")
+    let produtos = []
+    // let produtos_brutos = await get("produtos")
+    let produtos_brutos = MOCK_PRODUTOS
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].nome)
@@ -24,7 +30,8 @@ async function carregarListasChecaveis(){
 
 async function carregarGraficos(){
     // Entradas e saídas
-    let entradasEhSaidasBrutas = await get("entradasEhSaidas")
+    // let entradasEhSaidasBrutas = await get("entradasEhSaidas")
+    let entradasEhSaidasBrutas = MOCK_ENTRADAS_E_SAIDAS()
     let entradasEhSaidas = null;
 
     if (entradasEhSaidasBrutas !== null){
@@ -42,7 +49,8 @@ async function carregarGraficos(){
         }
     }
 
-    let perdasBrutas = await get("perdasPorTipo")
+    // let perdasBrutas = await get("perdasPorTipo")
+    let perdasBrutas = MOCK_TIPOS_PERDAS()
     let perdas = null
     if (perdasBrutas !== null) {
         let tiposPerdas = {
@@ -91,10 +99,20 @@ function carregarKPIs(){
 
     }
     let KPIs = {
-        "aVencer": { "status": "", "quantidade": 0},
-        "vencidos": { "status": "", "quantidade": 0},
-        "naoPlaneajadas": { "status": "", "quantidade": 0}
+        "perdas": { "status": "", "quantidade": null},
+        "naoPlanejadas": { "status": "", "quantidade": null},
+        "valorEntradas": { "status": "", "quantidade": null},
+        "valorSaidas": { "status": "", "quantidade": null}
     }
+    let kpiPerdasBruta = MOCK_KPI_PERDAS()
+    let kpiNaoPlanejadasBruta = MOCK_KPI_NAO_PLANEJADAS()
+    let kpiEntradasBruta = MOCK_KPI_ENTRADAS()
+    let kpiSaidasBruta = MOCK_KPI_SAIDAS()
+
+    KPIs.perdas.quantidade = kpiPerdasBruta !== null ? kpiPerdasBruta : null
+    KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta !== null ? kpiNaoPlanejadasBruta : null
+    KPIs.valorEntradas.quantidade = kpiEntradasBruta !== null ? kpiEntradasBruta : null
+    KPIs.valorSaidas.quantidade = kpiSaidasBruta !== null ? kpiSaidasBruta : null
 
     return KPIs
 }
