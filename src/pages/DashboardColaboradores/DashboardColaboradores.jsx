@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from "../../components/RefactoredSideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardColaboradores.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
-import Kpi from "../../components/KPI/Kpi";
 import ExpandedOperationLog from "../../components/ExpandedOperationLog/ExpandedOperationLog"
 
 const DashboardColaboradores = () => {
@@ -26,7 +24,6 @@ const DashboardColaboradores = () => {
             borderWidth: 1,
         },
     ];
-    const [inputValue, setInputValue] = useState('');
 
     return (
         <div className={styles.group}>
@@ -65,19 +62,6 @@ const DashboardColaboradores = () => {
                 </div>
             </div>
             <div className={styles.SideMenu}>
-                <div className={styles.icons}>
-                    <FontAwesomeIcon icon="moon" />
-                    <FontAwesomeIcon icon="fa-solid fa-gear" />
-                    <FontAwesomeIcon icon="fa-solid fa-bell" />
-                </div>
-                <div className={styles.DivKpis}>
-                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel" />
-                    <Kpi name="Total de entradas" value="145" />
-                    <Kpi status="ruim" name="Total de Saídas" value="129" />
-                    <Kpi status="bom" name="Colaborador com mais entradas" value="Manuel" />
-
-
-                </div>
             </div>
         </div>
     );
