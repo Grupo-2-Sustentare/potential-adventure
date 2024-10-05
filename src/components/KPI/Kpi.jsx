@@ -39,7 +39,15 @@ function Kpi({
           break
   }
 
+  if (value === null){
+    type = "sem dados"
+  }
+
   switch (type){
+      case "sem dados":
+          classeTipo = styles.semDados
+          value = "Sem dados"
+          break
       case "unidade":
           classeTipo = styles.unidadeMedida
           auxiliares.posterior.valor = auxiliaryTexts

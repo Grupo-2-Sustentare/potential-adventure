@@ -1,6 +1,6 @@
 .kpi{
   min-height: 65px;
-  width: 180px;
+  width: 200px;
   border-radius: 8px;
   padding: 8px;
   display: flex;
@@ -21,9 +21,7 @@
 .nomeKpi{
   width: 100%;
   text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  font-size: 0.8em;
 }
 
 .loading{
@@ -55,6 +53,10 @@
 
 .textoAuxiliar{
   font-family: var(--fonte-destaque), system-ui;
+}
+
+.semDados{
+
 }
 
 .textual > .textoAuxiliar,
