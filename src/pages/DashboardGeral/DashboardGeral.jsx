@@ -149,7 +149,9 @@ const Dashboard = () => {
         atualizando = true
         carregarDados().then((d)=>{
             let agora =  new Date()
-            let horarioFormat = `${agora.getHours()}:${agora.getMinutes()}`
+            let horas = agora.getHours().toString().padStart(2, "0")
+            let minutos = agora.getMinutes().toString().padStart(2, "0")
+            let horarioFormat = `${horas}:${minutos}`
 
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
