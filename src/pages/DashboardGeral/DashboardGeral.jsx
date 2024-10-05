@@ -8,7 +8,6 @@ import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
-import {gerarNumerosAleatorios} from "../../tools/ferramentasDeTeste";
 
 const Dashboard = () => {
     // == Constantes
@@ -19,6 +18,8 @@ const Dashboard = () => {
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
         'Outubro', 'Novembro', 'Dezembro'
     ];
+
+    const [teste, setTeste] = useState([])
 
     // Dos gráficos
     const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
@@ -96,13 +97,13 @@ const Dashboard = () => {
 
     // == Dados das KPIS
     const [kpiVaoVencer, setKpiVaoVencer] = useState(null)
-    const [statusVaoVencer, setStatusVaoVencer] = useState(EnumStatusKpis.LOADING)
+    const [statusVaoVencer, setStatusVaoVencer] = useState(EnumStatusKpis.NEUTRAL)
 
     const [kpiVencidos, setKpiVencidos] = useState(null)
-    const [statusVencidos, setStatusVencidos] = useState(EnumStatusKpis.LOADING)
+    const [statusVencidos, setStatusVencidos] = useState(EnumStatusKpis.NEUTRAL)
 
     const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState(null)
-    const [statusPlanejados, setStatusNaoPlanejados] = useState(EnumStatusKpis.LOADING)
+    const [statusPlanejados, setStatusNaoPlanejados] = useState(EnumStatusKpis.NEUTRAL)
 
     async function carregarDados(){
         // Listas checáveis
@@ -122,7 +123,6 @@ const Dashboard = () => {
 
         // Perdas por tipo
         setPerdas(dadosGraficos.perdas)
-        console.log(dadosGraficos.perdas)
         setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
 
         // Compras x última hora
@@ -145,6 +145,7 @@ const Dashboard = () => {
     const atualizarDashboard = useCallback(async () =>{
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
+
 
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
@@ -172,7 +173,8 @@ const Dashboard = () => {
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
                         <CheckableList textoBase={"Categorias"} opcoes={categorias}/>
-                        <CheckableList textoBase={"Produtos"} opcoes={produtos}/>
+                        <CheckableList setTeste={setTeste} teste={teste}
+                                       textoBase={"Produtos"} opcoes={produtos}/>
                         <Button insideText={"Alterar período"} />
                     </div>
                 </div>
@@ -197,6 +199,10 @@ const Dashboard = () => {
                             yLabel={"Quantidade de perdas"}
                         />
                     </div>
+                    OLaaaaaaaaaaaaaaaaaaaaaa
+                    {teste.map((item) => {
+                        return (<h1>{item.nome} {item.selecionado}</h1>)
+                    })}
                     <ChartBar
                         labels={categorias}
                         datasets={comprasVsUltimaHora}
@@ -209,6 +215,8 @@ const Dashboard = () => {
                     />
                 </div>
             </div>
+            {console.log(teste)}
+
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
                     <p>Dados em tempo real.</p>
@@ -222,10 +230,10 @@ const Dashboard = () => {
                     {/*<Kpi status={statusVaoVencer} name="Produtos próximos de vencer" value={kpiVaoVencer}/>*/}
                     {/*<Kpi status={statusVencidos} name="Produtos vencidos ou descartados" value={kpiVencidos}/>*/}
                     {/*<Kpi status={statusPlanejados} name="Compras não planejadas." value={kpiNaoPlanejados} />*/}
-                    <Kpi type={"simples"} name={""} value={12}/>
-                    <Kpi type={"unidade"} name={""} auxiliaryTexts={"KG"} value={24}/>
-                    <Kpi type={"textual"} name={""} auxiliaryTexts={["Perda de", "peixes"]} value={12}/>
-                    <Kpi type={"monetária"} name={""} value={55.99}/>
+                    <Kpi type={"simples"} name={"Números"} value={12} status={EnumStatusKpis.GOOD}/>
+                    <Kpi type={"unidade"} name={"Peso"} auxiliaryTexts={"KG"} value={241233333333} status={EnumStatusKpis.BAD}/>
+                    <Kpi type={"textual"} name={"aaaaaaaaaaaaaaaaaaaaaaaa"} auxiliaryTexts={["Perda de", "peixes"]} value={12}/>
+                    <Kpi type={"monetária"} name={"Valor em dinheiro"} value={55.99} status={EnumStatusKpis.MEDIUM}/>
                 </div>
             </div>
         </div>

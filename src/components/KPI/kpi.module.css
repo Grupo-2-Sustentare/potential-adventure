@@ -1,15 +1,52 @@
 .kpi{
+  min-height: 65px;
+  width: 180px;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
   .infoKpi{
     display: flex;
     flex-direction: row;
+    justify-content: center;
     gap: 4px;
     align-items: baseline;
+    width: 100%;
   }
+}
+
+.nomeKpi{
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loading{
+  border: var(--borda-branca);
+}
+.bad{
+  background-color: var(--toast-vermelho);
+}
+.neutral{
+  background-color: var(--toast-amarelo);
+  span {color: var(--preto)};
+}
+.good{
+  background-color: var(--toast-verde);
+  span {color: var(--preto)};
 }
 
 .valorKpi{
   font-family: var(--fonte-destaque), system-ui;
   font-size: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .desconsiderar > .textoAuxiliar{
