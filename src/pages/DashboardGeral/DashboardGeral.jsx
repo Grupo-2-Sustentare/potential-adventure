@@ -166,8 +166,9 @@ const Dashboard = () => {
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
     return (
+        <>
+        <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
         <div className={styles.group}>
-            <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <div className={styles.Global}>
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
@@ -178,48 +179,43 @@ const Dashboard = () => {
                         <Button insideText={"Alterar período"} />
                     </div>
                 </div>
-                <div className={styles.Chart}>
-                    <div className={styles.Charts}>
-                        <ChartBar
-                            labels={MESES}
-                            datasets={entradasSaidas}
-                            title={tituloEntradasEhSaidas}
-                            width="49%"
-                            height="90%"
-                            backgroundColor="#f0f0f0"
-                            yLabel={"Valor em reais (R$)"}
-                        />
-                        <ChartBar
-                            labels={MESES}
-                            datasets={perdas}
-                            title={tituloPerdas}
-                            width="49%"
-                            height="90%"
-                            backgroundColor="#f0f0f0"
-                            yLabel={"Quantidade de perdas"}
-                        />
-                    </div>
-                    OLaaaaaaaaaaaaaaaaaaaaaa
-                    {teste.map((item) => {
+                <div className={styles.Charts}>
+                    <ChartBar
+                        labels={MESES}
+                        datasets={entradasSaidas}
+                        title={tituloEntradasEhSaidas}
+                        width="34vw"
+                        height="260px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Valor em reais (R$)"}
+                    />
+                    <ChartBar
+                        labels={MESES}
+                        datasets={perdas}
+                        title={tituloPerdas}
+                        width="34vw"
+                        height="250px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Quantidade de perdas"}
+                    />
+                    {teste?.map((item) => {
                         return (<h1>{item.nome} {item.selecionado}</h1>)
                     })}
                     <ChartBar
                         labels={categorias}
                         datasets={comprasVsUltimaHora}
                         title={tituloComprasVsUltimaHora}
-                        width="100%"
-                        height="40%"
+                        width="100vw"
+                        height="220px"
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
                     />
                 </div>
             </div>
-            {console.log(teste)}
-
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                    <p>Dados em tempo real.</p>
+                    <h3>Dados em tempo real</h3>
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
                         <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
@@ -227,16 +223,20 @@ const Dashboard = () => {
                     </span>
                 </div>
                 <div className={styles.DivKpis}>
+                    <h3>Informes desse período</h3>
+                    <div>
+                        <Kpi type={"simples"} name={"Perdas"} value={24} status={EnumStatusKpis.BAD}/>
+                        <Kpi type={"simples"} name={"Próximos a vencer"} value={12} status={EnumStatusKpis.GOOD}/>
+                        <Kpi type={"textual"} name={"Quantidade de compras não planejadas"} auxiliaryTexts={["Perda de", "peixes"]} value={12}/>
+                        <Kpi type={"monetária"} name={"Valor em dinheiro"} value={55.99} status={EnumStatusKpis.MEDIUM}/>
+                    </div>
                     {/*<Kpi status={statusVaoVencer} name="Produtos próximos de vencer" value={kpiVaoVencer}/>*/}
                     {/*<Kpi status={statusVencidos} name="Produtos vencidos ou descartados" value={kpiVencidos}/>*/}
                     {/*<Kpi status={statusPlanejados} name="Compras não planejadas." value={kpiNaoPlanejados} />*/}
-                    <Kpi type={"simples"} name={"Números"} value={12} status={EnumStatusKpis.GOOD}/>
-                    <Kpi type={"unidade"} name={"Peso"} auxiliaryTexts={"KG"} value={241233333333} status={EnumStatusKpis.BAD}/>
-                    <Kpi type={"textual"} name={"aaaaaaaaaaaaaaaaaaaaaaaa"} auxiliaryTexts={["Perda de", "peixes"]} value={12}/>
-                    <Kpi type={"monetária"} name={"Valor em dinheiro"} value={55.99} status={EnumStatusKpis.MEDIUM}/>
                 </div>
             </div>
         </div>
+            </>
     );
 }
 

@@ -49,7 +49,7 @@ const Chart = (
             width: width || '100%',
             height: height || '100%',
             backgroundColor: backgroundColor || 'white',
-            padding: '10px',
+            padding: '0px',
             borderRadius: '8px',
             margin: '0px'
         }}>
@@ -57,7 +57,7 @@ const Chart = (
                 width: '100%',
                 height: '100%',
                 margin: '0px',
-                padding: '10px',
+                padding: '4px 8px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'

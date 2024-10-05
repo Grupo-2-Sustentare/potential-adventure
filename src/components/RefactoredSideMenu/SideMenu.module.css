@@ -1,7 +1,8 @@
 .SideMenu {
     width: 64px;
-    height: 100%;
+    height: 100vh;
     background-color: var(--gunmetal);
+    position: fixed;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -9,7 +10,10 @@
     padding: 20px;
     border-right: 1px solid var(--white);
     box-shadow: 0 0 10px var(--vermelho);
-    border-radius: 0px;
+}
+.filler{
+    width: 64px;
+    height: 100vh;
     margin-right: 25px;
 }
 
