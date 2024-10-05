@@ -1,13 +1,15 @@
 .kpi{
   min-height: 65px;
-  width: 200px;
-  border-radius: 8px;
-  padding: 8px;
+  width: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
+  padding: 8px;
+  border: var(--borda-branca);
+  border-radius: 8px;
+  cursor: default;
   .infoKpi{
     display: flex;
     flex-direction: row;
@@ -25,10 +27,15 @@
 }
 
 .neutral{
-  border: var(--borda-branca);
 }
 .bad{
   background-color: var(--toast-vermelho);
+  animation: pulsar 2s infinite;
+}
+@keyframes pulsar {
+  0% {box-shadow: 0 0 var(--vermelho-transparente);}
+  80% {box-shadow: 0 0 1px 10px var(--vermelho-transparente);}
+  100% {box-shadow: 0 0 var(--vermelho-transparente);}
 }
 .medium{
   background-color: var(--toast-amarelo);
