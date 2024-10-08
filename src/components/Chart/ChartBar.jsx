@@ -4,7 +4,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const Chart = ({ labels, datasets, title, width, height, backgroundColor }) => {
+const Chart = (
+        { labels, datasets, title, width, height, backgroundColor, xLabel="Mês", yLabel="Valor" }
+    ) => {
     const data = {
         labels: labels,
         datasets: datasets,
@@ -26,14 +28,14 @@ const Chart = ({ labels, datasets, title, width, height, backgroundColor }) => {
             x: {
                 title: {
                     display: true,
-                    text: 'Mês',
+                    text: xLabel,
                 },
             },
             y: {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Valor',
+                    text: yLabel,
                 },
             },
         },
@@ -47,7 +49,7 @@ const Chart = ({ labels, datasets, title, width, height, backgroundColor }) => {
             width: width || '100%',
             height: height || '100%',
             backgroundColor: backgroundColor || 'white',
-            padding: '10px',
+            padding: '0px',
             borderRadius: '8px',
             margin: '0px'
         }}>
@@ -55,7 +57,7 @@ const Chart = ({ labels, datasets, title, width, height, backgroundColor }) => {
                 width: '100%',
                 height: '100%',
                 margin: '0px',
-                padding: '10px',
+                padding: '4px 8px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'

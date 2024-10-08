@@ -7,9 +7,24 @@ import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
+import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 
 const Dashboard = () => {
+    // == Constantes
+    // Gerais
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    const SUFIXO_SEM_DADOS = " - sem dados"
+    const MESES = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+        'Outubro', 'Novembro', 'Dezembro'
+    ];
+
+    const [teste, setTeste] = useState([])
+
+    // Dos gráficos
+    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const TITULO_PERDAS = "Perdas por tipo"
+    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
 
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
@@ -17,86 +32,74 @@ const Dashboard = () => {
 
     // === Dados dos gráficos
     // Entradas e saídas
-const [entradasSaidas, setEntradasSaidas] = useState([
-                {
-                    label: 'Entrada',
-                    data: SEM_DADOS,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                },
-                {
-                    label: 'Saída',
-                    data: SEM_DADOS,
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                }
-        ])
-    // Compras
-    const MESES = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-        'Outubro', 'Novembro', 'Dezembro'
-    ];
-    const [compras, setCompras] = useState([
+    const [entradasSaidas, setEntradasSaidas] = useState([
         {
-            label: 'Compras de Arroz',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Compras de Feijão',
+            label: 'Entradas',
             data: SEM_DADOS,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Compras de Carne',
+            label: 'Saídas',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
+        ])
+    const [tituloEntradasEhSaidas, setTituloEntradasEhSaidas] = useState(TITULO_ENTRADAS_E_SAIDAS)
+
+    // Compras
+    const [perdas, setPerdas] = useState([
+        {
+            label: 'Prazo de validade',
+            data: SEM_DADOS,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Contaminado ou extraviado',
             data: SEM_DADOS,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Compras de Frango',
+            label: 'Não se sabe o paradeiro',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 159, 64, 0.6)',
             borderColor: 'rgba(255, 159, 64, 1)',
             borderWidth: 1,
-        },
-        {
-            label: 'Compras de Vegetais',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(153, 102, 255, 0.6)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-            borderWidth: 1,
         }
     ])
+    const [tituloPerdas, setTituloPerdas] = useState(TITULO_PERDAS)
+
     // Compras por categorias
-    const [comprasCategorias, setComprasCategorias] = useState([
+    const [compras, setCompras] = useState([
         {
-            label: 'Quantidade de Compras',
+            label: 'Compras regulares',
             data: SEM_DADOS,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
         },
         {
-            label: 'Desperdícios',
+            label: 'Compras não planejadas',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
         }
     ])
+    const [tituloCompras, setTituloCompras] = useState(TITULO_COMPRAS)
 
     // == Dados das KPIS
-    const [aVencer, setAVencer] = useState(null)
-    const [vencidos, setVencidos] = useState(null)
-    const [naoPlanejados, setNaoPlanejados] = useState(null)
+    const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiValorEntradas, setKpiValorEntradas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiValorSaidas, setKpiValorSaidas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
 
     async function carregarDados(){
         // Listas checáveis
@@ -104,16 +107,33 @@ const [entradasSaidas, setEntradasSaidas] = useState([
         setCategorias(dadosListas["categorias"])
         setProdutos(dadosListas["produtos"])
 
-        // Dados de gráficos
+        // == Dados de gráficos
         let dadosGraficos = await carregarGraficos()
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas)
-        setCompras(dadosGraficos.comprasEhDesperdicios)
-        setComprasCategorias(dadosGraficos.categoriasCompras)
 
-        let dadosKpis = carregarKPIs()
-        setAVencer(dadosKpis.aVencer.quantidade)
-        setVencidos(dadosKpis.vencidos.quantidade)
-        setNaoPlanejados(dadosKpis.naoPlaneajadas.quantidade)
+        // Entradas e saídas
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
+        setTituloEntradasEhSaidas(
+            TITULO_ENTRADAS_E_SAIDAS +
+            (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
+        ) // Info de "sem dados" no título
+
+        // Perdas por tipo
+        setPerdas(dadosGraficos.perdas)
+        setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
+
+        // Compras x última hora
+        setCompras(dadosGraficos.compras)
+        console.log(compras)
+        setTituloCompras(
+            TITULO_COMPRAS +
+            (dadosGraficos.compras === null ? SUFIXO_SEM_DADOS : "")
+        )
+
+        let dadosKpis = await carregarKPIs()
+        setKpiPerdas(dadosKpis.perdas)
+        setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
+        setKpiValorEntradas(dadosKpis.valorEntradas)
+        setKpiValorSaidas(dadosKpis.valorSaidas)
     }
 
     /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
@@ -124,12 +144,15 @@ const [entradasSaidas, setEntradasSaidas] = useState([
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
 
+
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
         atualizando = true
         carregarDados().then((d)=>{
             let agora =  new Date()
-            let horarioFormat = `${agora.getHours()}:${agora.getMinutes()}`
+            let horas = agora.getHours().toString().padStart(2, "0")
+            let minutos = agora.getMinutes().toString().padStart(2, "0")
+            let horarioFormat = `${horas}:${minutos}`
 
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
@@ -139,46 +162,51 @@ const [entradasSaidas, setEntradasSaidas] = useState([
     }, [])
     useEffect( () => {
         atualizarDashboard().catch(console.error)
-        setInterval(atualizarDashboard, 10000) /*Executar à cada 30 seg*/
+        setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
     return (
+        <>
+        <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
         <div className={styles.group}>
-            <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <div className={styles.Global}>
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
                         <CheckableList textoBase={"Categorias"} opcoes={categorias}/>
-                        <CheckableList textoBase={"Produtos"} opcoes={produtos}/>
+                        <CheckableList setTeste={setTeste} teste={teste}
+                                       textoBase={"Produtos"} opcoes={produtos}/>
                         <Button insideText={"Alterar período"} />
                     </div>
                 </div>
-                <div className={styles.Chart}>
-                    <div className={styles.Charts}>
-                        <ChartBar
-                            labels={MESES}
-                            datasets={entradasSaidas}
-                            title="Entrada e Saída"
-                            width="49%"
-                            height="90%"
-                            backgroundColor="#f0f0f0"
-                        />
-                        <ChartBar
-                            labels={MESES}
-                            datasets={compras}
-                            title=" Compras e Desperdícios"
-                            width="49%"
-                            height="90%"
-                            backgroundColor="#f0f0f0"
-                        />
-                    </div>
+                <div className={styles.Charts}>
                     <ChartBar
-                        labels={categorias}
-                        datasets={comprasCategorias}
-                        title="Compra de Produtos por Categoria"
-                        width="100%"
-                        height="40%"
+                        labels={MESES}
+                        datasets={entradasSaidas}
+                        title={tituloEntradasEhSaidas}
+                        width="34vw"
+                        height="250px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Valor em reais (R$)"}
+                    />
+                    <ChartBar
+                        labels={MESES}
+                        datasets={perdas}
+                        title={tituloPerdas}
+                        width="34vw"
+                        height="250px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Quantidade de perdas"}
+                    />
+                    {teste?.map((item) => {
+                        return (<h1>{item.nome} {item.selecionado}</h1>)
+                    })}
+                    <ChartBar
+                        labels={MESES}
+                        datasets={compras}
+                        title={tituloCompras}
+                        width="100vw"
+                        height="220px"
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
@@ -187,7 +215,7 @@ const [entradasSaidas, setEntradasSaidas] = useState([
             </div>
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                    <p>Dados em tempo real.</p>
+                    <h3>Dados em tempo real</h3>
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
                         <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
@@ -195,12 +223,26 @@ const [entradasSaidas, setEntradasSaidas] = useState([
                     </span>
                 </div>
                 <div className={styles.DivKpis}>
-                    <Kpi name="Produtos próximos de vencer" value={aVencer}/>
-                    <Kpi status="ruim" name="Produtos vencidos ou descartados" value={vencidos}/>
-                    <Kpi status="bom" name="Compras não planejadas." value={naoPlanejados} />
+                    <h3>Informes desse período</h3>
+                    <div>
+                        <Kpi type={"simples"} name={"Perdas"} value={kpiPerdas.quantidade} status={kpiPerdas.status}/>
+                        <Kpi
+                            type={"simples"} name={"Quantidade de compras não planejadas"}
+                            value={kpiNaoPlanejados.quantidade} status={kpiNaoPlanejados.status}
+                        />
+                        <Kpi
+                            type={"monetária"} name={"Valor total das entradas"} value={kpiValorEntradas.quantidade}
+                            status={kpiValorEntradas.status}
+                        />
+                        <Kpi
+                            type={"monetária"} name={"Valor total das saídas"} value={kpiValorSaidas.quantidade}
+                            status={kpiValorSaidas.status}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
+            </>
     );
 }
 

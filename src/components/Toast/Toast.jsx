@@ -6,7 +6,7 @@ import {toast} from "react-hot-toast";
 
 export function Toast ({title, variant = "success"}){
     return (
-    <div className={styles[variant]}>
+    <div className={`${styles.toast} ${styles[variant]}`}>
       <span>{title}</span>
     </div>
   );
@@ -21,7 +21,6 @@ function renderToast(text, variant){
         className: styles[variant], iconTheme: {primary: white, secondary: gunmetal}
     }
     let component = <Toast title={text} variant={variant}/>
-    console.log("teste")
 
     switch (variant){
         case "success":
