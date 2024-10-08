@@ -24,7 +24,7 @@ const Dashboard = () => {
     // Dos gráficos
     const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
     const TITULO_PERDAS = "Perdas por tipo"
-    const TITULO_COMPRAS_X_ULTIMA_HORA = "Compras regulares X Compras de última hora"
+    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
 
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
@@ -77,7 +77,7 @@ const Dashboard = () => {
     const [tituloPerdas, setTituloPerdas] = useState(TITULO_PERDAS)
 
     // Compras por categorias
-    const [comprasVsUltimaHora, setComprasVsUltimaHora] = useState([
+    const [compras, setCompras] = useState([
         {
             label: 'Compras regulares',
             data: SEM_DADOS,
@@ -86,14 +86,14 @@ const Dashboard = () => {
             borderWidth: 1,
         },
         {
-            label: 'Compras de última hora',
+            label: 'Compras não planejadas',
             data: SEM_DADOS,
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
         }
     ])
-    const [tituloComprasVsUltimaHora, setTituloComprasVsUltimaHora] = useState(TITULO_COMPRAS_X_ULTIMA_HORA)
+    const [tituloCompras, setTituloCompras] = useState(TITULO_COMPRAS)
 
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
@@ -122,10 +122,11 @@ const Dashboard = () => {
         setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
 
         // Compras x última hora
-        setComprasVsUltimaHora(dadosGraficos.comprasVsUltimaHora)
-        setTituloComprasVsUltimaHora(
-            TITULO_COMPRAS_X_ULTIMA_HORA +
-            (dadosGraficos.comprasVsUltimaHora === null ? SUFIXO_SEM_DADOS : "")
+        setCompras(dadosGraficos.compras)
+        console.log(compras)
+        setTituloCompras(
+            TITULO_COMPRAS +
+            (dadosGraficos.compras === null ? SUFIXO_SEM_DADOS : "")
         )
 
         let dadosKpis = await carregarKPIs()
@@ -184,7 +185,7 @@ const Dashboard = () => {
                         datasets={entradasSaidas}
                         title={tituloEntradasEhSaidas}
                         width="34vw"
-                        height="260px"
+                        height="250px"
                         backgroundColor="#f0f0f0"
                         yLabel={"Valor em reais (R$)"}
                     />
@@ -201,9 +202,9 @@ const Dashboard = () => {
                         return (<h1>{item.nome} {item.selecionado}</h1>)
                     })}
                     <ChartBar
-                        labels={categorias}
-                        datasets={comprasVsUltimaHora}
-                        title={tituloComprasVsUltimaHora}
+                        labels={MESES}
+                        datasets={compras}
+                        title={tituloCompras}
                         width="100vw"
                         height="220px"
                         backgroundColor="#f0f0f0"

@@ -53,6 +53,19 @@ const MOCK_TIPOS_PERDAS = () => {
   ]
 }
 
+const MOCK_COMPRAS = () => {
+  return [
+    {
+      "data": gerarNumerosAleatorios(12, 5, 24),
+      "tipo": "regulares"
+    },
+    {
+      "data": gerarNumerosAleatorios(12, 0, 8),
+      "tipo": "ultima_hora"
+    }
+  ]
+}
+
 const MOCK_KPI_PERDAS = () => {
   return gerarNumeroAleatorio(0, 6)
 }
@@ -68,5 +81,5 @@ const MOCK_KPI_SAIDAS = () => {
 
 export {
     gerarNumeroAleatorio, gerarNumerosAleatorios, MOCK_PRODUTOS, MOCK_ENTRADAS_E_SAIDAS, MOCK_TIPOS_PERDAS,
-    MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS
+    MOCK_COMPRAS, MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS
 }

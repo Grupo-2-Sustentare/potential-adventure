@@ -1,7 +1,13 @@
 import {
     gerarNumeroAleatorio,
     gerarNumerosAleatorios,
-    MOCK_ENTRADAS_E_SAIDAS, MOCK_KPI_ENTRADAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_PERDAS, MOCK_KPI_SAIDAS, MOCK_PRODUTOS,
+    MOCK_ENTRADAS_E_SAIDAS,
+    MOCK_KPI_ENTRADAS,
+    MOCK_KPI_NAO_PLANEJADAS,
+    MOCK_KPI_PERDAS,
+    MOCK_KPI_SAIDAS,
+    MOCK_COMPRAS,
+    MOCK_PRODUTOS,
     MOCK_TIPOS_PERDAS
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
@@ -82,16 +88,34 @@ async function carregarGraficos(){
         }
     }
 
-    let comprasVsUltimaHoraBrutas = await get("compras_vs_ultima_hora")
-    let comprasVsUltimaHora = null
-    if (comprasVsUltimaHoraBrutas !== null){
-        // ...
+    // let comprasVsUltimaHoraBrutas = await get("compras_vs_ultima_hora")
+    let comprasBrutas = MOCK_COMPRAS()
+    let compras = null
+    if (comprasBrutas !== null){
+        let tiposCompras = {
+            "regulares": [], "ultima_hora": []
+        }
+        for (let i in comprasBrutas) {
+            switch (comprasBrutas[i].tipo) {
+                case "regulares":
+                    tiposCompras.regulares = comprasBrutas[i].data
+                    break
+                case "ultima_hora":
+                    tiposCompras.ultima_hora = comprasBrutas[i].data
+                    break
+            }
+            if ((tiposCompras.regulares.length > 0) || (tiposCompras.ultima_hora.length > 0)) {
+                compras = [
+                    {label: 'Compras regulares', data: tiposCompras.regulares},
+                    {label: 'Compras não planejadas', data: tiposCompras.ultima_hora}
+                ]
+            }
+        }
     }
-
     return {
         "entradasEhSaidas": entradasEhSaidas,
         "perdas": perdas,
-        "comprasVsUltimaHora": comprasVsUltimaHora
+        "compras": compras
     }
 }
 
