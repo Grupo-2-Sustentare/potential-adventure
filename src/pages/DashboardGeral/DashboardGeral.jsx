@@ -19,7 +19,6 @@ const Dashboard = () => {
         'Outubro', 'Novembro', 'Dezembro'
     ];
 
-    const [teste, setTeste] = useState([])
 
     // Dos gráficos
     const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
@@ -29,6 +28,10 @@ const Dashboard = () => {
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
+
+    // === Filtros
+    const [filtroCategorias, setFiltroCategorias] = useState([])
+    const [filtroProdutos, setFiltroProdutos] = useState([])
 
     // === Dados dos gráficos
     // Entradas e saídas
@@ -101,6 +104,7 @@ const Dashboard = () => {
     const [kpiValorEntradas, setKpiValorEntradas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
     const [kpiValorSaidas, setKpiValorSaidas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
 
+    // === Mét-odo que puxa do back
     async function carregarDados(){
         // Listas checáveis
         let dadosListas = await carregarListasChecaveis()
@@ -135,7 +139,7 @@ const Dashboard = () => {
         setKpiValorSaidas(dadosKpis.valorSaidas)
     }
 
-    /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
+    // ===  Mét-odo de atualização progressiva
     let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
     const [loadingClass, setLoadingClass] = useState(null)
@@ -143,7 +147,7 @@ const Dashboard = () => {
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
 
-
+        /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
         atualizando = true
@@ -164,6 +168,12 @@ const Dashboard = () => {
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
+    useEffect(() => {
+        localStorage.setItem("filtroCategorias", JSON.stringify(filtroCategorias))
+        localStorage.setItem("filtroProdutos", JSON.stringify(filtroProdutos))
+        atualizarDashboard().catch(console.error)
+    }, [filtroCategorias, filtroProdutos]);
+
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
@@ -172,9 +182,8 @@ const Dashboard = () => {
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
-                        <CheckableList textoBase={"Categorias"} opcoes={categorias}/>
-                        <CheckableList setTeste={setTeste} teste={teste}
-                                       textoBase={"Produtos"} opcoes={produtos}/>
+                        <CheckableList getOpcoes={setFiltroCategorias} textoBase={"Categorias"} opcoes={categorias}/>
+                        <CheckableList getOpcoes={setFiltroProdutos}  textoBase={"Produtos"} opcoes={produtos}/>
                         <Button insideText={"Alterar período"} />
                     </div>
                 </div>
@@ -197,9 +206,6 @@ const Dashboard = () => {
                         backgroundColor="#f0f0f0"
                         yLabel={"Quantidade de perdas"}
                     />
-                    {teste?.map((item) => {
-                        return (<h1>{item.nome} {item.selecionado}</h1>)
-                    })}
                     <ChartBar
                         labels={MESES}
                         datasets={compras}
