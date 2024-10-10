@@ -1,0 +1,44 @@
+.tela{
+    width: 375px;
+    min-height: 812px;
+}
+
+.containerModal{
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(10, 9, 8, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .modal {
+        width: 500px;
+        height: 300px;
+        background-color: #22333B;
+        border-radius: 16px;
+        border: solid 1px white;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    .openedModal{
+        display: flex;
+    }
+}
+.existeModalAberta{
+
+}
+
+.iconeFechar{
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    cursor: pointer;
+}
