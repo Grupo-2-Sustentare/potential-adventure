@@ -139,6 +139,21 @@ const Dashboard = () => {
         setKpiValorSaidas(dadosKpis.valorSaidas)
     }
 
+    function atualizarFiltros(valoresKpi, nome_filtro) {
+        switch (nome_filtro){
+            case "categorias":
+                setFiltroCategorias(valoresKpi)
+                localStorage.setItem("filtroCategorias", JSON.stringify(filtroCategorias))
+                break
+            case "produto":
+                setFiltroProdutos(valoresKpi)
+                localStorage.setItem("filtroProdutos", JSON.stringify(filtroProdutos))
+                break
+        }
+        console.log(valoresKpi)
+        atualizarDashboard().catch(console.error)
+    }
+
     // ===  Mét-odo de atualização progressiva
     let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
@@ -168,12 +183,6 @@ const Dashboard = () => {
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
-    useEffect(() => {
-        localStorage.setItem("filtroCategorias", JSON.stringify(filtroCategorias))
-        localStorage.setItem("filtroProdutos", JSON.stringify(filtroProdutos))
-        atualizarDashboard().catch(console.error)
-    }, [filtroCategorias, filtroProdutos]);
-
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
@@ -182,8 +191,14 @@ const Dashboard = () => {
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
-                        <CheckableList getOpcoes={setFiltroCategorias} textoBase={"Categorias"} opcoes={categorias}/>
-                        <CheckableList getOpcoes={setFiltroProdutos}  textoBase={"Produtos"} opcoes={produtos}/>
+                        <CheckableList
+                            getOpcoes={(v)=>atualizarFiltros(v,"categoria")} textoBase={"Categorias"}
+                            opcoes={categorias}
+                        />
+                        <CheckableList
+                            getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
+                            opcoes={produtos}
+                        />
                         <Button insideText={"Alterar período"} />
                     </div>
                 </div>
@@ -221,6 +236,7 @@ const Dashboard = () => {
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
                     <h3>Dados em tempo real</h3>
+                    {<p></p>}
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
                         <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
