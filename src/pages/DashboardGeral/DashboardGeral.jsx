@@ -123,7 +123,6 @@ const Dashboard = () => {
 
         // Compras x última hora
         setCompras(dadosGraficos.compras)
-        console.log(compras)
         setTituloCompras(
             TITULO_COMPRAS +
             (dadosGraficos.compras === null ? SUFIXO_SEM_DADOS : "")
