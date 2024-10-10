@@ -2,7 +2,7 @@ import styles from './checkableList.module.css';
 import {useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-export default function CheckableList({textoBase = "Selecione opções", opcoes = ["Opções", "de", "teste"], teste, setTeste}) {
+export default function CheckableList({textoBase = "Selecione opções", opcoes = ["Opções", "de", "teste"], setTeste}) {
     // Convertendo a lista de opções (strings) enviadas em uma lista de dicts, com uma chave com
     // o nome do dict e outra informando se essa opção está selecionada ou não.
     opcoes = opcoes.map((o)=>({"nome": o, "selecionado": false}))
