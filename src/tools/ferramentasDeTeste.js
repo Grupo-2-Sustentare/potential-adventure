@@ -11,12 +11,15 @@ function gerarNumerosAleatorios(quantidade, minimo, maximo) {
   return numeros;
 }
 
+const MOCK_CATEGORIAS = [
+  {"nome": "Ingredientes de self-service"}, {"nome": "Doces por encomenda"}, {"nome": "Descartáveis"},
+]
 const MOCK_PRODUTOS = [
   {"nome": "Coca-cola"},
   {"nome": "Arroz"},
   {"nome": "Açúcar"},
   {"nome": "Feijão carioquinha"},
-  {"nome": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+  {"nome": "Um produto de nome muito grande para testar o corte"}
 ]
 
 const MOCK_ENTRADAS_E_SAIDAS = () => {
@@ -80,6 +83,6 @@ const MOCK_KPI_SAIDAS = () => {
 }
 
 export {
-    gerarNumeroAleatorio, gerarNumerosAleatorios, MOCK_PRODUTOS, MOCK_ENTRADAS_E_SAIDAS, MOCK_TIPOS_PERDAS,
-    MOCK_COMPRAS, MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS
+    gerarNumeroAleatorio, gerarNumerosAleatorios, MOCK_CATEGORIAS, MOCK_PRODUTOS, MOCK_ENTRADAS_E_SAIDAS,
+    MOCK_TIPOS_PERDAS,MOCK_COMPRAS, MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS
 }

@@ -8,21 +8,23 @@ import {
     MOCK_KPI_SAIDAS,
     MOCK_COMPRAS,
     MOCK_PRODUTOS,
-    MOCK_TIPOS_PERDAS
+    MOCK_TIPOS_PERDAS, MOCK_CATEGORIAS
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
+const DEBUG_MODE = true;
 
 async function carregarListasChecaveis(){
     let categorias = []
-    let categorias_brutas = await get("categorias")
+    let categorias_brutas = DEBUG_MODE ? MOCK_CATEGORIAS : await get("categorias")
     if (categorias_brutas !== null){
-        // Consumir categorias...
+        for (let i in categorias_brutas){
+            categorias.push(categorias_brutas[i].nome)
+        }
     }
 
     let produtos = []
-    // let produtos_brutos = await get("produtos")
-    let produtos_brutos = MOCK_PRODUTOS
+    let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get("produtos")
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].nome)
@@ -37,8 +39,7 @@ async function carregarListasChecaveis(){
 
 async function carregarGraficos(){
     // Entradas e saídas
-    // let entradasEhSaidasBrutas = await get("entradasEhSaidas")
-    let entradasEhSaidasBrutas = MOCK_ENTRADAS_E_SAIDAS()
+    let entradasEhSaidasBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
     let entradasEhSaidas = null;
 
     if (entradasEhSaidasBrutas !== null){
@@ -56,8 +57,7 @@ async function carregarGraficos(){
         }
     }
 
-    // let perdasBrutas = await get("perdasPorTipo")
-    let perdasBrutas = MOCK_TIPOS_PERDAS()
+    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("perdasPorTipo")
     let perdas = null
     if (perdasBrutas !== null) {
         let tiposPerdas = {
@@ -88,8 +88,7 @@ async function carregarGraficos(){
         }
     }
 
-    // let comprasVsUltimaHoraBrutas = await get("compras_vs_ultima_hora")
-    let comprasBrutas = MOCK_COMPRAS()
+    let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get("compras_vs_ultima_hora")
     let compras = null
     if (comprasBrutas !== null){
         let tiposCompras = {
@@ -134,10 +133,10 @@ async function carregarKPIs(){
     }
 
     // 2. Dados vindos do back-end
-    let kpiPerdasBruta = MOCK_KPI_PERDAS()
-    let kpiNaoPlanejadasBruta = MOCK_KPI_NAO_PLANEJADAS()
-    let kpiEntradasBruta = MOCK_KPI_ENTRADAS()
-    let kpiSaidasBruta = MOCK_KPI_SAIDAS()
+    let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpiPerdas")
+    let kpiNaoPlanejadasBruta = DEBUG_MODE ? MOCK_KPI_NAO_PLANEJADAS() : await get("kpiNaoPlanejadas")
+    let kpiEntradasBruta = DEBUG_MODE ? MOCK_KPI_ENTRADAS() : await get("kpiEntradas")
+    let kpiSaidasBruta = DEBUG_MODE ? MOCK_KPI_SAIDAS() : await get("kpiSaidas")
 
     KPIs.perdas.quantidade = kpiPerdasBruta !== null ? kpiPerdasBruta : null
     KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta !== null ? kpiNaoPlanejadasBruta : null
