@@ -11,6 +11,9 @@ function gerarNumerosAleatorios(quantidade, minimo, maximo) {
   return numeros;
 }
 
+
+// == Dash geral
+// Filtros
 const MOCK_CATEGORIAS = [
   {"nome": "Ingredientes de self-service"}, {"nome": "Doces por encomenda"}, {"nome": "Descartáveis"},
 ]
@@ -22,6 +25,7 @@ const MOCK_PRODUTOS = [
   {"nome": "Um produto de nome muito grande para testar o corte"}
 ]
 
+// Gráficos
 const MOCK_ENTRADAS_E_SAIDAS = () => {
   return [
     {
@@ -69,6 +73,7 @@ const MOCK_COMPRAS = () => {
   ]
 }
 
+// KPIs
 const MOCK_KPI_PERDAS = () => {
   return gerarNumeroAleatorio(0, 6)
 }
@@ -82,7 +87,14 @@ const MOCK_KPI_SAIDAS = () => {
   return gerarNumeroAleatorio(0, 450)
 }
 
+// == Dash colaboradores
+//Filtros
+const MOCK_COLABORADORES = [
+  {"nome": "Antônio"}, {"nome": "Ana"}, {"nome": "Alê"},
+]
+
 export {
     gerarNumeroAleatorio, gerarNumerosAleatorios, MOCK_CATEGORIAS, MOCK_PRODUTOS, MOCK_ENTRADAS_E_SAIDAS,
-    MOCK_TIPOS_PERDAS,MOCK_COMPRAS, MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS
+    MOCK_TIPOS_PERDAS,MOCK_COMPRAS, MOCK_KPI_PERDAS, MOCK_KPI_NAO_PLANEJADAS, MOCK_KPI_ENTRADAS, MOCK_KPI_SAIDAS,
+    MOCK_COLABORADORES
 }
