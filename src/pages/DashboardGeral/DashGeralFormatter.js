@@ -42,6 +42,10 @@ async function carregarGraficos(){
     let entradasEhSaidasBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
     let entradasEhSaidas = null;
 
+    if (DEBUG_MODE){
+        await fetch("https://httpbin.org/delay/3")
+    }
+
     if (entradasEhSaidasBrutas !== null){
         let entradas = []
         let saidas = []
