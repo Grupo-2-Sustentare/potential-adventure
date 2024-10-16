@@ -1,17 +1,24 @@
 .ExpandedOperationLog{
     width: 100%;
-    height: 9vh;
     background-color: var(--gunmetal);
     display: flex;
-    justify-content:space-around;
+    justify-content: space-between;
     align-items: center;
-    font-family: var(--corpo);
-    color: var(--branco);  
-}
-.ExpandedOperationLog .icon{    
-    width: 24px;
-    height: 24px;
-    color: var(--branco) !important;
+    padding: 10px 25px;
+    gap: 24px;
+
+    .group{
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 8px;
+        width: 30%;
+    }
+
+    .icon{
+        width: 24px;
+        height: 24px;
+    }
 }
 .name{
     font-size: 24px;
@@ -20,11 +27,4 @@
     width: 40px;
     height: 40px;
     border-radius:100%;
-}
-
-.group{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
 }
