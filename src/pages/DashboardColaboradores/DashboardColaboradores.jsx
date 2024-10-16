@@ -6,7 +6,7 @@ import ChartBar from "../../components/Chart/ChartBar"
 import ExpandedOperationLog from "../../components/ExpandedOperationLog/ExpandedOperationLog"
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {carregarColaboradores, carregarGrafico} from "./DashColaboradoresFormatter";
+import {carregarColaboradores, carregarGrafico, carregarLogs} from "./DashColaboradoresFormatter";
 
 const DashboardColaboradores = () => {
     // == Constantes
@@ -22,6 +22,9 @@ const DashboardColaboradores = () => {
     let [colaboradores, setColaboradores] = useState([])
     // Valores
     const [filtroColaboradores, setFiltroColaboradores] = useState([])
+
+    // === Logs
+    const [logsOperacao, setLogsOperacao] = useState([])
 
     // === Dados dos gráficos
     // Interações por colaboradores
@@ -49,6 +52,10 @@ const DashboardColaboradores = () => {
         // Listas checáveis
         let colaboradores = await carregarColaboradores()
         setColaboradores(colaboradores)
+
+        // == Logs
+        let logs = await carregarLogs()
+        setLogsOperacao(logs)
 
         // == Dados de gráficos
         let interacoesPorColab = await carregarGrafico()
@@ -101,51 +108,6 @@ const DashboardColaboradores = () => {
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
-    let interacoes = [
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-        {
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": "Carol",
-            "interacao": "Entrada",
-            "descricao": "25kg de carne",
-            "periodo": "um mês atrás"
-        },
-    ]
-
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
@@ -172,7 +134,7 @@ const DashboardColaboradores = () => {
                 </div>
                 <div className={styles.charts}>
                     <div className={styles.interacoes}>
-                        {interacoes.map((i) => {
+                        {logsOperacao.map((i) => {
                             return <ExpandedOperationLog
                                     imageAddress={i.imagem}
                                     name={i.nome}

@@ -1,6 +1,6 @@
 import {
     MOCK_ENTRADAS_E_SAIDAS,
-    MOCK_COLABORADORES
+    MOCK_COLABORADORES, MOCK_LOGS
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
@@ -16,6 +16,11 @@ async function carregarColaboradores(){
     }
 
     return  colaboradores
+}
+
+async function carregarLogs(){
+    let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("logs")
+    return logsBrutos
 }
 
 async function carregarGrafico(){
@@ -41,4 +46,4 @@ async function carregarGrafico(){
     return interacoesPorColabs
 }
 
-export {carregarColaboradores, carregarGrafico}
+export {carregarColaboradores, carregarLogs, carregarGrafico}
