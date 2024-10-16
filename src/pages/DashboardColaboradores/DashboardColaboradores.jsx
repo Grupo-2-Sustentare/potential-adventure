@@ -16,6 +16,8 @@ const DashboardColaboradores = () => {
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
         'Outubro', 'Novembro', 'Dezembro'
     ];
+    const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
+    const [periodoDados, setPeriodoDados] = useState("Carregando...")
 
     // === Filtro
     // Opções
@@ -49,7 +51,7 @@ const DashboardColaboradores = () => {
 
     // === Mét-odo que puxa do back
     async function carregarDados(){
-        // Listas checáveis
+        // Filtros
         let colaboradores = await carregarColaboradores()
         setColaboradores(colaboradores)
 
@@ -97,6 +99,7 @@ const DashboardColaboradores = () => {
             let minutos = agora.getMinutes().toString().padStart(2, "0")
             let horarioFormat = `${horas}:${minutos}`
 
+            setPeriodoDados(`${FORMAT_DATA_MES.format(new Date())} de ${agora.getFullYear()}`)
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
             atualizando = false
@@ -123,7 +126,7 @@ const DashboardColaboradores = () => {
                         <Button insideText={"Alterar período"}/>
                     </div>
                     <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                        <h3>Dados em tempo real</h3>
+                        <h3>{periodoDados}</h3>
                         {<p></p>}
                         <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
