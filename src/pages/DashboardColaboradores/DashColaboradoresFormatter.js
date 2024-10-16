@@ -28,6 +28,10 @@ async function carregarGrafico(){
     let interacoesBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
     let interacoesPorColabs = null;
 
+    if (DEBUG_MODE){
+        await fetch("https://httpbin.org/delay/3")
+    }
+
     if (interacoesBrutas !== null){
         let entradas = []
         let saidas = []

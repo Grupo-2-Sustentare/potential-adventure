@@ -93,6 +93,7 @@ const DashboardColaboradores = () => {
         setUpdateText("atualizando...")
         setLoadingClass(styles.loading)
         atualizando = true
+
         carregarDados().then(()=>{
             let agora =  new Date()
             let horas = agora.getHours().toString().padStart(2, "0")
@@ -145,6 +146,7 @@ const DashboardColaboradores = () => {
                         }
                         {logsOperacao.map((i) => {
                             return <ExpandedOperationLog
+                                    key={i.nome}
                                     imageAddress={i.imagem}
                                     name={i.nome}
                                     valueInput={`${i.interacao}: ${i.descricao}`}
@@ -156,6 +158,7 @@ const DashboardColaboradores = () => {
                     <ChartBar
                         labels={colaboradores} datasets={interacoesPorColab} title={tituloInteracoesPorColab}
                         width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
+                        yLabel={"Interações"} xLabel={"Colaborador"}
                     />
                 </div>
             </div>
