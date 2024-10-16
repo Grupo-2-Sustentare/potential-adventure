@@ -134,6 +134,12 @@ const DashboardColaboradores = () => {
                 </div>
                 <div className={styles.charts}>
                     <div className={styles.interacoes}>
+                        {
+                            logsOperacao.length === 0 &&
+                            <div className={styles.infoSemDados}>
+                                Sem dados.<br/>Verifique os filtros aplicados e tente novamente
+                            </div>
+                        }
                         {logsOperacao.map((i) => {
                             return <ExpandedOperationLog
                                     imageAddress={i.imagem}
