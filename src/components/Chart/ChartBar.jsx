@@ -5,7 +5,8 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Chart = (
-        { labels, datasets, title, width, height, backgroundColor, xLabel="Mês", yLabel="Valor" }
+        { labels, datasets, title, width, height, backgroundColor, xLabel="Mês", yLabel="Valor",
+            floatScale = false }
     ) => {
     const data = {
         labels: labels,
@@ -37,6 +38,7 @@ const Chart = (
                     display: true,
                     text: yLabel,
                 },
+                ticks: {precision: floatScale ? null : 0}
             },
         },
     };
