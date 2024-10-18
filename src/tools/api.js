@@ -20,4 +20,4 @@ async function get(entidade){
     });
 }
 
-export {get};
+export {API_URL, get};

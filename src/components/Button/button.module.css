@@ -11,6 +11,7 @@ button{
     flex-direction: row;
     justify-content:space-evenly;
     align-items: center;
+    cursor: pointer;
 }
 
 button:active{
