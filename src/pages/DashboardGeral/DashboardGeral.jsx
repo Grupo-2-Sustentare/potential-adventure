@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Navbar from "../../components/RefactoredSideMenu/SideMenu";
+import Navbar from "../../components/SideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"

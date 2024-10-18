@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import Navbar from "../../components/RefactoredSideMenu/SideMenu";
+import Navbar from "../../components/SideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardColaboradores.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
