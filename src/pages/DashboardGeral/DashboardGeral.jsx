@@ -8,10 +8,12 @@ import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = () => {
     // == Constantes
     // Gerais
+    const navigate = useNavigate(); // Inicializa o hook de navegação
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     const SUFIXO_SEM_DADOS = " - sem dados"
     const MESES = [
@@ -154,6 +156,11 @@ const Dashboard = () => {
         atualizarDashboard().catch(console.error)
     }
 
+    function validarSessao(){
+        let sessao = sessionStorage.getItem("usuario")
+        if (sessao === null) navigate("/")
+    }
+
     // ===  Mét-odo de atualização progressiva
     let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
@@ -161,6 +168,7 @@ const Dashboard = () => {
     const atualizarDashboard = useCallback(async () =>{
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
+        validarSessao()
 
         /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
         setUpdateText("atualizando...")

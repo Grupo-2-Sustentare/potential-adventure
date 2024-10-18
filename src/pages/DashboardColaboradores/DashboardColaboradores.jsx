@@ -7,10 +7,12 @@ import ExpandedOperationLog from "../../components/ExpandedOperationLog/Expanded
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {carregarColaboradores, carregarGrafico, carregarLogs} from "./DashColaboradoresFormatter";
+import {useNavigate} from "react-router-dom";
 
 const DashboardColaboradores = () => {
     // == Constantes
     // Gerais
+    const navigate = useNavigate(); // Inicializa o hook de navegação
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     const MESES = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
@@ -81,6 +83,11 @@ const DashboardColaboradores = () => {
         atualizarDashboard().catch(console.error)
     }
 
+    function validarSessao(){
+        let sessao = sessionStorage.getItem("usuario")
+        if (sessao === null) navigate("/")
+    }
+
     // ===  Mét-odo de atualização progressiva
     let atualizando = false
     const [lastUpdateText, setUpdateText] = useState("")
@@ -88,6 +95,7 @@ const DashboardColaboradores = () => {
     const atualizarDashboard = useCallback(async () =>{
         // Evita atualizar de novo se já estiver no meio de uma atualização.
         if(atualizando){ return }
+        validarSessao()
 
         /* Realiza animação do ícone e atualiza o texto do hoŕario da última atualização. */
         setUpdateText("atualizando...")
