@@ -26,6 +26,7 @@ const DashboardColaboradores = () => {
     ];
     const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
     const [periodoDados, setPeriodoDados] = useState("Carregando...")
+    const [tempoReal, setTempoReal] = useState(false)
 
     // === Filtros
     // Opções
@@ -88,6 +89,16 @@ const DashboardColaboradores = () => {
         switch (nome_filtro){
             case "mês":
                 setDataAtual(valor)
+                setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
+
+                let agora = new Date()
+                if ((agora.getFullYear() === valor.getFullYear()) &&
+                    (agora.getMonth() === valor.getMonth())){
+                    setTempoReal(true)
+                } else{
+                    setTempoReal(false)
+                }
+
                 localStorage.setItem("filtroMes", valor)
                 break
             case "colaboradores":
@@ -117,12 +128,12 @@ const DashboardColaboradores = () => {
         atualizando = true
 
         carregarDados().then(()=>{
+            // Texto da última atualização
             let agora =  new Date()
             let horas = agora.getHours().toString().padStart(2, "0")
             let minutos = agora.getMinutes().toString().padStart(2, "0")
             let horarioFormat = `${horas}:${minutos}`
 
-            setPeriodoDados(`${FORMAT_DATA_MES.format(new Date())} de ${agora.getFullYear()}`)
             setUpdateText(`atualizado pela última vez às ${horarioFormat}`)
             setLoadingClass(null)
             atualizando = false
@@ -131,6 +142,11 @@ const DashboardColaboradores = () => {
     }, [])
     useEffect( () => {
         atualizarDashboard().catch(console.error)
+
+        let agora = new Date()
+        setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
+        setTempoReal(true)
+
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
@@ -154,7 +170,10 @@ const DashboardColaboradores = () => {
                             <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
                         </div>
                         <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                            <h3>{periodoDados}</h3>
+                            <h3>
+                                {tempoReal ? "Dados em tempo real" : "Dados históricos"}
+                                {" - " + periodoDados}
+                            </h3>
                             {<p></p>}
                             <span>
                             <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
@@ -173,7 +192,7 @@ const DashboardColaboradores = () => {
                             }
                             {logsOperacao.map((i) => {
                                 return <ExpandedOperationLog
-                                        key={i.nome}
+                                        key={i.nome+i.periodo}
                                         imageAddress={i.imagem}
                                         name={i.nome}
                                         valueInput={`${i.interacao}: ${i.descricao}`}
