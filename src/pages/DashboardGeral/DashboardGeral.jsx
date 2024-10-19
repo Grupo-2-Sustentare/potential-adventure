@@ -40,6 +40,7 @@ const Dashboard = () => {
     // === Modal
     const [modalAberta, setModalAberta] = useState(false)
     const [dataMinDados, setDataMinDados] = useState(null)
+    const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
     // Entradas e saídas
@@ -153,6 +154,7 @@ const Dashboard = () => {
     function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
             case "mês":
+                setDataAtual(valor)
                 localStorage.setItem("filtroMes", valor)
                 break
             case "categorias":
@@ -205,7 +207,8 @@ const Dashboard = () => {
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <PeriodModal
                 abertura={modalAberta} controleAbertura={setModalAberta}
-                controleValor={(v)=>atualizarFiltros(v,"mês" )} dataMin={dataMinDados}
+                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
+                dataMin={dataMinDados}
             />
         <div className={styles.group}>
             <div className={styles.Global}>

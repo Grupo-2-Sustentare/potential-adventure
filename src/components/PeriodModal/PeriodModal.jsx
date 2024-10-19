@@ -6,14 +6,14 @@ import styles from "./periodModal.module.css"
 export default function PeriodModal(
     {
         abertura=false, controleAbertura,
-        controleValor, dataMin=null,
+        valor, controleValor,
+        dataMin=null
     }){
     let classesContainer = styles.container
     if (abertura) classesContainer += ` ${styles.aberto}`
 
     function atualizarData(d){
-        let mes = d.toLocaleString('pt-BR', {"month": "long"})
-        controleValor(mes)
+        controleValor(d)
         fechar()
     }
 
@@ -23,8 +23,10 @@ export default function PeriodModal(
         <div className={classesContainer}>
             <div className={styles.modal}>
                 <FontAwesomeIcon icon={"x"} className={styles.fechar} onClick={() => fechar()}/>
+                <p>Selecione um mês os dados naquele momento</p>
                 <Calendar
-                    minDetail={"year"} view={"year"} minDate={dataMin} maxDate={new Date()} onClickMonth={atualizarData}
+                    minDetail={"year"} view={"year"} minDate={dataMin} maxDate={new Date()}
+                    value={valor} onClickMonth={atualizarData}
                 />
             </div>
         </div>
