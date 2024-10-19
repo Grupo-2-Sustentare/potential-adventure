@@ -1,6 +1,6 @@
 import {
     MOCK_ENTRADAS_E_SAIDAS,
-    MOCK_COLABORADORES, MOCK_LOGS
+    MOCK_COLABORADORES, MOCK_LOGS, MOCK_DATA_MAIS_ANTIGA
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
@@ -50,4 +50,8 @@ async function carregarGrafico(){
     return interacoesPorColabs
 }
 
-export {carregarColaboradores, carregarLogs, carregarGrafico}
+async function carregarDataMaisAntigaDados(){
+    return DEBUG_MODE ? MOCK_DATA_MAIS_ANTIGA : await get("dataMaisAntiga")
+}
+
+export {carregarColaboradores, carregarLogs, carregarGrafico, carregarDataMaisAntigaDados}

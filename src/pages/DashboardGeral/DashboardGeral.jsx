@@ -6,9 +6,15 @@ import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
-import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
+import {
+    carregarDataMaisAntigaDados,
+    carregarGraficos,
+    carregarKPIs,
+    carregarListasChecaveis
+} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
+import PeriodModal from "../../components/PeriodModal/PeriodModal";
 
 const Dashboard = () => {
     // == Constantes
@@ -20,7 +26,7 @@ const Dashboard = () => {
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
         'Outubro', 'Novembro', 'Dezembro'
     ];
-
+    const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
 
     // Dos gráficos
     const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
@@ -31,9 +37,14 @@ const Dashboard = () => {
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
 
-    // === Filtros
-    const [filtroCategorias, setFiltroCategorias] = useState([])
-    const [filtroProdutos, setFiltroProdutos] = useState([])
+    // === Período
+    const [periodoDados, setPeriodoDados] = useState(null)
+    const [tempoReal, setTempoReal] = useState(false)
+
+    // === Modal
+    const [modalAberta, setModalAberta] = useState(false)
+    const [dataMinDados, setDataMinDados] = useState(null)
+    const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
     // Entradas e saídas
@@ -139,20 +150,34 @@ const Dashboard = () => {
         setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
         setKpiValorEntradas(dadosKpis.valorEntradas)
         setKpiValorSaidas(dadosKpis.valorSaidas)
+
+        let dataMaisAntiga = await carregarDataMaisAntigaDados()
+        setDataMinDados(dataMaisAntiga)
     }
 
-    function atualizarFiltros(valoresKpi, nome_filtro) {
+    function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
+            case "mês":
+                setDataAtual(valor)
+                setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
+
+                let agora = new Date()
+                if ((agora.getFullYear() === valor.getFullYear()) &&
+                    (agora.getMonth() === valor.getMonth())){
+                    setTempoReal(true)
+                } else{
+                    setTempoReal(false)
+                }
+
+                localStorage.setItem("filtroMes", valor)
+                break
             case "categorias":
-                setFiltroCategorias(valoresKpi)
-                localStorage.setItem("filtroCategorias", JSON.stringify(filtroCategorias))
+                localStorage.setItem("filtroCategorias", JSON.stringify(valor))
                 break
             case "produto":
-                setFiltroProdutos(valoresKpi)
-                localStorage.setItem("filtroProdutos", JSON.stringify(filtroProdutos))
+                localStorage.setItem("filtroProdutos", JSON.stringify(valor))
                 break
         }
-        console.log(valoresKpi)
         atualizarDashboard().catch(console.error)
     }
 
@@ -188,26 +213,36 @@ const Dashboard = () => {
     }, [])
     useEffect( () => {
         atualizarDashboard().catch(console.error)
+
+        let agora = new Date()
+        setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
+        setTempoReal(true)
+
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
+            <PeriodModal
+                abertura={modalAberta} controleAbertura={setModalAberta}
+                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
+                dataMin={dataMinDados}
+            />
         <div className={styles.group}>
             <div className={styles.Global}>
                 <div className={styles.NavTop}>
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
                         <CheckableList
-                            getOpcoes={(v)=>atualizarFiltros(v,"categoria")} textoBase={"Categorias"}
+                            getOpcoes={(v)=>atualizarFiltros(v,"categorias")} textoBase={"Categorias"}
                             opcoes={categorias}
                         />
                         <CheckableList
                             getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
                             opcoes={produtos}
                         />
-                        <Button insideText={"Alterar período"} />
+                        <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
                     </div>
                 </div>
                 <div className={styles.Charts}>
@@ -243,8 +278,8 @@ const Dashboard = () => {
             </div>
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                    <h3>Dados em tempo real</h3>
-                    {<p></p>}
+                    <h3>{tempoReal ? "Dados em tempo real" : "Dados históricos"}</h3>
+                    <h3>{periodoDados}</h3>
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
                         <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
