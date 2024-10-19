@@ -1,7 +1,8 @@
-import styles from "./periodModal.module.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import Calendar from "react-calendar";
+import "./calendar.css"
+import styles from "./periodModal.module.css"
 
 export default function PeriodModal({abrir=false, setAbrir}){
     let classesContainer = styles.container
