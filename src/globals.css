@@ -15,6 +15,7 @@ alterando-o apenas aqui, assim como com as variáveis do Figma!!!
     /* Paleta de cores */
     --white: #F5FBEF;
     --preto: #0A0908;
+    --preto-transp: rgba(10, 9, 8, 0.65);
     --gunmetal: #22333B;
     --carvao: #254A5B;
     --cinza-transparente: rgba(201, 201, 201, 0.65);

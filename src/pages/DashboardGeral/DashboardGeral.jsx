@@ -9,6 +9,7 @@ import CheckableList from "../../components/CheckableList/CheckableList";
 import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
+import PeriodModal from "../../components/PeriodModal/PeriodModal";
 
 const Dashboard = () => {
     // == Constantes
@@ -34,6 +35,9 @@ const Dashboard = () => {
     // === Filtros
     const [filtroCategorias, setFiltroCategorias] = useState([])
     const [filtroProdutos, setFiltroProdutos] = useState([])
+
+    // === Modal
+    const [modalAberta, setModalAberta] = useState(false)
 
     // === Dados dos gráficos
     // Entradas e saídas
@@ -194,6 +198,7 @@ const Dashboard = () => {
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
+            <PeriodModal abrir={modalAberta} setAbrir={setModalAberta}/>
         <div className={styles.group}>
             <div className={styles.Global}>
                 <div className={styles.NavTop}>
@@ -207,7 +212,7 @@ const Dashboard = () => {
                             getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
                             opcoes={produtos}
                         />
-                        <Button insideText={"Alterar período"} />
+                        <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
                     </div>
                 </div>
                 <div className={styles.Charts}>
