@@ -32,10 +32,6 @@ const Dashboard = () => {
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
 
-    // === Filtros
-    const [filtroCategorias, setFiltroCategorias] = useState([])
-    const [filtroProdutos, setFiltroProdutos] = useState([])
-
     // === Modal
     const [modalAberta, setModalAberta] = useState(false)
 
@@ -145,18 +141,15 @@ const Dashboard = () => {
         setKpiValorSaidas(dadosKpis.valorSaidas)
     }
 
-    function atualizarFiltros(valoresKpi, nome_filtro) {
+    function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
             case "categorias":
-                setFiltroCategorias(valoresKpi)
-                localStorage.setItem("filtroCategorias", JSON.stringify(filtroCategorias))
+                localStorage.setItem("filtroCategorias", JSON.stringify(valor))
                 break
             case "produto":
-                setFiltroProdutos(valoresKpi)
-                localStorage.setItem("filtroProdutos", JSON.stringify(filtroProdutos))
+                localStorage.setItem("filtroProdutos", JSON.stringify(valor))
                 break
         }
-        console.log(valoresKpi)
         atualizarDashboard().catch(console.error)
     }
 
@@ -205,7 +198,7 @@ const Dashboard = () => {
                     <span className={styles.titulo}>Painel de controle geral</span>
                     <div className={styles.buttons}>
                         <CheckableList
-                            getOpcoes={(v)=>atualizarFiltros(v,"categoria")} textoBase={"Categorias"}
+                            getOpcoes={(v)=>atualizarFiltros(v,"categorias")} textoBase={"Categorias"}
                             opcoes={categorias}
                         />
                         <CheckableList
