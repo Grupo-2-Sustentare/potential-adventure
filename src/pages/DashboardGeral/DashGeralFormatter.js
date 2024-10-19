@@ -8,10 +8,11 @@ import {
     MOCK_KPI_SAIDAS,
     MOCK_COMPRAS,
     MOCK_PRODUTOS,
-    MOCK_TIPOS_PERDAS, MOCK_CATEGORIAS
+    MOCK_TIPOS_PERDAS, MOCK_CATEGORIAS, MOCK_DATA_MAIS_ANTIGA
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
+import {almostWhole} from "chart.js/helpers";
 const DEBUG_MODE = true;
 
 async function carregarListasChecaveis(){
@@ -160,4 +161,8 @@ async function carregarKPIs(){
     return KPIs
 }
 
-export {carregarListasChecaveis, carregarGraficos, carregarKPIs}
+async function carregarDataMaisAntigaDados(){
+    return DEBUG_MODE ? MOCK_DATA_MAIS_ANTIGA : await get("dataMaisAntiga")
+}
+
+export {carregarListasChecaveis, carregarGraficos, carregarKPIs, carregarDataMaisAntigaDados}

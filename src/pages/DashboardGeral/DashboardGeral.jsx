@@ -6,7 +6,12 @@ import styles from './dashboardGeral.module.css';
 import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
-import {carregarGraficos, carregarKPIs, carregarListasChecaveis} from "./DashGeralFormatter";
+import {
+    carregarDataMaisAntigaDados,
+    carregarGraficos,
+    carregarKPIs,
+    carregarListasChecaveis
+} from "./DashGeralFormatter";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
@@ -140,7 +145,9 @@ const Dashboard = () => {
         setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
         setKpiValorEntradas(dadosKpis.valorEntradas)
         setKpiValorSaidas(dadosKpis.valorSaidas)
-        setDataMinDados(new Date("2024-08-20"))
+
+        let dataMaisAntiga = await carregarDataMaisAntigaDados()
+        setDataMinDados(dataMaisAntiga)
     }
 
     function atualizarFiltros(valor, nome_filtro) {
