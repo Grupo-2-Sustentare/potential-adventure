@@ -1,4 +1,4 @@
-button{
+.button{
     background-color: var(--carvao);
     border: var(--borda-branca);
     border-radius: 8px;
@@ -14,6 +14,6 @@ button{
     cursor: pointer;
 }
 
-button:active{
+.button:active{
     box-shadow: var(--sombra-in-clara), var(--sombra-ex-vermelha);
 }
