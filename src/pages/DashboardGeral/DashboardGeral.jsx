@@ -26,7 +26,7 @@ const Dashboard = () => {
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
         'Outubro', 'Novembro', 'Dezembro'
     ];
-
+    const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
 
     // Dos gráficos
     const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
@@ -36,6 +36,10 @@ const Dashboard = () => {
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
+
+    // === Período
+    const [periodoDados, setPeriodoDados] = useState(null)
+    const [tempoReal, setTempoReal] = useState(false)
 
     // === Modal
     const [modalAberta, setModalAberta] = useState(false)
@@ -155,6 +159,16 @@ const Dashboard = () => {
         switch (nome_filtro){
             case "mês":
                 setDataAtual(valor)
+                setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
+
+                let agora = new Date()
+                if ((agora.getFullYear() === valor.getFullYear()) &&
+                    (agora.getMonth() === valor.getMonth())){
+                    setTempoReal(true)
+                } else{
+                    setTempoReal(false)
+                }
+
                 localStorage.setItem("filtroMes", valor)
                 break
             case "categorias":
@@ -199,6 +213,11 @@ const Dashboard = () => {
     }, [])
     useEffect( () => {
         atualizarDashboard().catch(console.error)
+
+        let agora = new Date()
+        setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
+        setTempoReal(true)
+
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
 
@@ -259,8 +278,8 @@ const Dashboard = () => {
             </div>
             <div className={styles.SideMenu}>
                 <div onClick={()=> atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                    <h3>Dados em tempo real</h3>
-                    {<p></p>}
+                    <h3>{tempoReal ? "Dados em tempo real" : "Dados históricos"}</h3>
+                    <h3>{periodoDados}</h3>
                     <span>
                         <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
                         <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
