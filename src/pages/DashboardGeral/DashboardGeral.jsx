@@ -34,6 +34,7 @@ const Dashboard = () => {
 
     // === Modal
     const [modalAberta, setModalAberta] = useState(false)
+    const [dataMinDados, setDataMinDados] = useState(null)
 
     // === Dados dos gráficos
     // Entradas e saídas
@@ -139,10 +140,14 @@ const Dashboard = () => {
         setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
         setKpiValorEntradas(dadosKpis.valorEntradas)
         setKpiValorSaidas(dadosKpis.valorSaidas)
+        setDataMinDados(new Date("2024-08-20"))
     }
 
     function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
+            case "mês":
+                localStorage.setItem("filtroMes", valor)
+                break
             case "categorias":
                 localStorage.setItem("filtroCategorias", JSON.stringify(valor))
                 break
@@ -191,7 +196,10 @@ const Dashboard = () => {
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
-            <PeriodModal abrir={modalAberta} setAbrir={setModalAberta}/>
+            <PeriodModal
+                abertura={modalAberta} controleAbertura={setModalAberta}
+                controleValor={(v)=>atualizarFiltros(v,"mês" )} dataMin={dataMinDados}
+            />
         <div className={styles.group}>
             <div className={styles.Global}>
                 <div className={styles.NavTop}>
