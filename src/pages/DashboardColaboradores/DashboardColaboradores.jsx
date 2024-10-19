@@ -6,8 +6,14 @@ import ChartBar from "../../components/Chart/ChartBar"
 import ExpandedOperationLog from "../../components/ExpandedOperationLog/ExpandedOperationLog"
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {carregarColaboradores, carregarGrafico, carregarLogs} from "./DashColaboradoresFormatter";
+import {
+    carregarColaboradores,
+    carregarDataMaisAntigaDados,
+    carregarGrafico,
+    carregarLogs
+} from "./DashColaboradoresFormatter";
 import {useNavigate} from "react-router-dom";
+import PeriodModal from "../../components/PeriodModal/PeriodModal";
 
 const DashboardColaboradores = () => {
     // == Constantes
@@ -24,8 +30,11 @@ const DashboardColaboradores = () => {
     // === Filtros
     // Opções
     let [colaboradores, setColaboradores] = useState([])
-    // Valores
-    const [filtroColaboradores, setFiltroColaboradores] = useState([])
+
+    // === Modal de período
+    const [modalAberta, setModalAberta] = useState(false)
+    const [dataMinDados, setDataMinDados] = useState(null)
+    const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Logs
     const [logsOperacao, setLogsOperacao] = useState([])
@@ -70,16 +79,21 @@ const DashboardColaboradores = () => {
             TITULO_INTERACOES_POR_COLAB +
             (interacoesPorColab === null ? " - sem dados" : "")
         ) // Info de "sem dados" no título
+
+        let dataMaisAntiga = await carregarDataMaisAntigaDados()
+        setDataMinDados(dataMaisAntiga)
     }
 
-    function atualizarFiltros(valoresKpi, nome_filtro) {
+    function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
+            case "mês":
+                setDataAtual(valor)
+                localStorage.setItem("filtroMes", valor)
+                break
             case "colaboradores":
-                setFiltroColaboradores(valoresKpi)
-                localStorage.setItem("filtroColaboradores", JSON.stringify(filtroColaboradores))
+                localStorage.setItem("filtroColaboradores",valor)
                 break
         }
-        console.log(valoresKpi)
         atualizarDashboard().catch(console.error)
     }
 
@@ -122,55 +136,60 @@ const DashboardColaboradores = () => {
 
     return (
         <>
-        <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
-        <div className={styles.group}>
-            <div className={styles.Global}>
-                <div className={styles.NavTop}>
-                    <span className={styles.titulo}>Painel dos colaboradores</span>
-                    <div className={styles.filters}>
-                        <CheckableList
-                            getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
-                            opcoes={colaboradores}
+            <PeriodModal
+                abertura={modalAberta} controleAbertura={setModalAberta}
+                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
+                dataMin={dataMinDados}
+            />
+            <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
+            <div className={styles.group}>
+                <div className={styles.Global}>
+                    <div className={styles.NavTop}>
+                        <span className={styles.titulo}>Painel dos colaboradores</span>
+                        <div className={styles.filters}>
+                            <CheckableList
+                                getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
+                                opcoes={colaboradores}
+                            />
+                            <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
+                        </div>
+                        <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
+                            <h3>{periodoDados}</h3>
+                            {<p></p>}
+                            <span>
+                            <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
+                            <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
+                            <p>{lastUpdateText}</p>
+                        </span>
+                        </div>
+                    </div>
+                    <div className={styles.charts}>
+                        <div className={styles.interacoes}>
+                            {
+                                logsOperacao.length === 0 &&
+                                <div className={styles.infoSemDados}>
+                                    Sem dados.<br/>Verifique os filtros aplicados e tente novamente
+                                </div>
+                            }
+                            {logsOperacao.map((i) => {
+                                return <ExpandedOperationLog
+                                        key={i.nome}
+                                        imageAddress={i.imagem}
+                                        name={i.nome}
+                                        valueInput={`${i.interacao}: ${i.descricao}`}
+                                        valueTime={i.periodo}
+                                        iconInput="circle-info" descImage="Imagem do usuário" iconTime="clock-rotate-left"
+                                    />
+                            })}
+                        </div>
+                        <ChartBar
+                            labels={colaboradores} datasets={interacoesPorColab} title={tituloInteracoesPorColab}
+                            width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
+                            yLabel={"Interações"} xLabel={"Colaborador"}
                         />
-                        <Button insideText={"Alterar período"}/>
                     </div>
-                    <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                        <h3>{periodoDados}</h3>
-                        {<p></p>}
-                        <span>
-                        <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
-                        <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
-                        <p>{lastUpdateText}</p>
-                    </span>
-                    </div>
-                </div>
-                <div className={styles.charts}>
-                    <div className={styles.interacoes}>
-                        {
-                            logsOperacao.length === 0 &&
-                            <div className={styles.infoSemDados}>
-                                Sem dados.<br/>Verifique os filtros aplicados e tente novamente
-                            </div>
-                        }
-                        {logsOperacao.map((i) => {
-                            return <ExpandedOperationLog
-                                    key={i.nome}
-                                    imageAddress={i.imagem}
-                                    name={i.nome}
-                                    valueInput={`${i.interacao}: ${i.descricao}`}
-                                    valueTime={i.periodo}
-                                    iconInput="circle-info" descImage="Imagem do usuário" iconTime="clock-rotate-left"
-                                />
-                        })}
-                    </div>
-                    <ChartBar
-                        labels={colaboradores} datasets={interacoesPorColab} title={tituloInteracoesPorColab}
-                        width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
-                        yLabel={"Interações"} xLabel={"Colaborador"}
-                    />
                 </div>
             </div>
-        </div>
         </>
     );
 
