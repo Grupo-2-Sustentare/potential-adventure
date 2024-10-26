@@ -13,6 +13,7 @@ import {
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {almostWhole, uid} from "chart.js/helpers";
+import {getFiltroPeriodo} from "../../tools/controleDosFiltros";
 const DEBUG_MODE = false;
 
 async function carregarListasChecaveis(){
@@ -134,7 +135,7 @@ async function carregarKPIs(){
         "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
         "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null}
     }
-    let filtros = {"dataInicio": "2024-06-13T14:48:00.000Z", "dataFim": "2024-10-26T14:48:00.000Z"}
+    let filtros = getFiltroPeriodo()
 
     // 2. Dados vindos do back-end
     let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpis/perdas", filtros)

@@ -158,9 +158,12 @@ const Dashboard = () => {
     function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
             case "mês":
+                // Salvando a data atual (usada dentro do calendário para marcar a data selecionada atualmente)
+                // E o texto de período de dados.
                 setDataAtual(valor)
                 setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
 
+                // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
                 let agora = new Date()
                 if ((agora.getFullYear() === valor.getFullYear()) &&
                     (agora.getMonth() === valor.getMonth())){
@@ -169,7 +172,7 @@ const Dashboard = () => {
                     setTempoReal(false)
                 }
 
-                localStorage.setItem("filtroMes", valor)
+                salvarFiltroPeriodo(valor)
                 break
             case "categorias":
                 sessionStorage.setItem("filtroCategorias", JSON.stringify(valor))
@@ -184,6 +187,18 @@ const Dashboard = () => {
     function validarSessao(){
         let sessao = sessionStorage.getItem("usuario")
         if (sessao === null) navigate("/")
+    }
+
+    // Mét-odo de formatação específica do filtro de período.
+    function salvarFiltroPeriodo(data){
+        // Pegando a data atual + 1 mês, dia 0 (último dia do mês atual)
+        let fimPeriodo = new Date(data.getFullYear(), data.getMonth()+1, 0)
+
+        // Mandando filtro de período como esperado pelo back.
+        sessionStorage.setItem(
+            "filtroMes",
+            JSON.stringify({"dataInicio": data.toISOString(), "dataFim": fimPeriodo.toISOString()})
+        )
     }
 
     // ===  Mét-odo de atualização progressiva
@@ -217,9 +232,10 @@ const Dashboard = () => {
         let agora = new Date()
         setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
         setTempoReal(true)
+        salvarFiltroPeriodo(new Date(agora.getFullYear(), agora.getMonth(), 1))
 
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
-    }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
+    }, []); /*Executar 1 vez, no carregamento da página*/
 
     return (
         <>
