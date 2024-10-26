@@ -12,8 +12,8 @@ import {
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
-import {almostWhole} from "chart.js/helpers";
-const DEBUG_MODE = true;
+import {almostWhole, uid} from "chart.js/helpers";
+const DEBUG_MODE = false;
 
 async function carregarListasChecaveis(){
     let categorias = []
@@ -26,9 +26,13 @@ async function carregarListasChecaveis(){
 
     let produtos = []
     let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get("produtos")
+    console.log(produtos_brutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
-            produtos.push(produtos_brutos[i].nome)
+            // Se estiver nas categorias listadas...
+            if(categorias.includes(produtos_brutos[i].item.categoria.nome)){
+                produtos.push(produtos_brutos[i].item.nome)
+            }
         }
     }
 
