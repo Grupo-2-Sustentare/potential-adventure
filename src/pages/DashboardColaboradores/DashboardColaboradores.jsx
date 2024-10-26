@@ -99,10 +99,10 @@ const DashboardColaboradores = () => {
                     setTempoReal(false)
                 }
 
-                localStorage.setItem("filtroMes", valor)
+                sessionStorage.setItem("filtroMes", valor)
                 break
             case "colaboradores":
-                localStorage.setItem("filtroColaboradores",valor)
+                sessionStorage.setItem("filtroColaboradores",valor)
                 break
         }
         atualizarDashboard().catch(console.error)

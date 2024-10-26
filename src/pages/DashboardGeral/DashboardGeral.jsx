@@ -172,10 +172,10 @@ const Dashboard = () => {
                 localStorage.setItem("filtroMes", valor)
                 break
             case "categorias":
-                localStorage.setItem("filtroCategorias", JSON.stringify(valor))
+                sessionStorage.setItem("filtroCategorias", JSON.stringify(valor))
                 break
             case "produto":
-                localStorage.setItem("filtroProdutos", JSON.stringify(valor))
+                sessionStorage.setItem("filtroProdutos", JSON.stringify(valor))
                 break
         }
         atualizarDashboard().catch(console.error)
