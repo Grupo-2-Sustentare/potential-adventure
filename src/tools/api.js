@@ -3,8 +3,10 @@ import {errorToast} from "../components/Toast/Toast";
 
 let API_URL = "http://localhost:8080/"
 
-async function get(entidade){
-    return axios.get(API_URL + entidade).then((res) => {
+async function get(entidade, params){
+    params = params || {}
+
+    return axios.get(API_URL + entidade, {"params": params}).then((res) => {
         if(res.data.length === 0){ // TODO - Trocar por "res.status === 204 "
             return null
         }
