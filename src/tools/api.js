@@ -1,7 +1,7 @@
 import axios from "axios";
 import {errorToast} from "../components/Toast/Toast";
 
-let API_URL = "https://66f8795f2a683ce9730f8ac8.mockapi.io/paralelo19/"
+let API_URL = "http://localhost:8080/"
 
 async function get(entidade){
     return axios.get(API_URL + entidade).then((res) => {
@@ -10,6 +10,10 @@ async function get(entidade){
         }
         return res.data
     }).catch((err) => {
+        if (err.response === undefined){
+            errorToast(`Erro desconhecido. \nContate o suporte.`)
+            return
+        }
         switch (err.response.status) {
             case 404:
                 errorToast(`Não foi possível encontrar dados para ${entidade}.\nContate o suporte.`)
