@@ -26,7 +26,6 @@ async function carregarListasChecaveis(){
 
     let produtos = []
     let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get("produtos")
-    console.log(produtos_brutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             // Se estiver nas categorias listadas...
@@ -129,39 +128,36 @@ async function carregarGraficos(){
 
 async function carregarKPIs(){
     // 1. Estruturas fixas
-    const METRICAS = {
-        // 0: Valor mínimo para ficar amarelo; 1: Valor mínimo para ficar vermelho
-        "perdas": [2, 4],
-        "naoPlanejadas": [10, 20]
-    }
     let KPIs = {
-        "perdas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "naoPlanejadas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""}
+        "perdas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "naoPlanejadas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null}
     }
+    let filtros = {"dataInicio": "2024-06-13T14:48:00.000Z", "dataFim": "2024-10-26T14:48:00.000Z"}
 
     // 2. Dados vindos do back-end
-    let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpiPerdas")
-    let kpiNaoPlanejadasBruta = DEBUG_MODE ? MOCK_KPI_NAO_PLANEJADAS() : await get("kpiNaoPlanejadas")
-    let kpiEntradasBruta = DEBUG_MODE ? MOCK_KPI_ENTRADAS() : await get("kpiEntradas")
-    let kpiSaidasBruta = DEBUG_MODE ? MOCK_KPI_SAIDAS() : await get("kpiSaidas")
+    let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpis/perdas", filtros)
+    let kpiNaoPlanejadasBruta = DEBUG_MODE ?
+        MOCK_KPI_NAO_PLANEJADAS() : await get("kpis/compras-nao-planejadas", filtros)
+    let kpiEntradasBruta = DEBUG_MODE ? MOCK_KPI_ENTRADAS() : await get("kpiEntradas", filtros)
+    let kpiSaidasBruta = DEBUG_MODE ? MOCK_KPI_SAIDAS() : await get("kpiSaidas", filtros)
 
-    KPIs.perdas.quantidade = kpiPerdasBruta !== null ? kpiPerdasBruta : null
-    KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta !== null ? kpiNaoPlanejadasBruta : null
-    KPIs.valorEntradas.quantidade = kpiEntradasBruta !== null ? kpiEntradasBruta : null
-    KPIs.valorSaidas.quantidade = kpiSaidasBruta !== null ? kpiSaidasBruta : null
-
-    // 3. Aplicação das métricas sob os valores do back
-    const aplicarMetrica = (metrica, valor) =>{
-        let statusKpi = EnumStatusKpis.GOOD
-        if (valor >= metrica[0]) statusKpi = EnumStatusKpis.MEDIUM
-        if (valor >= metrica[1]) statusKpi = EnumStatusKpis.BAD
-        return statusKpi
+    if (kpiPerdasBruta !== undefined){
+        KPIs.perdas.quantidade = kpiPerdasBruta.totalPerdas
+        KPIs.perdas.status = kpiPerdasBruta.situacao
+    }
+    if (kpiNaoPlanejadasBruta !== undefined){
+        KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta.totalComprasNaoPlanejadas
+        KPIs.naoPlanejadas.status = kpiNaoPlanejadasBruta.situacao
+    }
+    if (kpiEntradasBruta !== undefined){
+        KPIs.valorEntradas.quantidade = kpiPerdasBruta
+    }
+    if (kpiSaidasBruta !== undefined){
+        KPIs.valorSaidas.quantidade = kpiPerdasBruta
     }
 
-    KPIs.perdas.status = aplicarMetrica(METRICAS.perdas, KPIs.perdas.quantidade)
-    KPIs.naoPlanejadas.status = aplicarMetrica(METRICAS.naoPlanejadas, KPIs.naoPlanejadas.quantidade)
     return KPIs
 }
 
