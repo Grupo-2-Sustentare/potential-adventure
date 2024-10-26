@@ -226,16 +226,25 @@ const Dashboard = () => {
         })
 
     }, [])
+
+
+    /*Executar 1 vez, no carregamento da página*/
     useEffect( () => {
         atualizarDashboard().catch(console.error)
 
+        // Limpando os session storages, preservando a de usuário.
+        let sessUsuario = sessionStorage.getItem("usuario")
+        sessionStorage.clear()
+        sessionStorage.setItem("usuario", sessUsuario)
+
+        // Calculando o agora
         let agora = new Date()
         setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
         setTempoReal(true)
         salvarFiltroPeriodo(new Date(agora.getFullYear(), agora.getMonth(), 1))
 
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
-    }, []); /*Executar 1 vez, no carregamento da página*/
+    }, []);
 
     return (
         <>
