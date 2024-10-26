@@ -140,8 +140,10 @@ async function carregarKPIs(){
     let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpis/perdas", filtros)
     let kpiNaoPlanejadasBruta = DEBUG_MODE ?
         MOCK_KPI_NAO_PLANEJADAS() : await get("kpis/compras-nao-planejadas", filtros)
-    let kpiEntradasBruta = DEBUG_MODE ? MOCK_KPI_ENTRADAS() : await get("kpiEntradas", filtros)
-    let kpiSaidasBruta = DEBUG_MODE ? MOCK_KPI_SAIDAS() : await get("kpiSaidas", filtros)
+    let kpiEntradasBruta = DEBUG_MODE ?
+        MOCK_KPI_ENTRADAS() : await get("kpis/valor-total-entradas", filtros)
+    let kpiSaidasBruta = DEBUG_MODE ?
+        MOCK_KPI_SAIDAS() : await get("kpis/valor-total-saidas", filtros)
 
     if (kpiPerdasBruta !== undefined){
         KPIs.perdas.quantidade = kpiPerdasBruta.totalPerdas
