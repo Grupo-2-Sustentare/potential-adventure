@@ -12,8 +12,9 @@ import {
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
-import {almostWhole} from "chart.js/helpers";
-const DEBUG_MODE = true;
+import {almostWhole, uid} from "chart.js/helpers";
+import {getFiltrosDashGeral} from "../../tools/controleDosFiltros";
+const DEBUG_MODE = false;
 
 async function carregarListasChecaveis(){
     let categorias = []
@@ -28,7 +29,10 @@ async function carregarListasChecaveis(){
     let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get("produtos")
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
-            produtos.push(produtos_brutos[i].nome)
+            // Se estiver nas categorias listadas...
+            if(categorias.includes(produtos_brutos[i].item.categoria.nome)){
+                produtos.push(produtos_brutos[i].item.nome)
+            }
         }
     }
 
@@ -39,30 +43,30 @@ async function carregarListasChecaveis(){
 }
 
 async function carregarGraficos(){
-    // Entradas e saídas
-    let entradasEhSaidasBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
-    let entradasEhSaidas = null;
-
+    let filtros = getFiltrosDashGeral()
     if (DEBUG_MODE){
         await fetch("https://httpbin.org/delay/3")
     }
+
+    // Entradas e saídas
+    let entradasEhSaidasBrutas = DEBUG_MODE ?
+        MOCK_ENTRADAS_E_SAIDAS() : await get("graficos/valor-entradas-saidas", filtros)
+    let entradasEhSaidas = null;
+    console.log(entradasEhSaidasBrutas)
 
     if (entradasEhSaidasBrutas !== null){
         let entradas = []
         let saidas = []
         for (let i in entradasEhSaidasBrutas){
-            if (entradasEhSaidasBrutas[i].tipo === "Entradas"){
-                entradas = entradasEhSaidasBrutas[i].valores
-            } else if (entradasEhSaidasBrutas[i].tipo === "Saídas"){
-                saidas = entradasEhSaidasBrutas[i].valores
-            }
+            entradas.push(entradasEhSaidasBrutas[i].valorEntradas)
+            saidas.push(entradasEhSaidasBrutas[i].valorSaidas)
         }
         if (entradas.length > 0 || saidas.length > 0){
             entradasEhSaidas = [{label: 'Entradas', data: entradas}, {label: 'Saídas', data: saidas}]
         }
     }
 
-    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("perdasPorTipo")
+    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/")
     let perdas = null
     if (perdasBrutas !== null) {
         let tiposPerdas = {
@@ -125,39 +129,38 @@ async function carregarGraficos(){
 
 async function carregarKPIs(){
     // 1. Estruturas fixas
-    const METRICAS = {
-        // 0: Valor mínimo para ficar amarelo; 1: Valor mínimo para ficar vermelho
-        "perdas": [2, 4],
-        "naoPlanejadas": [10, 20]
-    }
     let KPIs = {
-        "perdas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "naoPlanejadas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""},
-        "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": ""}
+        "perdas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "naoPlanejadas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
+        "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null}
     }
+    let filtros = getFiltrosDashGeral()
 
     // 2. Dados vindos do back-end
-    let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpiPerdas")
-    let kpiNaoPlanejadasBruta = DEBUG_MODE ? MOCK_KPI_NAO_PLANEJADAS() : await get("kpiNaoPlanejadas")
-    let kpiEntradasBruta = DEBUG_MODE ? MOCK_KPI_ENTRADAS() : await get("kpiEntradas")
-    let kpiSaidasBruta = DEBUG_MODE ? MOCK_KPI_SAIDAS() : await get("kpiSaidas")
+    let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpis/perdas", filtros)
+    let kpiNaoPlanejadasBruta = DEBUG_MODE ?
+        MOCK_KPI_NAO_PLANEJADAS() : await get("kpis/compras-nao-planejadas", filtros)
+    let kpiEntradasBruta = DEBUG_MODE ?
+        MOCK_KPI_ENTRADAS() : await get("kpis/valor-total-entradas", filtros)
+    let kpiSaidasBruta = DEBUG_MODE ?
+        MOCK_KPI_SAIDAS() : await get("kpis/valor-total-saidas", filtros)
 
-    KPIs.perdas.quantidade = kpiPerdasBruta !== null ? kpiPerdasBruta : null
-    KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta !== null ? kpiNaoPlanejadasBruta : null
-    KPIs.valorEntradas.quantidade = kpiEntradasBruta !== null ? kpiEntradasBruta : null
-    KPIs.valorSaidas.quantidade = kpiSaidasBruta !== null ? kpiSaidasBruta : null
-
-    // 3. Aplicação das métricas sob os valores do back
-    const aplicarMetrica = (metrica, valor) =>{
-        let statusKpi = EnumStatusKpis.GOOD
-        if (valor >= metrica[0]) statusKpi = EnumStatusKpis.MEDIUM
-        if (valor >= metrica[1]) statusKpi = EnumStatusKpis.BAD
-        return statusKpi
+    if (kpiPerdasBruta !== undefined){
+        KPIs.perdas.quantidade = kpiPerdasBruta.totalPerdas
+        KPIs.perdas.status = kpiPerdasBruta.situacao
+    }
+    if (kpiNaoPlanejadasBruta !== undefined){
+        KPIs.naoPlanejadas.quantidade = kpiNaoPlanejadasBruta.totalComprasNaoPlanejadas
+        KPIs.naoPlanejadas.status = kpiNaoPlanejadasBruta.situacao
+    }
+    if (kpiEntradasBruta !== undefined){
+        KPIs.valorEntradas.quantidade = kpiPerdasBruta
+    }
+    if (kpiSaidasBruta !== undefined){
+        KPIs.valorSaidas.quantidade = kpiPerdasBruta
     }
 
-    KPIs.perdas.status = aplicarMetrica(METRICAS.perdas, KPIs.perdas.quantidade)
-    KPIs.naoPlanejadas.status = aplicarMetrica(METRICAS.naoPlanejadas, KPIs.naoPlanejadas.quantidade)
     return KPIs
 }
 

@@ -4,11 +4,11 @@ import {
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 async function carregarColaboradores(){
     let colaboradores = []
-    let colabs_brutos = DEBUG_MODE ? MOCK_COLABORADORES : await get("colaboradores")
+    let colabs_brutos = DEBUG_MODE ? MOCK_COLABORADORES : await get("usuarios")
     if (colabs_brutos !== null){
         for (let i in colabs_brutos){
             colaboradores.push(colabs_brutos[i].nome)
@@ -20,7 +20,11 @@ async function carregarColaboradores(){
 
 async function carregarLogs(){
     let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("logs")
-    return logsBrutos
+    let logs = []
+    for (let i in logsBrutos){
+        // TODO - Fazer...
+    }
+    return logs
 }
 
 async function carregarGrafico(){

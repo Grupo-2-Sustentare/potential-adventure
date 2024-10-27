@@ -50,12 +50,12 @@ export default function CheckableList(
             <div className={styles.opcoes}>
                 {(opcoes.length === 0) && (<span>Sem dados</span>)}
                 {/*Mapeamos um span para cada opção informada*/}
-                {opcoes.map((o) =>{
+                {opcoes.map((o, i) =>{
                     // Apesar de termos transformado as opções enviadas (lista de strings) em
                     // uma lista de dicts, na criação do elemento apenas o nome é relevante.
                     return (
                         <span
-                            key={o}
+                            key={i}
                             onClick={()=>selecionarOpcao(o)}
                             // Cria no hook de ref um valor para o elemento criando, identificado
                             // por uma chave que é seu nome.
