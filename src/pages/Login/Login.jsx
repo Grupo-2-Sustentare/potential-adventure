@@ -29,10 +29,12 @@ const Login = () => {
         <div className={styles.login}>
             <h1>Paralelo 19</h1>
             <form>
-                <TextInput label={"Nome:"} value={nome} getValue={setNome}/>
-                <TextInput label={"Senha:"} value={senha} type="password" getValue={setSenha}/>
+                <TextInput label={"Nome:"} value={nome} getValue={setNome} tabIndex={1}/>
+                <TextInput
+                    label={"Senha:"} value={senha} type="password" getValue={setSenha} tabIndex={2} onEnter={logar}
+                />
             </form>
-            <Button insideText="Entrar" onClick={logar} />
+            <Button insideText="Entrar" onClick={logar} tabIndex={3}/>
         </div>
 
     );
