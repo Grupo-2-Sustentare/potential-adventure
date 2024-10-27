@@ -13,7 +13,7 @@ import {
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {almostWhole, uid} from "chart.js/helpers";
-import {getFiltros} from "../../tools/controleDosFiltros";
+import {getFiltrosDashGeral} from "../../tools/controleDosFiltros";
 const DEBUG_MODE = false;
 
 async function carregarListasChecaveis(){
@@ -43,30 +43,30 @@ async function carregarListasChecaveis(){
 }
 
 async function carregarGraficos(){
-    // Entradas e saídas
-    let entradasEhSaidasBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
-    let entradasEhSaidas = null;
-
+    let filtros = getFiltrosDashGeral()
     if (DEBUG_MODE){
         await fetch("https://httpbin.org/delay/3")
     }
+
+    // Entradas e saídas
+    let entradasEhSaidasBrutas = DEBUG_MODE ?
+        MOCK_ENTRADAS_E_SAIDAS() : await get("graficos/valor-entradas-saidas", filtros)
+    let entradasEhSaidas = null;
+    console.log(entradasEhSaidasBrutas)
 
     if (entradasEhSaidasBrutas !== null){
         let entradas = []
         let saidas = []
         for (let i in entradasEhSaidasBrutas){
-            if (entradasEhSaidasBrutas[i].tipo === "Entradas"){
-                entradas = entradasEhSaidasBrutas[i].valores
-            } else if (entradasEhSaidasBrutas[i].tipo === "Saídas"){
-                saidas = entradasEhSaidasBrutas[i].valores
-            }
+            entradas.push(entradasEhSaidasBrutas[i].valorEntradas)
+            saidas.push(entradasEhSaidasBrutas[i].valorSaidas)
         }
         if (entradas.length > 0 || saidas.length > 0){
             entradasEhSaidas = [{label: 'Entradas', data: entradas}, {label: 'Saídas', data: saidas}]
         }
     }
 
-    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("perdasPorTipo")
+    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/")
     let perdas = null
     if (perdasBrutas !== null) {
         let tiposPerdas = {
@@ -135,7 +135,7 @@ async function carregarKPIs(){
         "valorEntradas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null},
         "valorSaidas": {"status": EnumStatusKpis.NEUTRAL, "quantidade": null}
     }
-    let filtros = getFiltros()
+    let filtros = getFiltrosDashGeral()
 
     // 2. Dados vindos do back-end
     let kpiPerdasBruta = DEBUG_MODE ? MOCK_KPI_PERDAS() : await get("kpis/perdas", filtros)

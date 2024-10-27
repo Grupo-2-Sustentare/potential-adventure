@@ -14,7 +14,7 @@ function formatFiltro(valores){
     return final
 }
 
-function getFiltros(){
+function getFiltrosDashGeral(){
     let baseFiltros = JSON.parse(sessionStorage.filtroMes)
 
     let cat = formatFiltro(sessionStorage.filtroCategorias)
@@ -26,7 +26,6 @@ function getFiltros(){
     if (prods !== null){
         baseFiltros.itens = prods
     }
-    console.log(baseFiltros)
     return baseFiltros
 }
-export {getFiltros}
+export {getFiltrosDashGeral}
