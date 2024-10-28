@@ -114,8 +114,7 @@ const Dashboard = () => {
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
     const [kpiNaoPlanejados, setKpiNaoPlanejados] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
-    const [kpiValorEntradas, setKpiValorEntradas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
-    const [kpiValorSaidas, setKpiValorSaidas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
+    const [kpiValorInvestido, setKpiValorInvestido] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
 
     // === Mét-odo que puxa do back
     async function carregarDados(){
@@ -148,8 +147,7 @@ const Dashboard = () => {
         let dadosKpis = await carregarKPIs()
         setKpiPerdas(dadosKpis.perdas)
         setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
-        setKpiValorEntradas(dadosKpis.valorEntradas)
-        setKpiValorSaidas(dadosKpis.valorSaidas)
+        setKpiValorInvestido(dadosKpis.valorInvest)
 
         let dataMaisAntiga = await carregarDataMaisAntigaDados()
         setDataMinDados(dataMaisAntiga)
@@ -320,12 +318,8 @@ const Dashboard = () => {
                             value={kpiNaoPlanejados.quantidade} status={kpiNaoPlanejados.status}
                         />
                         <Kpi
-                            type={"monetária"} name={"Valor total das entradas"} value={kpiValorEntradas.quantidade}
-                            status={kpiValorEntradas.status}
-                        />
-                        <Kpi
-                            type={"monetária"} name={"Valor total das saídas"} value={kpiValorSaidas.quantidade}
-                            status={kpiValorSaidas.status}
+                            type={"monetária"} name={"Investimento total em produtos"} value={kpiValorInvestido.quantidade}
+                            status={kpiValorInvestido.status}
                         />
                     </div>
                 </div>
