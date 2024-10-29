@@ -25,14 +25,18 @@ async function carregarListasChecaveis(){
         }
     }
 
-    let urlProdutos = "produtos"
     let filtros = getFiltrosDashGeral()
+
+    let urlProdutos = "produtos"
+    let params = undefined
     if (filtros.categorias !== undefined) {
-        urlProdutos += "/categorias?ids" + filtros.categorias
+        urlProdutos += "/categorias"
+        params = {"nomes": filtros.categorias}
     }
 
     let produtos = []
-    let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(urlProdutos)
+    let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(urlProdutos, params)
+    console.log(produtos_brutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].item.nome)
