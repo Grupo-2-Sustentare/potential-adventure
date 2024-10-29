@@ -18,20 +18,21 @@ const DEBUG_MODE = false;
 
 async function carregarListasChecaveis(){
     let categorias = []
-    let id_categorias = ""
     let categorias_brutas = DEBUG_MODE ? MOCK_CATEGORIAS : await get("categorias")
     if (categorias_brutas !== null){
         for (let i in categorias_brutas){
-            id_categorias += categorias_brutas[i].id + ","
             categorias.push(categorias_brutas[i].nome)
         }
     }
 
+    let urlProdutos = "produtos"
+    let filtros = getFiltrosDashGeral()
+    if (filtros.categorias !== undefined) {
+        urlProdutos += "/categorias?ids" + filtros.categorias
+    }
+
     let produtos = []
-    let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(
-        "produtos/categorias",
-        {"ids": id_categorias}
-    )
+    let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(urlProdutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].item.nome)
@@ -98,7 +99,9 @@ async function carregarGraficos(){
         }
     }
 
-    let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get("compras_vs_ultima_hora")
+    let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get(
+        "graficos/regulares-vs-nao-planejadas", filtros
+    )
     let compras = null
     if (comprasBrutas !== null){
         let tiposCompras = {
@@ -154,7 +157,9 @@ async function carregarKPIs(){
         KPIs.naoPlanejadas.status = kpiNaoPlanejadasBruta.situacao
     }
     if (kpiInvestBruta !== undefined){
-        KPIs.valorInvest.quantidade = kpiInvestBruta
+        if (kpiInvestBruta.totalEntradas !== null){
+            KPIs.valorInvest.quantidade = kpiInvestBruta.totalEntradas
+        }
     }
 
     return KPIs
