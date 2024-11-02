@@ -4,7 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import styles from "./barChart.module.css"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-const CORES = ["#22333B","#E36419","#634B3D"];
+const CORES = ["#3E5D93","#E8A415","#93783E"];
 
 const BarChart = (
         { labels, datasets, title, width, height, xLabel=undefined, yLabel="Valor",
@@ -31,18 +31,20 @@ const BarChart = (
         },
         scales: {
             x: {
+                grid:{color: "rgba(201, 201, 201, 0.65)"},
                 title: {
                     display: xLabel === undefined,
                     text: xLabel,
                 },
             },
             y: {
-                beginAtZero: true,
+                grid:{color: "rgba(201, 201, 201, 0.65)"},
                 title: {
                     display: true,
                     text: yLabel,
                 },
-                ticks: {precision: floatScale ? null : 0}
+                beginAtZero: true,
+                ticks: {precision: floatScale ? null : 0},
             },
         },
     };
