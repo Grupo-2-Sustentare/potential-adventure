@@ -21,11 +21,6 @@ const Dashboard = () => {
     // == Constantes
     // Gerais
     const navigate = useNavigate(); // Inicializa o hook de navegação
-    const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    const MESES = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-        'Outubro', 'Novembro', 'Dezembro'
-    ];
     const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
 
     // Dados das CheckableList dos filtros
@@ -70,14 +65,16 @@ const Dashboard = () => {
         let dadosGraficos = await carregarGraficos()
 
         // Entradas e saídas
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas.valores) // Mudanças de dados
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas.valores)
         setColsEntradasEhSaidas(dadosGraficos.entradasEhSaidas.colunas)
 
         // Perdas por tipo
-        setPerdas(dadosGraficos.perdas)
+        setPerdas(dadosGraficos.perdas.valores)
+        setColsPerdas(dadosGraficos.perdas.colunas)
 
         // Compras x última hora
-        setCompras(dadosGraficos.compras)
+        setCompras(dadosGraficos.compras.valores)
+        setColsCompras(dadosGraficos.compras.colunas)
 
         let dadosKpis = await carregarKPIs()
         setKpiPerdas(dadosKpis.perdas)
@@ -214,7 +211,7 @@ const Dashboard = () => {
                         yLabel={"Valor em reais (R$)"}
                     />
                     <BarChart
-                        labels={MESES}
+                        labels={colsPerdas}
                         datasets={perdas}
                         title={TITULO_PERDAS}
                         width="34vw"
@@ -223,7 +220,7 @@ const Dashboard = () => {
                         yLabel={"Quantidade de perdas"}
                     />
                     <BarChart
-                        labels={MESES}
+                        labels={colsCompras}
                         datasets={compras}
                         title={TITULO_COMPRAS}
                         width="100vw"

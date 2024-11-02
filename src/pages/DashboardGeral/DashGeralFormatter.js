@@ -50,9 +50,7 @@ async function carregarListasChecaveis(){
 
 async function carregarGraficos(){
     let filtros = getFiltrosDashGeral()
-    if (DEBUG_MODE){
-        await fetch("https://httpbin.org/delay/3")
-    }
+    if (DEBUG_MODE){ await fetch("https://httpbin.org/delay/3")}
 
     // Entradas e saídas
     let entradasEhSaidasBrutas = DEBUG_MODE ?
@@ -74,6 +72,7 @@ async function carregarGraficos(){
     }
 
     let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/")
+    let colsPerdas = []
     let perdas = null
     if (perdasBrutas !== null) {
         let tiposPerdas = {
@@ -93,9 +92,7 @@ async function carregarGraficos(){
             }
         }
 
-        if ((tiposPerdas.validade.length > 0) ||
-            (tiposPerdas.sumiu.length > 0) ||
-            (tiposPerdas.extraviado.length > 0)) {
+        if ((tiposPerdas.validade.length > 0) || (tiposPerdas.sumiu.length > 0) || (tiposPerdas.extraviado.length > 0)) {
             perdas = [
                 {label: 'Prazo de validade', data: tiposPerdas.validade},
                 {label: 'Contaminado ou extraviado', data: tiposPerdas.sumiu},
@@ -107,6 +104,7 @@ async function carregarGraficos(){
     let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get(
         "graficos/regulares-vs-nao-planejadas", filtros
     )
+    let colsCompras = []
     let compras = null
     if (comprasBrutas !== null){
         let tiposCompras = {
@@ -130,12 +128,9 @@ async function carregarGraficos(){
         }
     }
     return {
-        "entradasEhSaidas": {
-            "colunas": colsEntradasEhSaidas,
-            "valores": entradasEhSaidas
-        },
-        "perdas": perdas,
-        "compras": compras
+        "entradasEhSaidas": {"colunas": colsEntradasEhSaidas, "valores": entradasEhSaidas},
+        "perdas": {"colunas": colsPerdas, "valores": perdas},
+        "compras": {"colunas": colsCompras, "valores": compras}
     }
 }
 
