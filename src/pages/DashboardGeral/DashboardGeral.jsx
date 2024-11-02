@@ -22,7 +22,6 @@ const Dashboard = () => {
     // Gerais
     const navigate = useNavigate(); // Inicializa o hook de navegação
     const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    const SUFIXO_SEM_DADOS = " - sem dados"
     const MESES = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
         'Outubro', 'Novembro', 'Dezembro'
@@ -65,7 +64,7 @@ const Dashboard = () => {
             borderWidth: 1,
         }
         ])
-    const [tituloEntradasEhSaidas, setTituloEntradasEhSaidas] = useState(TITULO_ENTRADAS_E_SAIDAS)
+    const [colsEntradasEhSaidas, setColsEntradasEhSaidas] = useState([])
 
     // Compras
     const [perdas, setPerdas] = useState([
@@ -91,7 +90,6 @@ const Dashboard = () => {
             borderWidth: 1,
         }
     ])
-    const [tituloPerdas, setTituloPerdas] = useState(TITULO_PERDAS)
 
     // Compras por categorias
     const [compras, setCompras] = useState([
@@ -110,7 +108,6 @@ const Dashboard = () => {
             borderWidth: 1,
         }
     ])
-    const [tituloCompras, setTituloCompras] = useState(TITULO_COMPRAS)
 
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
@@ -128,22 +125,14 @@ const Dashboard = () => {
         let dadosGraficos = await carregarGraficos()
 
         // Entradas e saídas
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
-        setTituloEntradasEhSaidas(
-            TITULO_ENTRADAS_E_SAIDAS +
-            (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
-        ) // Info de "sem dados" no título
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas.valores) // Mudanças de dados
+        setColsEntradasEhSaidas(dadosGraficos.entradasEhSaidas.colunas)
 
         // Perdas por tipo
         setPerdas(dadosGraficos.perdas)
-        setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
 
         // Compras x última hora
         setCompras(dadosGraficos.compras)
-        setTituloCompras(
-            TITULO_COMPRAS +
-            (dadosGraficos.compras === null ? SUFIXO_SEM_DADOS : "")
-        )
 
         let dadosKpis = await carregarKPIs()
         setKpiPerdas(dadosKpis.perdas)
@@ -271,27 +260,27 @@ const Dashboard = () => {
                 </div>
                 <div className={styles.Charts}>
                     <ChartBar
-                        labels={MESES}
+                        labels={colsEntradasEhSaidas}
                         datasets={entradasSaidas}
-                        title={tituloEntradasEhSaidas}
+                        title={TITULO_ENTRADAS_E_SAIDAS}
                         width="34vw"
-                        height="250px"
+                        height="300px"
                         backgroundColor="#f0f0f0"
                         yLabel={"Valor em reais (R$)"}
                     />
                     <ChartBar
                         labels={MESES}
                         datasets={perdas}
-                        title={tituloPerdas}
+                        title={TITULO_PERDAS}
                         width="34vw"
-                        height="250px"
+                        height="300px"
                         backgroundColor="#f0f0f0"
                         yLabel={"Quantidade de perdas"}
                     />
                     <ChartBar
                         labels={MESES}
                         datasets={compras}
-                        title={tituloCompras}
+                        title={TITULO_COMPRAS}
                         width="100vw"
                         height="220px"
                         backgroundColor="#f0f0f0"

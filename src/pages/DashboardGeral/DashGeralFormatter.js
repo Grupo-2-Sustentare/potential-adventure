@@ -36,7 +36,6 @@ async function carregarListasChecaveis(){
 
     let produtos = []
     let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(urlProdutos, params)
-    console.log(produtos_brutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].item.nome)
@@ -58,12 +57,14 @@ async function carregarGraficos(){
     // Entradas e saídas
     let entradasEhSaidasBrutas = DEBUG_MODE ?
         MOCK_ENTRADAS_E_SAIDAS() : await get("graficos/valor-entradas-saidas", filtros)
+    let colsEntradasEhSaidas = [];
     let entradasEhSaidas = null;
 
     if (entradasEhSaidasBrutas !== null){
         let entradas = []
         let saidas = []
         for (let i in entradasEhSaidasBrutas){
+            colsEntradasEhSaidas.push(entradasEhSaidasBrutas[i].item)
             entradas.push(entradasEhSaidasBrutas[i].valorEntradas)
             saidas.push(entradasEhSaidasBrutas[i].valorSaidas)
         }
@@ -129,7 +130,10 @@ async function carregarGraficos(){
         }
     }
     return {
-        "entradasEhSaidas": entradasEhSaidas,
+        "entradasEhSaidas": {
+            "colunas": colsEntradasEhSaidas,
+            "valores": entradasEhSaidas
+        },
         "perdas": perdas,
         "compras": compras
     }
