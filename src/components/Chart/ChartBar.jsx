@@ -5,7 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Chart = (
-        { labels, datasets, title, width, height, backgroundColor, xLabel="Mês", yLabel="Valor",
+        { labels, datasets, title, width, height, backgroundColor, xLabel=undefined, yLabel="Valor",
             floatScale = false }
     ) => {
     const data = {
@@ -28,7 +28,7 @@ const Chart = (
         scales: {
             x: {
                 title: {
-                    display: true,
+                    display: xLabel === undefined,
                     text: xLabel,
                 },
             },
