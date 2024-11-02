@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from "../../components/SideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardGeral.module.css';
-import ChartBar from "../../components/Chart/ChartBar"
+import BarChart from "../../components/BarChart/BarChart"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {
@@ -28,11 +28,6 @@ const Dashboard = () => {
     ];
     const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
 
-    // Dos gráficos
-    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
-    const TITULO_PERDAS = "Perdas por tipo"
-    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
-
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
     let [produtos, setProdutos] = useState([])
@@ -47,67 +42,17 @@ const Dashboard = () => {
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
-    // Entradas e saídas
-    const [entradasSaidas, setEntradasSaidas] = useState([
-        {
-            label: 'Entradas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Saídas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-        ])
+    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const [entradasSaidas, setEntradasSaidas] = useState([])
     const [colsEntradasEhSaidas, setColsEntradasEhSaidas] = useState([])
 
-    // Compras
-    const [perdas, setPerdas] = useState([
-        {
-            label: 'Prazo de validade',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Contaminado ou extraviado',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Não se sabe o paradeiro',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 159, 64, 0.6)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1,
-        }
-    ])
+    const TITULO_PERDAS = "Perdas por tipo"
+    const [perdas, setPerdas] = useState([])
+    const [colsPerdas, setColsPerdas] = useState([])
 
-    // Compras por categorias
-    const [compras, setCompras] = useState([
-        {
-            label: 'Compras regulares',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Compras não planejadas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-    ])
+    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
+    const [compras, setCompras] = useState([])
+    const [colsCompras, setColsCompras] = useState([])
 
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
@@ -259,7 +204,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <div className={styles.Charts}>
-                    <ChartBar
+                    <BarChart
                         labels={colsEntradasEhSaidas}
                         datasets={entradasSaidas}
                         title={TITULO_ENTRADAS_E_SAIDAS}
@@ -268,7 +213,7 @@ const Dashboard = () => {
                         backgroundColor="#f0f0f0"
                         yLabel={"Valor em reais (R$)"}
                     />
-                    <ChartBar
+                    <BarChart
                         labels={MESES}
                         datasets={perdas}
                         title={TITULO_PERDAS}
@@ -277,7 +222,7 @@ const Dashboard = () => {
                         backgroundColor="#f0f0f0"
                         yLabel={"Quantidade de perdas"}
                     />
-                    <ChartBar
+                    <BarChart
                         labels={MESES}
                         datasets={compras}
                         title={TITULO_COMPRAS}
