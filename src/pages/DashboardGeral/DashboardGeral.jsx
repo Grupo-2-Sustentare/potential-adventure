@@ -323,6 +323,10 @@ const Dashboard = () => {
                         />
                     </div>
                 </div>
+                <div className={styles.fechamento}>
+                    <h3>Relatório de fechamento do mês</h3>
+                    <Button insideText={"Baixar relatório"}/>
+                </div>
             </div>
         </div>
             </>
