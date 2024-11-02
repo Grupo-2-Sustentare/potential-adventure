@@ -1,8 +1,9 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, defaults } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const CORES = ["#22333B","#E36419","#634B3D"];
 
 const BarChart = (
         { labels, datasets, title, width, height, backgroundColor, xLabel=undefined, yLabel="Valor",
@@ -12,6 +13,15 @@ const BarChart = (
         labels: labels,
         datasets: datasets,
     };
+
+    // Definindo dinâmicamente as cores das categorias dos gráficos via nossa paleta.
+    let c = 0
+    for (let i in datasets){
+        datasets[i].backgroundColor = CORES[c++]
+        if (c === CORES.length){
+            c = 0;
+        }
+    }
 
     const options = {
         responsive: true,
