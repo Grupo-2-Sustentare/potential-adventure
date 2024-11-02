@@ -20,7 +20,7 @@ export default function CheckableList(
     function expandir(){
         setExpandido(!expandido)
         if (valorOpcoes.length === 0){
-            setValorOpcoes(opcoes.map((o)=> {return {"nome": o, "selecionado": false}}))
+            setValorOpcoes(opcoes.map((o)=> {return {"nome": o, "selecionado": true}}))
         }
     }
 
@@ -59,8 +59,10 @@ export default function CheckableList(
                             onClick={()=>selecionarOpcao(o)}
                             // Cria no hook de ref um valor para o elemento criando, identificado
                             // por uma chave que é seu nome.
-                            ref={e=>ref.current[o] = e}>
-                            <span className={styles.checkbox}>
+                            ref={e=>ref.current[o] = e}
+                        >
+                            {/*Deixando selecionado por padrão*/}
+                            <span className={`${styles.checkbox} ${styles.selecionado}`}>
                                 <FontAwesomeIcon icon={"check"}/>
                             </span>
                             <p>{o}</p>

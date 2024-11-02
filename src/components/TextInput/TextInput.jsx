@@ -1,7 +1,7 @@
 import styles from "./textInput.module.css"
 const TIPOS_PERMITIDOS = ["text", "password"]
 
-export default function Input({ label, type="text", getValue, tabIndex, onEnter}){
+export default function Input({ label, type="text", getValue, tabIndex, onEnter=()=>null}){
 
     // Se o tipo não for permitido, dá exception.
     if (!TIPOS_PERMITIDOS.includes(type)) throw new Error("Tipo não permitido ou não implementado. Medida de qualidade.")

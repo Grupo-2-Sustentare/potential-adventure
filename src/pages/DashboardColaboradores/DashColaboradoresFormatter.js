@@ -1,6 +1,6 @@
 import {
     MOCK_ENTRADAS_E_SAIDAS,
-    MOCK_COLABORADORES, MOCK_LOGS, MOCK_DATA_MAIS_ANTIGA
+    MOCK_COLABORADORES, MOCK_LOGS, MOCK_DATA_MAIS_ANTIGA, gerarNumeroAleatorio
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
@@ -19,11 +19,17 @@ async function carregarColaboradores(){
 }
 
 async function carregarLogs(){
-    let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("logs")
+    let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("audit-logs")
     let logs = []
     for (let i in logsBrutos){
-        // TODO - Fazer...
+        logs.push({
+            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
+            "nome": logsBrutos[i].id,
+            "descricao": logsBrutos[i].descricao,
+            "periodo": logsBrutos[i].dataHora
+        })
     }
+    console.log(logs)
     return logs
 }
 
