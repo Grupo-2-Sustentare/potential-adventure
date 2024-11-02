@@ -7,6 +7,7 @@ import ChartBar from "../../components/Chart/ChartBar"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {
+    baixarFechamento,
     carregarDataMaisAntigaDados,
     carregarGraficos,
     carregarKPIs,
@@ -325,7 +326,7 @@ const Dashboard = () => {
                 </div>
                 <div className={styles.fechamento}>
                     <h3>Relatório de fechamento do mês</h3>
-                    <Button insideText={"Baixar relatório"}/>
+                    <Button insideText={"Baixar relatório"} onClick={()=>baixarFechamento()}/>
                 </div>
             </div>
         </div>
