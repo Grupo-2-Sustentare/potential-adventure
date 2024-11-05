@@ -47,7 +47,7 @@ const Dashboard = () => {
 
     const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
     const [compras, setCompras] = useState([])
-    const [colsCompras, setColsCompras] = useState([])
+    const COLS_COMPRAS = ["Comparação"]
 
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
@@ -69,11 +69,10 @@ const Dashboard = () => {
         setColsEntradasEhSaidas(dadosGraficos.entradasEhSaidas.colunas)
 
         // Perdas por tipo
-        setPerdas(dadosGraficos.perdas.valores)
+        setPerdas(dadosGraficos.perdas)
 
         // Compras x última hora
-        setCompras(dadosGraficos.compras.valores)
-        setColsCompras(dadosGraficos.compras.colunas)
+        setCompras(dadosGraficos.compras)
 
         let dadosKpis = await carregarKPIs()
         setKpiPerdas(dadosKpis.perdas)
@@ -216,7 +215,7 @@ const Dashboard = () => {
                         yLabel={"Quantidade de perdas"}
                     />
                     <BarChart
-                        labels={colsCompras}
+                        labels={COLS_COMPRAS}
                         datasets={compras}
                         title={TITULO_COMPRAS}
                         width="34vw"

@@ -82,24 +82,20 @@ async function carregarGraficos(){
             })
         }
     }
-    console.log(perdas)
 
     let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get(
         "graficos/regulares-vs-nao-planejadas", filtros
     )
-    let colsCompras = []
     let compras = null
     if (comprasBrutas !== null){
-        let tiposCompras = {
-            "regulares": [], "ultima_hora": []
-        }
+        let tiposCompras = {"regulares": [], "ultima_hora": []}
         for (let i in comprasBrutas) {
-            switch (comprasBrutas[i].tipo) {
-                case "regulares":
-                    tiposCompras.regulares = comprasBrutas[i].data
+            switch (comprasBrutas[i].tipoCompra) {
+                case "Entrada":
+                    tiposCompras.regulares.push(comprasBrutas[i].qtdCompras)
                     break
-                case "ultima_hora":
-                    tiposCompras.ultima_hora = comprasBrutas[i].data
+                case "Compra de última hora":
+                    tiposCompras.ultima_hora.push(comprasBrutas[i].qtdCompras)
                     break
             }
             if ((tiposCompras.regulares.length > 0) || (tiposCompras.ultima_hora.length > 0)) {
@@ -112,8 +108,8 @@ async function carregarGraficos(){
     }
     return {
         "entradasEhSaidas": {"colunas": colsEntradasEhSaidas, "valores": entradasEhSaidas},
-        "perdas": {"valores": perdas},
-        "compras": {"colunas": colsCompras, "valores": compras}
+        "perdas": perdas,
+        "compras": compras
     }
 }
 
