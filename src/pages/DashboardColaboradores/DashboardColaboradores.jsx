@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import Navbar from "../../components/SideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardColaboradores.module.css';
-import ChartBar from "../../components/Chart/ChartBar"
+import BarChart from "../../components/BarChart/BarChart"
 import ExpandedOperationLog from "../../components/ExpandedOperationLog/ExpandedOperationLog"
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -201,7 +201,7 @@ const DashboardColaboradores = () => {
                                     />
                             })}
                         </div>
-                        <ChartBar
+                        <BarChart
                             labels={colaboradores} datasets={interacoesPorColab} title={tituloInteracoesPorColab}
                             width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
                             yLabel={"Interações"} xLabel={"Colaborador"}

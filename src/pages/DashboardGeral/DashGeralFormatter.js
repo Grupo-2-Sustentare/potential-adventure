@@ -36,7 +36,6 @@ async function carregarListasChecaveis(){
 
     let produtos = []
     let produtos_brutos = DEBUG_MODE ? MOCK_PRODUTOS : await get(urlProdutos, params)
-    console.log(produtos_brutos)
     if (produtos_brutos !== null){
         for (let i in produtos_brutos){
             produtos.push(produtos_brutos[i].item.nome)
@@ -51,19 +50,19 @@ async function carregarListasChecaveis(){
 
 async function carregarGraficos(){
     let filtros = getFiltrosDashGeral()
-    if (DEBUG_MODE){
-        await fetch("https://httpbin.org/delay/3")
-    }
+    if (DEBUG_MODE){ await fetch("https://httpbin.org/delay/3")}
 
     // Entradas e saídas
     let entradasEhSaidasBrutas = DEBUG_MODE ?
         MOCK_ENTRADAS_E_SAIDAS() : await get("graficos/valor-entradas-saidas", filtros)
+    let colsEntradasEhSaidas = [];
     let entradasEhSaidas = null;
 
     if (entradasEhSaidasBrutas !== null){
         let entradas = []
         let saidas = []
         for (let i in entradasEhSaidasBrutas){
+            colsEntradasEhSaidas.push(entradasEhSaidasBrutas[i].diaMes)
             entradas.push(entradasEhSaidasBrutas[i].valorEntradas)
             saidas.push(entradasEhSaidasBrutas[i].valorSaidas)
         }
@@ -72,40 +71,23 @@ async function carregarGraficos(){
         }
     }
 
-    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/")
+    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/perdas-por-mes", filtros)
     let perdas = null
     if (perdasBrutas !== null) {
-        let tiposPerdas = {
-            "validade": [], "extraviado": [], "sumiu": []
-        }
+        perdas = []
         for (let i in perdasBrutas) {
-            switch (perdasBrutas[i].tipo) {
-                case "validade":
-                    tiposPerdas.validade = perdasBrutas[i].data
-                    break
-                case "extraviado":
-                    tiposPerdas.extraviado = perdasBrutas[i].data
-                    break
-                case "sumiu":
-                    tiposPerdas.sumiu = perdasBrutas[i].data
-                    break
-            }
-        }
-
-        if ((tiposPerdas.validade.length > 0) ||
-            (tiposPerdas.sumiu.length > 0) ||
-            (tiposPerdas.extraviado.length > 0)) {
-            perdas = [
-                {label: 'Prazo de validade', data: tiposPerdas.validade},
-                {label: 'Contaminado ou extraviado', data: tiposPerdas.sumiu},
-                {label: 'Não se sabe o paradeiro', data: tiposPerdas.extraviado}
-            ]
+            perdas.push({
+                "label": perdasBrutas[i].tipoPerda,
+                "data": [perdasBrutas[i].qtdPerda]
+            })
         }
     }
+    console.log(perdas)
 
     let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get(
         "graficos/regulares-vs-nao-planejadas", filtros
     )
+    let colsCompras = []
     let compras = null
     if (comprasBrutas !== null){
         let tiposCompras = {
@@ -129,9 +111,9 @@ async function carregarGraficos(){
         }
     }
     return {
-        "entradasEhSaidas": entradasEhSaidas,
-        "perdas": perdas,
-        "compras": compras
+        "entradasEhSaidas": {"colunas": colsEntradasEhSaidas, "valores": entradasEhSaidas},
+        "perdas": {"valores": perdas},
+        "compras": {"colunas": colsCompras, "valores": compras}
     }
 }
 
@@ -173,4 +155,9 @@ async function carregarDataMaisAntigaDados(){
     return DEBUG_MODE ? MOCK_DATA_MAIS_ANTIGA : await get("dataMaisAntiga")
 }
 
-export {carregarListasChecaveis, carregarGraficos, carregarKPIs, carregarDataMaisAntigaDados}
+async function baixarFechamento(){
+    let idResponsavel = JSON.parse(sessionStorage.getItem("usuario")).id
+    let fechamento = await get(`interacoes-estoque/csv/${idResponsavel}`)
+}
+
+export {carregarListasChecaveis, carregarGraficos, carregarKPIs, carregarDataMaisAntigaDados, baixarFechamento}

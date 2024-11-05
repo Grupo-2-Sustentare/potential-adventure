@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from "../../components/SideMenu/SideMenu";
 import Button from "../../components/Button/Button"
 import styles from './dashboardGeral.module.css';
-import ChartBar from "../../components/Chart/ChartBar"
+import BarChart from "../../components/BarChart/BarChart"
 import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {
+    baixarFechamento,
     carregarDataMaisAntigaDados,
     carregarGraficos,
     carregarKPIs,
@@ -20,18 +21,7 @@ const Dashboard = () => {
     // == Constantes
     // Gerais
     const navigate = useNavigate(); // Inicializa o hook de navegação
-    const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    const SUFIXO_SEM_DADOS = " - sem dados"
-    const MESES = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-        'Outubro', 'Novembro', 'Dezembro'
-    ];
     const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
-
-    // Dos gráficos
-    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
-    const TITULO_PERDAS = "Perdas por tipo"
-    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
 
     // Dados das CheckableList dos filtros
     let [categorias, setCategorias] = useState([])
@@ -47,69 +37,17 @@ const Dashboard = () => {
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
-    // Entradas e saídas
-    const [entradasSaidas, setEntradasSaidas] = useState([
-        {
-            label: 'Entradas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Saídas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-        ])
-    const [tituloEntradasEhSaidas, setTituloEntradasEhSaidas] = useState(TITULO_ENTRADAS_E_SAIDAS)
+    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const [entradasSaidas, setEntradasSaidas] = useState([])
+    const [colsEntradasEhSaidas, setColsEntradasEhSaidas] = useState([])
 
-    // Compras
-    const [perdas, setPerdas] = useState([
-        {
-            label: 'Prazo de validade',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Contaminado ou extraviado',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Não se sabe o paradeiro',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 159, 64, 0.6)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1,
-        }
-    ])
-    const [tituloPerdas, setTituloPerdas] = useState(TITULO_PERDAS)
+    const TITULO_PERDAS = "Perdas por tipo"
+    const [perdas, setPerdas] = useState([])
+    const COLS_PERDAS = ["Tipos de perda"]
 
-    // Compras por categorias
-    const [compras, setCompras] = useState([
-        {
-            label: 'Compras regulares',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Compras não planejadas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-    ])
-    const [tituloCompras, setTituloCompras] = useState(TITULO_COMPRAS)
+    const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
+    const [compras, setCompras] = useState([])
+    const [colsCompras, setColsCompras] = useState([])
 
     // == Dados das KPIS
     const [kpiPerdas, setKpiPerdas] = useState({"quantidade": null, "status": EnumStatusKpis.NEUTRAL})
@@ -127,22 +65,15 @@ const Dashboard = () => {
         let dadosGraficos = await carregarGraficos()
 
         // Entradas e saídas
-        setEntradasSaidas(dadosGraficos.entradasEhSaidas) // Mudanças de dados
-        setTituloEntradasEhSaidas(
-            TITULO_ENTRADAS_E_SAIDAS +
-            (dadosGraficos.entradasEhSaidas === null ? SUFIXO_SEM_DADOS : "")
-        ) // Info de "sem dados" no título
+        setEntradasSaidas(dadosGraficos.entradasEhSaidas.valores)
+        setColsEntradasEhSaidas(dadosGraficos.entradasEhSaidas.colunas)
 
         // Perdas por tipo
-        setPerdas(dadosGraficos.perdas)
-        setTituloPerdas(TITULO_PERDAS + (dadosGraficos.perdas === null ? SUFIXO_SEM_DADOS : ""))
+        setPerdas(dadosGraficos.perdas.valores)
 
         // Compras x última hora
-        setCompras(dadosGraficos.compras)
-        setTituloCompras(
-            TITULO_COMPRAS +
-            (dadosGraficos.compras === null ? SUFIXO_SEM_DADOS : "")
-        )
+        setCompras(dadosGraficos.compras.valores)
+        setColsCompras(dadosGraficos.compras.colunas)
 
         let dadosKpis = await carregarKPIs()
         setKpiPerdas(dadosKpis.perdas)
@@ -192,10 +123,16 @@ const Dashboard = () => {
         // Pegando a data atual + 1 mês, dia 0 (último dia do mês atual)
         let fimPeriodo = new Date(data.getFullYear(), data.getMonth()+1, 0)
 
+        function formatarData(data){
+            let ano = data.getFullYear()
+            let mes = String(data.getMonth()+1).padStart(2,"0")
+            let dia = String(data.getDate()).padStart(2,"0")
+            return `${ano}-${mes}-${dia}`
+        }
+
         // Mandando filtro de período como esperado pelo back.
         sessionStorage.setItem(
-            "filtroMes",
-            JSON.stringify({"dataInicio": data.toISOString(), "dataFim": fimPeriodo.toISOString()})
+            "filtroMes", JSON.stringify({"dataInicio": formatarData(data), "dataFim": formatarData(fimPeriodo)})
         )
     }
 
@@ -269,33 +206,33 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <div className={styles.Charts}>
-                    <ChartBar
-                        labels={MESES}
-                        datasets={entradasSaidas}
-                        title={tituloEntradasEhSaidas}
-                        width="34vw"
-                        height="250px"
-                        backgroundColor="#f0f0f0"
-                        yLabel={"Valor em reais (R$)"}
-                    />
-                    <ChartBar
-                        labels={MESES}
+                    <BarChart
+                        labels={COLS_PERDAS}
                         datasets={perdas}
-                        title={tituloPerdas}
+                        title={TITULO_PERDAS}
                         width="34vw"
-                        height="250px"
+                        height="300px"
                         backgroundColor="#f0f0f0"
                         yLabel={"Quantidade de perdas"}
                     />
-                    <ChartBar
-                        labels={MESES}
+                    <BarChart
+                        labels={colsCompras}
                         datasets={compras}
-                        title={tituloCompras}
-                        width="100vw"
-                        height="220px"
+                        title={TITULO_COMPRAS}
+                        width="34vw"
+                        height="300px"
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
+                    />
+                    <BarChart
+                        labels={colsEntradasEhSaidas}
+                        datasets={entradasSaidas}
+                        title={TITULO_ENTRADAS_E_SAIDAS}
+                        width="100vw"
+                        height="220px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Valor em reais (R$)"}
                     />
                 </div>
             </div>
@@ -322,6 +259,10 @@ const Dashboard = () => {
                             status={kpiValorInvestido.status}
                         />
                     </div>
+                </div>
+                <div className={styles.fechamento}>
+                    <h3>Relatório de fechamento do mês</h3>
+                    <Button insideText={"Baixar relatório"} onClick={()=>baixarFechamento()}/>
                 </div>
             </div>
         </div>
