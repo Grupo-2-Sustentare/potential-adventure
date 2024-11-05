@@ -62,7 +62,7 @@ async function carregarGraficos(){
         let entradas = []
         let saidas = []
         for (let i in entradasEhSaidasBrutas){
-            colsEntradasEhSaidas.push(entradasEhSaidasBrutas[i].item)
+            colsEntradasEhSaidas.push(entradasEhSaidasBrutas[i].diaMes)
             entradas.push(entradasEhSaidasBrutas[i].valorEntradas)
             saidas.push(entradasEhSaidasBrutas[i].valorSaidas)
         }
