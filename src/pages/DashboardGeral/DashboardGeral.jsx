@@ -124,10 +124,16 @@ const Dashboard = () => {
         // Pegando a data atual + 1 mês, dia 0 (último dia do mês atual)
         let fimPeriodo = new Date(data.getFullYear(), data.getMonth()+1, 0)
 
+        function formatarData(data){
+            let ano = data.getFullYear()
+            let mes = String(data.getMonth()+1).padStart(2,"0")
+            let dia = String(data.getDate()).padStart(2,"0")
+            return `${ano}-${mes}-${dia}`
+        }
+
         // Mandando filtro de período como esperado pelo back.
         sessionStorage.setItem(
-            "filtroMes",
-            JSON.stringify({"dataInicio": data.toISOString(), "dataFim": fimPeriodo.toISOString()})
+            "filtroMes", JSON.stringify({"dataInicio": formatarData(data), "dataFim": formatarData(fimPeriodo)})
         )
     }
 
@@ -202,15 +208,6 @@ const Dashboard = () => {
                 </div>
                 <div className={styles.Charts}>
                     <BarChart
-                        labels={colsEntradasEhSaidas}
-                        datasets={entradasSaidas}
-                        title={TITULO_ENTRADAS_E_SAIDAS}
-                        width="34vw"
-                        height="300px"
-                        backgroundColor="#f0f0f0"
-                        yLabel={"Valor em reais (R$)"}
-                    />
-                    <BarChart
                         labels={colsPerdas}
                         datasets={perdas}
                         title={TITULO_PERDAS}
@@ -223,11 +220,20 @@ const Dashboard = () => {
                         labels={colsCompras}
                         datasets={compras}
                         title={TITULO_COMPRAS}
-                        width="100vw"
-                        height="220px"
+                        width="34vw"
+                        height="300px"
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
+                    />
+                    <BarChart
+                        labels={colsEntradasEhSaidas}
+                        datasets={entradasSaidas}
+                        title={TITULO_ENTRADAS_E_SAIDAS}
+                        width="100vw"
+                        height="220px"
+                        backgroundColor="#f0f0f0"
+                        yLabel={"Valor em reais (R$)"}
                     />
                 </div>
             </div>
