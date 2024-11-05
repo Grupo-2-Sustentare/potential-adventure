@@ -43,7 +43,7 @@ const Dashboard = () => {
 
     const TITULO_PERDAS = "Perdas por tipo"
     const [perdas, setPerdas] = useState([])
-    const [colsPerdas, setColsPerdas] = useState([])
+    const COLS_PERDAS = ["Tipos de perda"]
 
     const TITULO_COMPRAS = "Compras regulares X Compras não planejadas"
     const [compras, setCompras] = useState([])
@@ -70,7 +70,6 @@ const Dashboard = () => {
 
         // Perdas por tipo
         setPerdas(dadosGraficos.perdas.valores)
-        setColsPerdas(dadosGraficos.perdas.colunas)
 
         // Compras x última hora
         setCompras(dadosGraficos.compras.valores)
@@ -208,7 +207,7 @@ const Dashboard = () => {
                 </div>
                 <div className={styles.Charts}>
                     <BarChart
-                        labels={colsPerdas}
+                        labels={COLS_PERDAS}
                         datasets={perdas}
                         title={TITULO_PERDAS}
                         width="34vw"

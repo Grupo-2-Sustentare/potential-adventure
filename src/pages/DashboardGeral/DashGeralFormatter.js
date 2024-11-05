@@ -71,35 +71,18 @@ async function carregarGraficos(){
         }
     }
 
-    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/")
-    let colsPerdas = []
+    let perdasBrutas = DEBUG_MODE ? MOCK_TIPOS_PERDAS() : await get("graficos/perdas-por-mes", filtros)
     let perdas = null
     if (perdasBrutas !== null) {
-        let tiposPerdas = {
-            "validade": [], "extraviado": [], "sumiu": []
-        }
+        perdas = []
         for (let i in perdasBrutas) {
-            switch (perdasBrutas[i].tipo) {
-                case "validade":
-                    tiposPerdas.validade = perdasBrutas[i].data
-                    break
-                case "extraviado":
-                    tiposPerdas.extraviado = perdasBrutas[i].data
-                    break
-                case "sumiu":
-                    tiposPerdas.sumiu = perdasBrutas[i].data
-                    break
-            }
-        }
-
-        if ((tiposPerdas.validade.length > 0) || (tiposPerdas.sumiu.length > 0) || (tiposPerdas.extraviado.length > 0)) {
-            perdas = [
-                {label: 'Prazo de validade', data: tiposPerdas.validade},
-                {label: 'Contaminado ou extraviado', data: tiposPerdas.sumiu},
-                {label: 'Não se sabe o paradeiro', data: tiposPerdas.extraviado}
-            ]
+            perdas.push({
+                "label": perdasBrutas[i].tipoPerda,
+                "data": [perdasBrutas[i].qtdPerda]
+            })
         }
     }
+    console.log(perdas)
 
     let comprasBrutas = DEBUG_MODE ? MOCK_COMPRAS() : await get(
         "graficos/regulares-vs-nao-planejadas", filtros
@@ -129,7 +112,7 @@ async function carregarGraficos(){
     }
     return {
         "entradasEhSaidas": {"colunas": colsEntradasEhSaidas, "valores": entradasEhSaidas},
-        "perdas": {"colunas": colsPerdas, "valores": perdas},
+        "perdas": {"valores": perdas},
         "compras": {"colunas": colsCompras, "valores": compras}
     }
 }
