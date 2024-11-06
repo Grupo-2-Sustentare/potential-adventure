@@ -9,7 +9,7 @@ const DEBUG_MODE = false;
 
 async function carregarColaboradores(){
     let colaboradores = []
-    let colabs_brutos = DEBUG_MODE ? MOCK_COLABORADORES : await get("usuarios")
+    let colabs_brutos = DEBUG_MODE ? MOCK_COLABORADORES : await get("usuarios/listar-sem-imagem")
     if (colabs_brutos !== null){
         for (let i in colabs_brutos){
             colaboradores.push(colabs_brutos[i].nome)
