@@ -8,7 +8,6 @@ import Kpi from "../../components/KPI/Kpi";
 import CheckableList from "../../components/CheckableList/CheckableList";
 import {
     baixarFechamento,
-    carregarDataMaisAntigaDados,
     carregarGraficos,
     carregarKPIs,
     carregarListasChecaveis
@@ -33,7 +32,6 @@ const Dashboard = () => {
 
     // === Modal
     const [modalAberta, setModalAberta] = useState(false)
-    const [dataMinDados, setDataMinDados] = useState(null)
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
@@ -78,9 +76,6 @@ const Dashboard = () => {
         setKpiPerdas(dadosKpis.perdas)
         setKpiNaoPlanejados(dadosKpis.naoPlanejadas)
         setKpiValorInvestido(dadosKpis.valorInvest)
-
-        let dataMaisAntiga = await carregarDataMaisAntigaDados()
-        setDataMinDados(dataMaisAntiga)
     }
 
     function atualizarFiltros(valor, nome_filtro) {
@@ -186,7 +181,6 @@ const Dashboard = () => {
             <PeriodModal
                 abertura={modalAberta} controleAbertura={setModalAberta}
                 valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
-                dataMin={dataMinDados}
             />
         <div className={styles.group}>
             <div className={styles.Global}>

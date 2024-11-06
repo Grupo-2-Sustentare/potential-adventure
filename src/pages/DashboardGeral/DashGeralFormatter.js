@@ -147,13 +147,9 @@ async function carregarKPIs(){
     return KPIs
 }
 
-async function carregarDataMaisAntigaDados(){
-    return DEBUG_MODE ? MOCK_DATA_MAIS_ANTIGA : await get("dataMaisAntiga")
-}
-
 async function baixarFechamento(){
-    let idResponsavel = JSON.parse(sessionStorage.getItem("usuario")).id
-    let fechamento = await get(`interacoes-estoque/csv/${idResponsavel}`)
+    let fechamento = await get("interacoes-estoque/csv")
+    console.log(fechamento)
 }
 
-export {carregarListasChecaveis, carregarGraficos, carregarKPIs, carregarDataMaisAntigaDados, baixarFechamento}
+export {carregarListasChecaveis, carregarGraficos, carregarKPIs, baixarFechamento}
