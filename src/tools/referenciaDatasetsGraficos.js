@@ -61,3 +61,20 @@ const compras = [
         borderWidth: 1,
     }
 ]
+
+const interacoes_por_colaborador = [
+    {
+        label: 'Entradas',
+        data: [],
+        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Cor das barras das entradas
+        borderColor: 'rgba(54, 162, 235, 1)', // Cor da borda das barras
+        borderWidth: 1,
+    },
+    {
+        label: 'Saídas',
+        data: [],
+        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Cor das barras das saídas
+        borderColor: 'rgba(255, 99, 132, 1)', // Cor da borda das barras
+        borderWidth: 1,
+    },
+]

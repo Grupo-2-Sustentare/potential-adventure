@@ -17,24 +17,16 @@ import PeriodModal from "../../components/PeriodModal/PeriodModal";
 
 const DashboardColaboradores = () => {
     // == Constantes
-    // Gerais
     const navigate = useNavigate(); // Inicializa o hook de navegação
-    const SEM_DADOS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    const MESES = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-        'Outubro', 'Novembro', 'Dezembro'
-    ];
     const FORMAT_DATA_MES  = Intl.DateTimeFormat("pt-BR", {month: "long"})
     const [periodoDados, setPeriodoDados] = useState("Carregando...")
     const [tempoReal, setTempoReal] = useState(false)
 
     // === Filtros
-    // Opções
     let [colaboradores, setColaboradores] = useState([])
 
     // === Modal de período
     const [modalAberta, setModalAberta] = useState(false)
-    const [dataMinDados, setDataMinDados] = useState(null)
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Logs
@@ -42,47 +34,19 @@ const DashboardColaboradores = () => {
 
     // === Dados dos gráficos
     // Interações por colaboradores
-    const [interacoesPorColab, setInteracoesPorColab] = useState([
-        {
-            label: 'Entradas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)', // Cor das barras das entradas
-            borderColor: 'rgba(54, 162, 235, 1)', // Cor da borda das barras
-            borderWidth: 1,
-        },
-        {
-            label: 'Saídas',
-            data: SEM_DADOS,
-            backgroundColor: 'rgba(255, 99, 132, 0.6)', // Cor das barras das saídas
-            borderColor: 'rgba(255, 99, 132, 1)', // Cor da borda das barras
-            borderWidth: 1,
-        },
-    ])
+    const [interacoesPorColab, setInteracoesPorColab] = useState([])
     const TITULO_INTERACOES_POR_COLAB = "Ações de cada colaborador"
-    const [tituloInteracoesPorColab, setTituloInteracoesPorColab] = useState(TITULO_INTERACOES_POR_COLAB)
 
     // === Mét-odo que puxa do back
     async function carregarDados(){
-        // Filtros
         let colaboradores = await carregarColaboradores()
         setColaboradores(colaboradores)
 
-        // == Logs
         let logs = await carregarLogs()
         setLogsOperacao(logs)
 
-        // == Dados de gráficos
         let interacoesPorColab = await carregarGrafico()
-
-        // Entradas e saídas
         setInteracoesPorColab(interacoesPorColab) // Mudanças de dados
-        setTituloInteracoesPorColab(
-            TITULO_INTERACOES_POR_COLAB +
-            (interacoesPorColab === null ? " - sem dados" : "")
-        ) // Info de "sem dados" no título
-
-        let dataMaisAntiga = await carregarDataMaisAntigaDados()
-        setDataMinDados(dataMaisAntiga)
     }
 
     function atualizarFiltros(valor, nome_filtro) {
@@ -99,7 +63,7 @@ const DashboardColaboradores = () => {
                     setTempoReal(false)
                 }
 
-                sessionStorage.setItem("filtroMes", valor)
+                salvarFiltroPeriodo(valor)
                 break
             case "colaboradores":
                 sessionStorage.setItem("filtroColaboradores",valor)
@@ -111,6 +75,24 @@ const DashboardColaboradores = () => {
     function validarSessao(){
         let sessao = sessionStorage.getItem("usuario")
         if (sessao === null) navigate("/")
+    }
+
+    // Mét-odo de formatação específica do filtro de período.
+    function salvarFiltroPeriodo(data){
+        // Pegando a data atual + 1 mês, dia 0 (último dia do mês atual)
+        let fimPeriodo = new Date(data.getFullYear(), data.getMonth()+1, 0)
+
+        function formatarData(data){
+            let ano = data.getFullYear()
+            let mes = String(data.getMonth()+1).padStart(2,"0")
+            let dia = String(data.getDate()).padStart(2,"0")
+            return `${ano}-${mes}-${dia}`
+        }
+
+        // Mandando filtro de período como esperado pelo back.
+        sessionStorage.setItem(
+            "filtroMes", JSON.stringify({"dataInicio": formatarData(data), "dataFim": formatarData(fimPeriodo)})
+        )
     }
 
     // ===  Mét-odo de atualização progressiva
@@ -143,19 +125,24 @@ const DashboardColaboradores = () => {
     useEffect( () => {
         atualizarDashboard().catch(console.error)
 
+        // Limpando os session storages, preservando a de usuário.
+        let sessUsuario = sessionStorage.getItem("usuario")
+        sessionStorage.clear()
+        sessionStorage.setItem("usuario", sessUsuario)
+
         let agora = new Date()
         setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
         setTempoReal(true)
+        salvarFiltroPeriodo(new Date(agora.getFullYear(), agora.getMonth(), 1))
 
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
-    }, [atualizarDashboard]); /*Executar 1 vez, no carregamento*/
+    }, []); /*Executar 1 vez, no carregamento*/
 
     return (
         <>
             <PeriodModal
                 abertura={modalAberta} controleAbertura={setModalAberta}
                 valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
-                dataMin={dataMinDados}
             />
             <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <div className={styles.group}>
@@ -202,7 +189,7 @@ const DashboardColaboradores = () => {
                             })}
                         </div>
                         <BarChart
-                            labels={colaboradores} datasets={interacoesPorColab} title={tituloInteracoesPorColab}
+                            labels={colaboradores} datasets={interacoesPorColab} title={TITULO_INTERACOES_POR_COLAB}
                             width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
                             yLabel={"Interações"} xLabel={"Colaborador"}
                         />

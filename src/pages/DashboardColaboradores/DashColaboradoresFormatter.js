@@ -29,7 +29,6 @@ async function carregarLogs(){
             "periodo": logsBrutos[i].dataHora
         })
     }
-    console.log(logs)
     return logs
 }
 
