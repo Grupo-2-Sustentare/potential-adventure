@@ -8,7 +8,6 @@ import CheckableList from "../../components/CheckableList/CheckableList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     carregarColaboradores,
-    carregarDataMaisAntigaDados,
     carregarGrafico,
     carregarLogs
 } from "./DashColaboradoresFormatter";
@@ -35,6 +34,7 @@ const DashboardColaboradores = () => {
     // === Dados dos gráficos
     // Interações por colaboradores
     const [interacoesPorColab, setInteracoesPorColab] = useState([])
+    const [colsInteracoes, setColsInteracoes] = useState([])
     const TITULO_INTERACOES_POR_COLAB = "Ações de cada colaborador"
 
     // === Mét-odo que puxa do back
@@ -46,7 +46,8 @@ const DashboardColaboradores = () => {
         setLogsOperacao(logs)
 
         let interacoesPorColab = await carregarGrafico()
-        setInteracoesPorColab(interacoesPorColab) // Mudanças de dados
+        setInteracoesPorColab(interacoesPorColab.valores)
+        setColsInteracoes(interacoesPorColab.colunas)
     }
 
     function atualizarFiltros(valor, nome_filtro) {
@@ -177,19 +178,19 @@ const DashboardColaboradores = () => {
                                     Sem dados.<br/>Verifique os filtros aplicados e tente novamente
                                 </div>
                             }
-                            {logsOperacao.map((i) => {
+                            {logsOperacao.map((l,i) => {
                                 return <ExpandedOperationLog
-                                        key={i.nome+i.periodo}
-                                        imageAddress={i.imagem}
-                                        name={i.nome}
-                                        valueInput={`${i.interacao}: ${i.descricao}`}
-                                        valueTime={i.periodo}
+                                        key={i}
+                                        imageAddress={l.imagem}
+                                        name={l.nome}
+                                        valueInput={`${l.interacao}: ${l.descricao}`}
+                                        valueTime={l.periodo}
                                         iconInput="circle-info" descImage="Imagem do usuário" iconTime="clock-rotate-left"
                                     />
                             })}
                         </div>
                         <BarChart
-                            labels={colaboradores} datasets={interacoesPorColab} title={TITULO_INTERACOES_POR_COLAB}
+                            labels={colsInteracoes} datasets={interacoesPorColab} title={TITULO_INTERACOES_POR_COLAB}
                             width="100%" height="220px" backgroundColor="#f0f0f0" margin="auto" alignItems="center"
                             yLabel={"Interações"} xLabel={"Colaborador"}
                         />

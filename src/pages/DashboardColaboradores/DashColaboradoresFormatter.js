@@ -4,6 +4,7 @@ import {
 } from "../../tools/ferramentasDeTeste";
 import {get} from "../../tools/api";
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
+import {getFiltrosDashColab} from "../../tools/controleDosFiltros";
 const DEBUG_MODE = false;
 
 async function carregarColaboradores(){
@@ -33,30 +34,31 @@ async function carregarLogs(){
 }
 
 async function carregarGrafico(){
-    // Entradas e saídas
-    let interacoesBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get("entradasEhSaidas")
+    const filtros = getFiltrosDashColab()
+
+    let interacoesBrutas = DEBUG_MODE ? MOCK_ENTRADAS_E_SAIDAS() : await get(
+        "graficos/colaboradores/entrada-saida", filtros
+    )
     let interacoesPorColabs = null;
+    let colaboradores = [];
 
     if (DEBUG_MODE){
         await fetch("https://httpbin.org/delay/3")
     }
-
     if (interacoesBrutas !== null){
         let entradas = []
         let saidas = []
         for (let i in interacoesBrutas){
-            if (interacoesBrutas[i].tipo === "Entradas"){
-                entradas = interacoesBrutas[i].valores
-            } else if (interacoesBrutas[i].tipo === "Saídas"){
-                saidas = interacoesBrutas[i].valores
-            }
+            colaboradores.push(interacoesBrutas[i].colaborador)
+            entradas.push(interacoesBrutas[i].qtdEntradas)
+            saidas.push(interacoesBrutas[i].qtdSaidas)
         }
-        if (entradas.length > 0 || saidas.length > 0){
+        if (colaboradores.length > 0){
             interacoesPorColabs = [{label: 'Entradas', data: entradas}, {label: 'Saídas', data: saidas}]
         }
     }
 
-    return interacoesPorColabs
+    return {"valores": interacoesPorColabs, "colunas": colaboradores}
 }
 
 async function carregarDataMaisAntigaDados(){
