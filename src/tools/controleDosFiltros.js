@@ -28,4 +28,10 @@ function getFiltrosDashGeral(){
     }
     return baseFiltros
 }
-export {getFiltrosDashGeral}
+
+function getFiltrosDashColab(){
+    let baseFiltros = JSON.parse(sessionStorage.filtroMes)
+    return baseFiltros
+}
+
+export {getFiltrosDashGeral, getFiltrosDashColab}
