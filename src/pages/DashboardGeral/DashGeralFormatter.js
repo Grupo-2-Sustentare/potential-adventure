@@ -149,7 +149,19 @@ async function carregarKPIs(){
 
 async function baixarFechamento(){
     let fechamento = await get("interacoes-estoque/csv")
-    console.log(fechamento)
+
+    const href = URL.createObjectURL(
+        new Blob([fechamento], { type: "text/csv" })
+    )
+    const link = document.createElement('a')
+    link.href = href
+
+    link.setAttribute('download', 'interacoes_de_estoque.csv');
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
 }
 
 export {carregarListasChecaveis, carregarGraficos, carregarKPIs, baixarFechamento}
