@@ -20,14 +20,18 @@ async function carregarColaboradores(){
 }
 
 async function carregarLogs(){
-    let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("audit-logs")
+    const filtros = getFiltrosDashColab()
+
+    let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("graficos/colaboradores/log-operacoes", filtros)
     let logs = []
     for (let i in logsBrutos){
+        console.log(logsBrutos[i])
         logs.push({
             "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
-            "nome": logsBrutos[i].id,
-            "descricao": logsBrutos[i].descricao,
-            "periodo": logsBrutos[i].dataHora
+            "nome": logsBrutos[i].responsavelNome,
+            "interacao": logsBrutos[i].descricaoAuditoria,
+            "descricao": logsBrutos[i].detalhesRegistro,
+            "periodo": logsBrutos[i].dataAcao
         })
     }
     return logs

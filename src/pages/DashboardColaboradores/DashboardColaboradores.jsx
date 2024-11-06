@@ -183,7 +183,7 @@ const DashboardColaboradores = () => {
                                         key={i}
                                         imageAddress={l.imagem}
                                         name={l.nome}
-                                        valueInput={`${l.interacao}: ${l.descricao}`}
+                                        valueInput={`${l.interacao} - ${l.descricao}`}
                                         valueTime={l.periodo}
                                         iconInput="circle-info" descImage="Imagem do usuário" iconTime="clock-rotate-left"
                                     />
