@@ -27,7 +27,7 @@ async function carregarLogs(){
     for (let i in logsBrutos){
         console.log(logsBrutos[i])
         logs.push({
-            "imagem": "https://images.pexels.com/photos/2071873/pexels-photo-2071873.jpeg?auto=compress&cs=tinysrgb&w=600",
+            "imagem": undefined,
             "nome": logsBrutos[i].responsavelNome,
             "interacao": logsBrutos[i].descricaoAuditoria,
             "descricao": logsBrutos[i].detalhesRegistro,
