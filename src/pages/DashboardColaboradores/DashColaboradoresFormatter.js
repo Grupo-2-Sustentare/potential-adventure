@@ -25,7 +25,6 @@ async function carregarLogs(){
     let logsBrutos = DEBUG_MODE ? MOCK_LOGS : await get("graficos/colaboradores/log-operacoes", filtros)
     let logs = []
     for (let i in logsBrutos){
-        console.log(logsBrutos[i])
         logs.push({
             "imagem": undefined,
             "nome": logsBrutos[i].responsavelNome,

@@ -33,7 +33,7 @@ const DashboardColaboradores = () => {
 
     // === Dados dos gráficos
     // Interações por colaboradores
-    const [interacoesPorColab, setInteracoesPorColab] = useState([])
+    const [interacoesPorColab, setInteracoesPorColab] = useState(null)
     const [colsInteracoes, setColsInteracoes] = useState([])
     const TITULO_INTERACOES_POR_COLAB = "Ações de cada colaborador"
 
@@ -67,7 +67,7 @@ const DashboardColaboradores = () => {
                 salvarFiltroPeriodo(valor)
                 break
             case "colaboradores":
-                sessionStorage.setItem("filtroColaboradores",valor)
+                sessionStorage.setItem("filtroColaboradores",JSON.stringify(valor))
                 break
         }
         atualizarDashboard().catch(console.error)

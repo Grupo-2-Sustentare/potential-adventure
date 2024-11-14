@@ -11,6 +11,9 @@ function formatFiltro(valores){
 
     // Removendo a última ","
     final = final.substring(0, final.length - 1);
+    if (final === ""){
+        return null
+    }
     return final
 }
 
@@ -31,6 +34,12 @@ function getFiltrosDashGeral(){
 
 function getFiltrosDashColab(){
     let baseFiltros = JSON.parse(sessionStorage.filtroMes)
+
+    let colabs = formatFiltro(sessionStorage.filtroColaboradores)
+    if (colabs !== null){
+        baseFiltros.colaboradores = colabs
+    }
+    console.log(colabs)
     return baseFiltros
 }
 
