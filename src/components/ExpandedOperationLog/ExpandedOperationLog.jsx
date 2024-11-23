@@ -3,10 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './ExpandedOperationLog.module.css';
 
 export default function ExpandedOperationLog({ imageAddress, descImage, name, iconInput, valueInput, iconTime, valueTime }) {
+    let imagem = undefined
+    if (imageAddress !== undefined) {
+        imagem = <img src={imageAddress} alt={descImage} className={styles.image}/>
+    }
+
     return (
         <div className={styles.ExpandedOperationLog}>
             <div className={styles.group}>
-                <img src={imageAddress} alt={descImage} className={styles.image} />
+                {imagem}
                 <span className={styles.name}>{name}</span>
             </div>
             <div className={styles.group}>

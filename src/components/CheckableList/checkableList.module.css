@@ -40,7 +40,7 @@ o selecionado ou as opções. */
 }
 .expandido > .opcoes{
     position: absolute;
-    top: 47px;
+    top: 54px;
     display: flex;
     flex-direction: column;
 }
@@ -59,6 +59,7 @@ o selecionado ou as opções. */
 }
 
 .opcoes p{
+    cursor: pointer;
     width: 100%;
     max-width: 200px;
     font-size: 0.8em;

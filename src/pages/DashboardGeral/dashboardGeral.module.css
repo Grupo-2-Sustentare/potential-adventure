@@ -1,99 +1,115 @@
 .group{
     display: flex;
     flex-direction: row;
-    height: 100%;
-    gap:4%;  
-}
-.titulo{
-    font-size: 1.4em;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-    overflow: hidden;
+    gap: 16px;
+    overflow-y: scroll;
+    margin: 8px 0;
 }
 .Global{
     display: flex;
     flex-direction: column;
-    height: 100%;
+    gap: 16px;
 }
+
 .NavTop{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    width: 65vw;
-    height: 10vh;
+
+    .titulo{
+        font-size: 1.4em;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+        overflow: hidden;
+    }
+
+    .buttons{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 16px;
+    }
 }
-.buttons{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 70%;
-}
+
 .Charts{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
     width: 70vw;
-    height: 53vh;
+    gap: 16px;
 }
 
-.SideMenu{
+.SideMenu {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 20vw;
-    height: 100%;
-}
-.icons{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 50%;
-    height: 10%;
-    margin-left: 45%;
-}
-.DivKpis{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    height: 90%;
-}
+    width: 45vw;
+    gap: 24px;
 
-.updateInfo{
-    cursor: default;
-
-    > span{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        > p{
+    .updateInfo{
+        cursor: default;
+        > h3{
             font-size: 0.8em;
+            text-align: center;
+        }
+        > span{
+            text-wrap: nowrap;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            > p{
+                font-size: 0.8em;
+            }
+        }
+
+        .staticIcon{
+            cursor: pointer;
+            filter: var(--sombra-vermelha-icone);
+        }
+        .loadingIcon{
+            display: none;
         }
     }
 
-    .staticIcon{
-        cursor: pointer;
-        filter: var(--sombra-vermelha-icone);
+    .loading{
+        .staticIcon{
+            display: none;
+        }
+        .loadingIcon{
+            display: block;
+            animation: girar 1s linear infinite;
+        }
     }
-    .loadingIcon{
-        display: none;
+
+    .DivKpis {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        gap: 8px;
+        > div {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+    }
+
+    .fechamento{
+        width: 85%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
     }
 }
 
-.loading{
-    .staticIcon{
-        display: none;
-    }
-    .loadingIcon{
-        display: block;
-        animation: girar 1s linear infinite;
-    }
-}
 @keyframes girar {
     from {transform: rotate(0deg)}
     to {transform: rotate(360deg)}

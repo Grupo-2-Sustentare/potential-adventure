@@ -15,10 +15,14 @@ alterando-o apenas aqui, assim como com as variáveis do Figma!!!
     /* Paleta de cores */
     --white: #F5FBEF;
     --preto: #0A0908;
+    --preto-transp: rgba(10, 9, 8, 0.65);
+    --gunmetal-escuro: #19262c;
     --gunmetal: #22333B;
     --carvao: #254A5B;
+    --carvao-claro: #2d586e;
     --cinza-transparente: rgba(201, 201, 201, 0.65);
     --vermelho: #CC334E;
+    --vermelho-transparente: rgba(204, 51, 78, 0.85);
     --azul-claro: #65B5DA;
     --green:#2DD36F;
     --yellow: #FFCA3A;
@@ -29,10 +33,11 @@ alterando-o apenas aqui, assim como com as variáveis do Figma!!!
         var(--carvao),
         var(--gunmetal)
     );
-        /* Cores dos Toasts */
-        --toast-verde:#2DD36F;
-        --toast-amarelo: #FFCA3A;
-        --toast-vermelho:#EE6123;
+
+    /* Cores dos Toasts */
+    --toast-verde:#2DD36F;
+    --toast-amarelo: #FFCA3A;
+    --toast-vermelho:#EE6123;
 
     /* Bordas */
     --borda-branca:  1px solid var(--white);
@@ -65,7 +70,6 @@ body{
 }
 
 #root{
-    height: 100vh;
     width: 100vw;
     outline: 2px solid white;
     background: var(--gradiente);
@@ -92,6 +96,9 @@ body{
     */
 }
 
+h1, h2, h3, p, span{
+    cursor: default;
+}
 h1{
     font-size: 2.6em;
     font-family: var(--fonte-artistica)
