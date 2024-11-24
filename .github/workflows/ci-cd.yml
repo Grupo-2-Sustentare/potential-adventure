@@ -1,4 +1,4 @@
-name: Deploy para EC2
+name: Deploy to EC2
 
 on:
   push:
@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Fazer checkout do código
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Configurar o Node.js
+    - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
 
-    - name: Instalar dependências
+    - name: Install dependencies
       run: npm install
 
-    - name: Rodar ESLint (opcional, apenas para verificar problemas)
+    - name: Run ESLint (optional, only to check issues)
       run: npm run lint
 
-    - name: Construir o projeto
+    - name: Build the project
       run: |
         CI=false npm run build
 
-    - name: Copiar o deploy.sh para o servidor EC2 e executá-lo
+    - name: Copy deploy.sh to the EC2 server and run it
       env:
         DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
@@ -45,13 +45,22 @@ jobs:
 
         # Conectar via SSH e rodar o deploy
         ssh -i public_instance_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
-          # Instalar o pm2
+          # Instalar o pm2 se não estiver instalado
           sudo npm install -g pm2
 
-          # Iniciar o servidor com npm start (para ambiente de produção, considere alternativas)
+          # Acessar o diretório do projeto
           cd /home/ubuntu/sustentare-web
+
+          # Atualizar o código e instalar dependências
           git pull origin main
           npm install
+
+          # Rodar o build novamente
           npm run build
-          npm start  # Usar para rodar o servidor de desenvolvimento (não recomendado em produção)
+
+          # Reiniciar a aplicação com pm2 (caso esteja rodando) ou iniciar se necessário
+          pm2 restart sustentare-web || pm2 start build/ --name sustentare-web
+
+          #Iniciar projeto
+          npm start
         EOF
