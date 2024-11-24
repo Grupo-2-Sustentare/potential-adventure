@@ -40,14 +40,24 @@ jobs:
         echo "$DEPLOY_PRIVATE_KEY" > public_instance_key.pem
         chmod 600 public_instance_key.pem
 
-        # Agora execute o script deploy.sh usando o SSH
+        # Copiar os arquivos para a instância EC2
         scp -i public_instance_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-web/build
 
         # Conectar via SSH e rodar o deploy
         ssh -i public_instance_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
+          # Instalar o pm2 se não estiver instalado
+          sudo npm install -g pm2
+
+          # Acessar o diretório do projeto
           cd /home/ubuntu/sustentare-web
+
+          # Atualizar o código e instalar dependências
           git pull origin main
           npm install
+
+          # Rodar o build novamente
           npm run build
+
+          # Reiniciar a aplicação com pm2 (caso esteja rodando) ou iniciar se necessário
           pm2 restart sustentare-web || pm2 start build/ --name sustentare-web
         EOF
