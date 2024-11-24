@@ -61,6 +61,4 @@ jobs:
           # Reiniciar a aplicação com pm2 (caso esteja rodando) ou iniciar se necessário
           pm2 restart sustentare-web || pm2 start build/ --name sustentare-web
 
-          #Iniciar projeto
-          npm start
         EOF
