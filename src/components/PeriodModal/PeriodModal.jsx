@@ -19,6 +19,7 @@ export default function PeriodModal(
         }
         setClasses(estado.estilo)
         setTexto(estado.texto)
+        setPrimeiroDia(null)
     }, [estado]);
 
 
