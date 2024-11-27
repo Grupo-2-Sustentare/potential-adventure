@@ -9,9 +9,7 @@
     justify-content: center;
     align-items: center;
 }
-.aberto{
-    display: flex;
-}
+.aberto{ display: flex }
 
 .modal{
     position: relative;
@@ -27,6 +25,11 @@
     .fechar{
         position: absolute;
         right: 3vw;
+        cursor: pointer;
+    }
+    .voltar{
+        position: absolute;
+        left: 3vw;
         cursor: pointer;
     }
 }

@@ -15,6 +15,7 @@ import {
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
+import {ESTADOS_MODAL} from "../../components/PeriodModal/ModalDefinitions";
 
 const Dashboard = () => {
     // == Constantes
@@ -31,7 +32,7 @@ const Dashboard = () => {
     const [tempoReal, setTempoReal] = useState(false)
 
     // === Modal
-    const [modalAberta, setModalAberta] = useState(false)
+    const [estadoModal, setEstadoModal] = useState(ESTADOS_MODAL.FECHADA)
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
@@ -179,7 +180,7 @@ const Dashboard = () => {
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <PeriodModal
-                abertura={modalAberta} controleAbertura={setModalAberta}
+                estado={estadoModal} controleEstado={setEstadoModal}
                 valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
             />
         <div className={styles.group}>
@@ -195,7 +196,7 @@ const Dashboard = () => {
                             getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
                             opcoes={produtos}
                         />
-                        <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
+                        <Button insideText={"Alterar período"} onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}/>
                     </div>
                 </div>
                 <div className={styles.Charts}>
