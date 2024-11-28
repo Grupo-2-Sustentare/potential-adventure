@@ -36,7 +36,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-frontend
-        path: ./sustentare-dashboard/build  # Corrigido para o diretório correto do build
+        path: ./build  # Alinhei o caminho do build para coincidir com o caminho de download
 
   deploy:
     needs: build
