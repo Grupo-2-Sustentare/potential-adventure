@@ -19,7 +19,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18' # Atualizando para a versão 18, conforme o exemplo anterior
+        node-version: '18'  # Atualizando para a versão 18, conforme o exemplo anterior
 
     - name: Install dependencies
       run: npm install
@@ -38,12 +38,12 @@ jobs:
       run: |
         # Configurar a chave privada
         echo "$DEPLOY_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
+        chmod 400 private_key.pem
 
         # Garantir que o diretório remoto existe na EC2
         ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-dashboard/build"
 
-        # Copiar os arquivos do build para a EC2
+        # Copiar os arquivos do build para a EC2 (garantindo que o diretório esteja correto)
         scp -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-dashboard/build/
 
         # Conectar via SSH e configurar o ambiente
