@@ -3,7 +3,7 @@ import Calendar from "react-calendar";
 import "./calendar.css"
 import styles from "./periodModal.module.css"
 import {useEffect, useState} from "react";
-import {ESTADOS_MODAL} from "./ModalDefinitions";
+import {dateToString, ESTADOS_MODAL} from "./ModalDefinitions";
 import Button from "../Button/Button";
 
 
@@ -16,6 +16,7 @@ export default function PeriodModal(
     useEffect(() => {
         if(!Object.values(ESTADOS_MODAL).includes(estado)) {
             throw new Error(`Estado "${estado}" inválido para a modal de calendário.`)
+            console.log(estado)
         }
         setClasses(estado.estilo)
         setTexto(estado.texto)
@@ -29,7 +30,7 @@ export default function PeriodModal(
     }
     function selecionarDia(d){
         if (primeiroDia === null){
-            setTexto("Data 1: " + d + ". Selecione data 2.")
+            setTexto("Para um período iniciado em " + dateToString(d) + ", selecione a data de fim")
             setPrimeiroDia(d)
         }
         else {
@@ -56,9 +57,15 @@ export default function PeriodModal(
                 }
 
                 {(estado === ESTADOS_MODAL.SELECAO) &&
-                    <div>
-                        <Button insideText={"Mensal"} onClick={()=>controleEstado(ESTADOS_MODAL.MENSAL)}/>
-                        <Button insideText={"Diário"} onClick={()=>controleEstado(ESTADOS_MODAL.DIARIO)}/>
+                    <div className={styles.selecaoMetodo}>
+                        <p>
+                            Você pode visualizar os dados em um <u>mês inteiro</u>, ou em um <u>período entre duas datas
+                            </u> escolhidas por você.
+                        </p>
+                        <span>
+                            <Button insideText={"Mês"} onClick={()=>controleEstado(ESTADOS_MODAL.MENSAL)}/>
+                            <Button insideText={"Período de Datas"} onClick={()=>controleEstado(ESTADOS_MODAL.DIARIO)}/>
+                        </span>
                     </div>
                 }
                 {(estado === ESTADOS_MODAL.MENSAL) &&
