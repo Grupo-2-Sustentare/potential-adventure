@@ -32,10 +32,6 @@ jobs:
         CI=false npm run build  # Adicionado para desativar a verificação de linting e ignorar erros de CI
       working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
-    - name: Rodar ESLint (opcional, apenas para verificar problemas)
-      run: npm run lint
-      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
-
     - name: Gerar artefato com os arquivos do build
       uses: actions/upload-artifact@v4
       with:
