@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,38 +33,52 @@ jobs:
       run: |
         CI=false npm run build
 
-    - name: Check build directory contents (debug step)
+    - name: Generate artifact with build files
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-frontend
+        path: ./build  # Diretório gerado pelo npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: build-frontend
+        path: ./build
+
+    - name: Create .pem file from DEPLOY_KEY variable and set permissions
+      id: create-pem-file
       run: |
-        echo "Verificando conteúdo do diretório build..."
-        ls -al build/
-      
-    - name: Deploy to EC2
-      env:
-        DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
-      run: |
-        # Configurar a chave privada
-        echo "$DEPLOY_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
+        echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > $HOME/private_key.pem
+        chmod 400 $HOME/private_key.pem
 
-        # Garantir que o diretório remoto existe na EC2
-        echo "Garantindo diretório remoto na EC2..."
-        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-dashboard/build"
+    - name: SCP files to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_PUBLIC_IP }}
+        username: ubuntu
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        port: 22
+        source: "./build/"
+        target: "/home/ubuntu/sustentare-dashboard/build/"
 
-        # Verificar conteúdo do diretório build (debug)
-        echo "Verificando conteúdo do diretório build antes de copiar..."
-        ls -al build/
+    - name: SSH to EC2 and adjust permissions
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_PUBLIC_IP }}
+        username: ubuntu
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        port: 22
+        script: |
+          # Ajustar permissões no diretório
+          chown -R ubuntu:ubuntu /home/ubuntu/sustentare-dashboard/build/
+          chmod -R 770 /home/ubuntu/sustentare-dashboard/build/
 
-        # Copiar os arquivos do build para a EC2
-        echo "Copiando arquivos para EC2..."
-        scp -v -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-dashboard/build/
-
-        # Conectar via SSH e configurar o ambiente
-        echo "Conectando à EC2 para configurar o ambiente..."
-        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
-          set -e
-
-          # Instalar dependências globais, se necessário
+          # Instalar PM2, caso não esteja instalado
           if ! command -v pm2 &> /dev/null; then
             echo "Instalando PM2..."
             sudo npm install -g pm2
@@ -82,6 +96,5 @@ jobs:
           # Garantir que o build seja atualizado
           npm run build
 
-          # Reiniciar ou iniciar a aplicação com PM2
+          # Iniciar a aplicação com PM2
           pm2 start build/ --name sustentare-dashboard || pm2 restart sustentare-dashboard
-        EOF
