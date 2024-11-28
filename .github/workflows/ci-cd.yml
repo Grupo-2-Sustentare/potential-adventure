@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,34 +31,43 @@ jobs:
       run: |
         CI=false npm run build
 
-    - name: Copy deploy.sh to the EC2 server and run it
+    - name: Deploy to EC2
       env:
         DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
       run: |
-        # Salvar a chave privada corretamente
-        echo "$DEPLOY_PRIVATE_KEY" > public_instance_key.pem
-        chmod 600 public_instance_key.pem
+        # Configurar a chave privada
+        echo "$DEPLOY_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
 
-        # Copiar os arquivos para a instância EC2
-        scp -i public_instance_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-web/build
+        # Garantir que o diretório remoto existe na EC2
+        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-web/build"
 
-        # Conectar via SSH e rodar o deploy
-        ssh -i public_instance_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
-          # Instalar o pm2 se não estiver instalado
-          sudo npm install -g pm2
+        # Copiar os arquivos do build para a EC2
+        scp -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-web/build/
 
-          # Acessar o diretório do projeto
+        # Conectar via SSH e configurar o ambiente
+        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
+          set -e
+
+          # Instalar dependências globais, se necessário
+          if ! command -v pm2 &> /dev/null; then
+            echo "Instalando PM2..."
+            sudo npm install -g pm2
+          fi
+
+          # Navegar até o diretório do projeto
           cd /home/ubuntu/sustentare-web
 
-          # Atualizar o código e instalar dependências
-          git pull origin main
-          npm install
+          # Verificar se há dependências locais
+          if [ ! -d "node_modules" ]; then
+            echo "Instalando dependências locais..."
+            npm install
+          fi
 
-          # Rodar o build novamente
+          # Garantir que o build seja atualizado
           npm run build
 
-          # Reiniciar a aplicação com pm2 (caso esteja rodando) ou iniciar se necessário
-          pm2 restart sustentare-web || pm2 start build/ --name sustentare-web
-
+          # Reiniciar ou iniciar a aplicação com PM2
+          pm2 start build/ --name sustentare-web || pm2 restart sustentare-web
         EOF
