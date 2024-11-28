@@ -13,55 +13,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout do código
       uses: actions/checkout@v3
       with:
         ref: main  # Garantir que estamos pegando a versão mais recente da branch main
 
-    - name: Set up Node.js
+    - name: Configurar Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'  # Atualizando para a versão 18
 
-    - name: Install dependencies
+    - name: Instalar dependências
       run: npm install
+      working-directory: ./sustentare-dashboard/  # Caminho correto para o diretório do projeto
 
-    - name: Run ESLint (optional, only to check issues)
+    - name: Gerar build do React
+      run: npm run build # Gera os arquivos estáticos para deploy
+      working-directory: ./sustentare-dashboard/  # Corrigido para o diretório correto do projeto
+
+    - name: Rodar ESLint (opcional, apenas para verificar problemas)
       run: npm run lint
+      working-directory: ./sustentare-dashboard/
 
-    - name: Build the project
-      run: |
-        CI=false npm run build
-
-    - name: Generate artifact with build files
+    - name: Gerar artefato com os arquivos do build
       uses: actions/upload-artifact@v4
       with:
         name: build-frontend
-        path: ./build  # Diretório gerado pelo npm run build
+        path: ./sustentare-dashboard/build  # Diretório gerado pelo npm run build
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download build artifact
+    - name: Baixar artefatos do build
       uses: actions/download-artifact@v4
       with:
         name: build-frontend
-        path: ./build
+        path: ./build  # Caminho onde os artefatos do build serão armazenados
 
-    - name: Create .pem file from DEPLOY_KEY variable and set permissions
+    - name: Criar o arquivo .pem a partir da variável DEPLOY_KEY e configurar permissões
       id: create-pem-file
       run: |
         echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > $HOME/private_key.pem
         chmod 400 $HOME/private_key.pem
 
-    - name: Check build directory contents (debug step)
+    - name: Verificar conteúdo do diretório build antes de copiar (passo de debug)
       run: |
         echo "Verificando conteúdo do diretório build antes de copiar..."
-        ls -al ./build
+        ls -al ./build  # Verificar os arquivos no diretório build antes de copiar
 
-    - name: SCP files to EC2
+    - name: Enviar arquivos para a EC2 via SCP
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.EC2_PUBLIC_IP }}
@@ -70,9 +72,9 @@ jobs:
         port: 22
         source: "./build/"
         target: "/home/ubuntu/sustentare-dashboard/build/"
-        rm: true  # Forçar substituição dos arquivos
+        rm: true  # Forçar substituição dos arquivos na EC2
 
-    - name: SSH to EC2 and adjust permissions
+    - name: Conectar via SSH na EC2 e ajustar permissões
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_PUBLIC_IP }}
@@ -80,7 +82,7 @@ jobs:
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         port: 22
         script: |
-          # Ajustar permissões no diretório
+          # Ajustar permissões no diretório de destino
           chown -R ubuntu:ubuntu /home/ubuntu/sustentare-dashboard/build/
           chmod -R 770 /home/ubuntu/sustentare-dashboard/build/
 
