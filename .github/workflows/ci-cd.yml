@@ -41,10 +41,10 @@ jobs:
         chmod 600 private_key.pem
 
         # Garantir que o diretório remoto existe na EC2
-        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-web/build"
+        ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-dashboard/build"
 
         # Copiar os arquivos do build para a EC2
-        scp -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-web/build/
+        scp -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-dashboard/build/
 
         # Conectar via SSH e configurar o ambiente
         ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
@@ -57,7 +57,7 @@ jobs:
           fi
 
           # Navegar até o diretório do projeto
-          cd /home/ubuntu/sustentare-web
+          cd /home/ubuntu/sustentare-dashboard
 
           # Verificar se há dependências locais
           if [ ! -d "node_modules" ]; then
@@ -69,5 +69,5 @@ jobs:
           npm run build
 
           # Reiniciar ou iniciar a aplicação com PM2
-          pm2 start build/ --name sustentare-web || pm2 restart sustentare-web
+          pm2 start build/ --name sustentare-dashboard || pm2 restart sustentare-dashboard
         EOF
