@@ -15,11 +15,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        ref: main  # Garantir que estamos pegando a versão mais recente da branch main
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # Atualizando para a versão 18, conforme o exemplo anterior
+        node-version: '18'  # Atualizando para a versão 18
 
     - name: Install dependencies
       run: npm install
@@ -31,6 +33,11 @@ jobs:
       run: |
         CI=false npm run build
 
+    - name: Check build directory contents (debug step)
+      run: |
+        echo "Verificando conteúdo do diretório build..."
+        ls -al build/
+      
     - name: Deploy to EC2
       env:
         DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
@@ -38,15 +45,22 @@ jobs:
       run: |
         # Configurar a chave privada
         echo "$DEPLOY_PRIVATE_KEY" > private_key.pem
-        chmod 400 private_key.pem
+        chmod 600 private_key.pem
 
         # Garantir que o diretório remoto existe na EC2
+        echo "Garantindo diretório remoto na EC2..."
         ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP "mkdir -p /home/ubuntu/sustentare-dashboard/build"
 
-        # Copiar os arquivos do build para a EC2 (garantindo que o diretório esteja correto)
-        scp -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-dashboard/build/
+        # Verificar conteúdo do diretório build (debug)
+        echo "Verificando conteúdo do diretório build antes de copiar..."
+        ls -al build/
+
+        # Copiar os arquivos do build para a EC2
+        echo "Copiando arquivos para EC2..."
+        scp -v -i private_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-dashboard/build/
 
         # Conectar via SSH e configurar o ambiente
+        echo "Conectando à EC2 para configurar o ambiente..."
         ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
           set -e
 
