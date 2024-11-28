@@ -25,15 +25,15 @@ jobs:
 
     - name: Instalar dependências
       run: npm install
-      working-directory: ./sustentare-dashboard  # Corrigido para o diretório correto do seu projeto React
+      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
     - name: Gerar build do React
       run: npm run build
-      working-directory: ./sustentare-dashboard  # Corrigido para o diretório correto do seu projeto React
+      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
     - name: Rodar ESLint (opcional, apenas para verificar problemas)
       run: npm run lint
-      working-directory: ./sustentare-dashboard  # Corrigido para o diretório correto do seu projeto React
+      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
     - name: Gerar artefato com os arquivos do build
       uses: actions/upload-artifact@v4
