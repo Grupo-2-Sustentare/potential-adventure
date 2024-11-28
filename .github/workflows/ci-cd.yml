@@ -25,21 +25,21 @@ jobs:
 
     - name: Instalar dependências
       run: npm install
-      working-directory: ./sustentare-dashboard/  # Caminho correto para o diretório do projeto
+      working-directory: ./sustentare-dashboard  # Caminho correto para o diretório
 
     - name: Gerar build do React
-      run: npm run build # Gera os arquivos estáticos para deploy
-      working-directory: ./sustentare-dashboard/  # Corrigido para o diretório correto do projeto
+      run: npm run build
+      working-directory: ./sustentare-dashboard  # Caminho correto para o diretório
 
     - name: Rodar ESLint (opcional, apenas para verificar problemas)
       run: npm run lint
-      working-directory: ./sustentare-dashboard/
+      working-directory: ./sustentare-dashboard  # Caminho correto para o diretório
 
     - name: Gerar artefato com os arquivos do build
       uses: actions/upload-artifact@v4
       with:
         name: build-frontend
-        path: ./sustentare-dashboard/build  # Diretório gerado pelo npm run build
+        path: ./sustentare-dashboard/build  # Caminho correto para o diretório de build
 
   deploy:
     needs: build
