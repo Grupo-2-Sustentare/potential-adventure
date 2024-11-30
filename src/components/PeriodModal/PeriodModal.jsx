@@ -3,12 +3,19 @@ import Calendar from "react-calendar";
 import "./calendar.css"
 import styles from "./periodModal.module.css"
 import {useEffect, useState} from "react";
-import {dateToString, ESTADOS_MODAL} from "./ModalDefinitions";
+import {dateToIsoString, dateToString, ESTADOS_MODAL} from "./ModalDefinitions";
 import Button from "../Button/Button";
 
 
 export default function PeriodModal(
     { estado=ESTADOS_MODAL.FECHADA, controleEstado, valor, controleValor}){
+
+    function salvarFiltroPeriodo(periodo){
+        const inicio = dateToIsoString(periodo.inicio)
+        const fim = dateToIsoString(periodo.fim)
+
+        sessionStorage.setItem("filtroPeriodo", JSON.stringify({"dataInicio": inicio, "dataFim": fim}))
+    }
 
     const [classes, setClasses] = useState(ESTADOS_MODAL.FECHADA.estilo)
     const [texto, setTexto] = useState(ESTADOS_MODAL.FECHADA.texto)
@@ -25,7 +32,10 @@ export default function PeriodModal(
 
 
     function selecionarMes(d){
-        controleValor(d)
+        const fimDoMes = new Date(d.getFullYear(), d.getMonth()+1, 0)
+
+        controleValor({"inicio": d, "fim": fimDoMes})
+        salvarFiltroPeriodo({"inicio": d, "fim": fimDoMes})
         fechar()
     }
     function selecionarDia(d){
@@ -34,9 +44,9 @@ export default function PeriodModal(
             setPrimeiroDia(d)
         }
         else {
+            controleValor({"inicio": primeiroDia, "fim": d})
+            salvarFiltroPeriodo({"inicio": primeiroDia, "fim": d})
             setPrimeiroDia(null)
-            // TODO - Enviar ambas as datas
-            controleValor(d)
             fechar()
         }
     }
