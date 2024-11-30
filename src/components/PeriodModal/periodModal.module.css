@@ -25,11 +25,13 @@
     gap: 16px;
     .fechar{
         position: absolute;
+        top: 32px;
         right: 3vw;
         cursor: pointer;
     }
     .voltar{
         position: absolute;
+        top: 32px;
         left: 3vw;
         cursor: pointer;
     }
