@@ -17,6 +17,7 @@
 .NavTop{
     display: flex;
     flex-direction: row;
+    gap: 18px;
     justify-content: space-between;
     align-items: center;
     width: 100%;
@@ -28,48 +29,60 @@
         overflow: hidden;
     }
 
-    .filters{
+    .opcoes {
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
         gap: 16px;
-    }
 
-    .updateInfo{
-        cursor: default;
-        > h3{
-            font-size: 0.8em;
-            text-align: center;
-        }
-        > span{
-            text-wrap: nowrap;
+        .filters {
             display: flex;
             flex-direction: row;
+            justify-content: space-around;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            > p{
+            gap: 16px;
+        }
+
+        .updateInfo {
+            cursor: default;
+            min-width: 395px;
+
+            > h3 {
                 font-size: 0.8em;
+                text-align: center;
+            }
+
+            > span {
+                text-wrap: nowrap;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+
+                > p {
+                    font-size: 0.8em;
+                }
+            }
+
+            .staticIcon {
+                cursor: pointer;
+                filter: var(--sombra-vermelha-icone);
+            }
+
+            .loadingIcon {
+                display: none;
             }
         }
 
-        .staticIcon{
-            cursor: pointer;
-            filter: var(--sombra-vermelha-icone);
-        }
-        .loadingIcon{
-            display: none;
-        }
-    }
+        .loading {
+            .staticIcon {
+                display: none;
+            }
 
-    .loading{
-        .staticIcon{
-            display: none;
-        }
-        .loadingIcon{
-            display: block;
-            animation: girar 1s linear infinite;
+            .loadingIcon {
+                display: block;
+                animation: girar 1s linear infinite;
+            }
         }
     }
 }
