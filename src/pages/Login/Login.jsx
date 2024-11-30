@@ -1,9 +1,9 @@
 import styles from "./login.module.css";
 import { useNavigate } from "react-router-dom"; // Importa o hook useNavigate para redirecionamento de rotas
-import React, {useEffect, useState} from "react"; // Importa React e o hook useState para gerenciamento de estado
+import React, {useState} from "react"; // Importa React e o hook useState para gerenciamento de estado
 import Button from "../../components/Button/Button";
 import TextInput from "../../components/TextInput/TextInput";
-import { errorToast, successToast, alertToast} from "../../components/Toast/Toast";
+import { errorToast} from "../../components/Toast/Toast";
 import login from "./LoginFormatter";
 
 const Login = () => {
@@ -18,7 +18,7 @@ const Login = () => {
             return
         }
         let res = await login({"nome": nome, "senha": senha})
-        if (res !== null){
+        if (res !== undefined){
             delete res["senha"]
             sessionStorage.setItem("usuario", JSON.stringify(res))
             navigate("/dashboardGeral"); // Redireciona para a página de músicas

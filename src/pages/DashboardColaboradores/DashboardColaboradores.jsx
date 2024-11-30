@@ -13,6 +13,12 @@ import {
 } from "./DashColaboradoresFormatter";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
+import {
+    compareDates,
+    dateToIsoString,
+    dateToString,
+    ESTADOS_MODAL
+} from "../../components/PeriodModal/ModalDefinitions";
 
 const DashboardColaboradores = () => {
     // == Constantes
@@ -25,7 +31,7 @@ const DashboardColaboradores = () => {
     let [colaboradores, setColaboradores] = useState([])
 
     // === Modal de período
-    const [modalAberta, setModalAberta] = useState(false)
+    const [estadoModal, setEstadoModal] = useState(ESTADOS_MODAL.FECHADA)
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Logs
@@ -50,21 +56,26 @@ const DashboardColaboradores = () => {
         setColsInteracoes(interacoesPorColab.colunas)
     }
 
+    function atualizarInformacaoData(inicio, fim){
+        if (compareDates(inicio, fim)){
+            setPeriodoDados(`${dateToString(fim)}`)
+        } else {
+            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
+        }
+
+        // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
+        let agora = new Date()
+        setTempoReal(compareDates(agora, fim))
+    }
+
     function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
-            case "mês":
-                setDataAtual(valor)
-                setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
-
-                let agora = new Date()
-                if ((agora.getFullYear() === valor.getFullYear()) &&
-                    (agora.getMonth() === valor.getMonth())){
-                    setTempoReal(true)
-                } else{
-                    setTempoReal(false)
-                }
-
-                salvarFiltroPeriodo(valor)
+            case "data":
+                const inicio = valor.inicio
+                const fim = valor.fim
+                atualizarInformacaoData(inicio, fim)
+                // Salvando a data fim (usada dentro do calendário para marcar a data selecionada atualmente)
+                setDataAtual(fim)
                 break
             case "colaboradores":
                 sessionStorage.setItem("filtroColaboradores",JSON.stringify(valor))
@@ -131,10 +142,10 @@ const DashboardColaboradores = () => {
         sessionStorage.clear()
         sessionStorage.setItem("usuario", sessUsuario)
 
-        let agora = new Date()
-        setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
-        setTempoReal(true)
-        salvarFiltroPeriodo(new Date(agora.getFullYear(), agora.getMonth(), 1))
+        const agora = new Date()
+        atualizarInformacaoData(agora, agora)
+        const agoraFormat = dateToIsoString(agora)
+        sessionStorage.setItem("filtroPeriodo", JSON.stringify({"dataInicio": agoraFormat, "dataFim": agoraFormat}))
 
         setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
     }, []); /*Executar 1 vez, no carregamento*/
@@ -142,32 +153,37 @@ const DashboardColaboradores = () => {
     return (
         <>
             <PeriodModal
-                abertura={modalAberta} controleAbertura={setModalAberta}
-                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
+                estado={estadoModal} controleEstado={setEstadoModal}
+                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"data" )}
             />
             <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <div className={styles.group}>
                 <div className={styles.Global}>
                     <div className={styles.NavTop}>
                         <span className={styles.titulo}>Painel dos colaboradores</span>
-                        <div className={styles.filters}>
-                            <CheckableList
-                                getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
-                                opcoes={colaboradores}
-                            />
-                            <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
-                        </div>
-                        <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                            <h3>
-                                {tempoReal ? "Dados em tempo real" : "Dados históricos"}
-                                {" - " + periodoDados}
-                            </h3>
-                            {<p></p>}
-                            <span>
-                            <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
-                            <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
-                            <p>{lastUpdateText}</p>
-                        </span>
+                        <div className={styles.opcoes}>
+                            <div className={styles.filters}>
+                                <CheckableList
+                                    getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
+                                    opcoes={colaboradores}
+                                />
+                                <Button
+                                    insideText={"Alterar período"}
+                                    onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}
+                                />
+                            </div>
+                            <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
+                                <h3>
+                                    {tempoReal ? "Dados em tempo real" : "Dados históricos"}
+                                    {" - " + periodoDados}
+                                </h3>
+                                {<p></p>}
+                                <span>
+                                <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
+                                <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
+                                <p>{lastUpdateText}</p>
+                            </span>
+                            </div>
                         </div>
                     </div>
                     <div className={styles.charts}>
