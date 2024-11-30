@@ -31,4 +31,12 @@ function dateToIsoString(data){
     return `${ano}-${mes}-${dia}`
 }
 
-export {ESTADOS_MODAL, dateToString, dateToIsoString}
+function compareDates(a, b){
+    return (
+        (a.getFullYear() === b.getFullYear()) &&
+        (a.getMonth() === b.getMonth()) &&
+        (a.getDate() === b.getDate())
+    )
+}
+
+export {ESTADOS_MODAL, dateToString, dateToIsoString, compareDates}
