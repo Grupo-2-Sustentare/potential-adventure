@@ -15,7 +15,12 @@ import {
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
-import {dateToIsoString, dateToString, ESTADOS_MODAL} from "../../components/PeriodModal/ModalDefinitions";
+import {
+    compareDates,
+    dateToIsoString,
+    dateToString,
+    ESTADOS_MODAL
+} from "../../components/PeriodModal/ModalDefinitions";
 
 const Dashboard = () => {
     // == Constantes
@@ -80,19 +85,15 @@ const Dashboard = () => {
     }
 
     function atualizarInformacaoData(inicio, fim){
-        if (inicio !== fim){
-            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
-        } else {
+        if (compareDates(inicio, fim)){
             setPeriodoDados(`${dateToString(fim)}`)
+        } else {
+            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
         }
 
         // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
         let agora = new Date()
-        setTempoReal(
-            (agora.getFullYear() === fim.getFullYear()) &&
-            (agora.getMonth() === fim.getMonth()) &&
-            (agora.getDate() === fim.getDate())
-        ) // Booleano
+        setTempoReal(compareDates(agora, fim))
     }
 
     function atualizarFiltros(valor, nome_filtro) {

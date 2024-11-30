@@ -13,7 +13,12 @@ import {
 } from "./DashColaboradoresFormatter";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
-import {dateToIsoString, dateToString, ESTADOS_MODAL} from "../../components/PeriodModal/ModalDefinitions";
+import {
+    compareDates,
+    dateToIsoString,
+    dateToString,
+    ESTADOS_MODAL
+} from "../../components/PeriodModal/ModalDefinitions";
 
 const DashboardColaboradores = () => {
     // == Constantes
@@ -52,19 +57,15 @@ const DashboardColaboradores = () => {
     }
 
     function atualizarInformacaoData(inicio, fim){
-        if (inicio !== fim){
-            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
-        } else {
+        if (compareDates(inicio, fim)){
             setPeriodoDados(`${dateToString(fim)}`)
+        } else {
+            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
         }
 
         // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
         let agora = new Date()
-        setTempoReal(
-            (agora.getFullYear() === fim.getFullYear()) &&
-            (agora.getMonth() === fim.getMonth()) &&
-            (agora.getDate() === fim.getDate())
-        ) // Booleano
+        setTempoReal(compareDates(agora, fim))
     }
 
     function atualizarFiltros(valor, nome_filtro) {
@@ -160,27 +161,29 @@ const DashboardColaboradores = () => {
                 <div className={styles.Global}>
                     <div className={styles.NavTop}>
                         <span className={styles.titulo}>Painel dos colaboradores</span>
-                        <div className={styles.filters}>
-                            <CheckableList
-                                getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
-                                opcoes={colaboradores}
-                            />
-                            <Button
-                                insideText={"Alterar período"}
-                                onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}
-                            />
-                        </div>
-                        <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
-                            <h3>
-                                {tempoReal ? "Dados em tempo real" : "Dados históricos"}
-                                {" - " + periodoDados}
-                            </h3>
-                            {<p></p>}
-                            <span>
-                            <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
-                            <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
-                            <p>{lastUpdateText}</p>
-                        </span>
+                        <div className={styles.opcoes}>
+                            <div className={styles.filters}>
+                                <CheckableList
+                                    getOpcoes={(v) => atualizarFiltros(v, "colaboradores")} textoBase={"Nome"}
+                                    opcoes={colaboradores}
+                                />
+                                <Button
+                                    insideText={"Alterar período"}
+                                    onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}
+                                />
+                            </div>
+                            <div onClick={() => atualizarDashboard()} className={styles.updateInfo + " " + loadingClass}>
+                                <h3>
+                                    {tempoReal ? "Dados em tempo real" : "Dados históricos"}
+                                    {" - " + periodoDados}
+                                </h3>
+                                {<p></p>}
+                                <span>
+                                <FontAwesomeIcon icon={"clock-rotate-left"} className={styles.staticIcon}/>
+                                <FontAwesomeIcon icon={"rotate"} className={styles.loadingIcon}/>
+                                <p>{lastUpdateText}</p>
+                            </span>
+                            </div>
                         </div>
                     </div>
                     <div className={styles.charts}>
