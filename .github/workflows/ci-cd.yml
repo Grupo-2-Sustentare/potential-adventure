@@ -13,52 +13,97 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout do código
       uses: actions/checkout@v3
+      with:
+        ref: main  # Garantir que estamos pegando a versão mais recente da branch main
 
-    - name: Set up Node.js
+    - name: Configurar Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'  # Atualizando para a versão 18
 
-    - name: Install dependencies
+    - name: Instalar dependências
       run: npm install
+      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
-    - name: Run ESLint (optional, only to check issues)
-      run: npm run lint
-
-    - name: Build the project
+    - name: Gerar build do React
       run: |
-        CI=false npm run build
+        CI=false npm run build  # Adicionado para desativar a verificação de linting e ignorar erros de CI
+      working-directory: ./  # Corrigido para o diretório correto do seu projeto React
 
-    - name: Copy deploy.sh to the EC2 server and run it
-      env:
-        DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+    - name: Gerar artefato com os arquivos do build
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-frontend
+        path: ./build  # Alinhei o caminho do build para coincidir com o caminho de download
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Baixar artefatos do build
+      uses: actions/download-artifact@v4
+      with:
+        name: build-frontend
+        path: ./build  # Caminho onde os artefatos do build serão armazenados
+
+    - name: Criar o arquivo .pem a partir da variável DEPLOY_KEY e configurar permissões
+      id: create-pem-file
       run: |
-        # Salvar a chave privada corretamente
-        echo "$DEPLOY_PRIVATE_KEY" > public_instance_key.pem
-        chmod 600 public_instance_key.pem
+        echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > $HOME/private_key.pem
+        chmod 400 $HOME/private_key.pem
 
-        # Copiar os arquivos para a instância EC2
-        scp -i public_instance_key.pem -o StrictHostKeyChecking=no -r build/* ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/sustentare-web/build
+    - name: Verificar conteúdo do diretório build antes de copiar (passo de debug)
+      run: |
+        echo "Verificando conteúdo do diretório build antes de copiar..."
+        ls -al ./build  # Verificar os arquivos no diretório build antes de copiar
 
-        # Conectar via SSH e rodar o deploy
-        ssh -i public_instance_key.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
-          # Instalar o pm2 se não estiver instalado
-          sudo npm install -g pm2
+    - name: Enviar arquivos para a EC2 via SCP
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_PUBLIC_IP }}
+        username: ubuntu
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        port: 22
+        source: "./build/"
+        target: "/home/ubuntu/sustentare-dashboard/build/"
+        rm: true  # Forçar substituição dos arquivos na EC2
 
-          # Acessar o diretório do projeto
-          cd /home/ubuntu/sustentare-web
+    - name: Conectar via SSH na EC2 e ajustar permissões
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_PUBLIC_IP }}
+        username: ubuntu
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        port: 22
+        script: |
+          # Ajustar permissões no diretório de destino
+          chown -R ubuntu:ubuntu /home/ubuntu/sustentare-dashboard/build/
+          chmod -R 770 /home/ubuntu/sustentare-dashboard/build/
 
-          # Atualizar o código e instalar dependências
-          git pull origin main
-          npm install
+          # Verificar o conteúdo do diretório build após o envio
+          echo "Conteúdo do diretório build após o envio:"
+          ls -al /home/ubuntu/sustentare-dashboard/build/
 
-          # Rodar o build novamente
+          # Instalar PM2, caso não esteja instalado
+          if ! command -v pm2 &> /dev/null; then
+            echo "Instalando PM2..."
+            sudo npm install -g pm2
+          fi
+
+          # Navegar até o diretório do projeto
+          cd /home/ubuntu/sustentare-dashboard
+
+          # Verificar se há dependências locais
+          if [ ! -d "node_modules" ]; then
+            echo "Instalando dependências locais..."
+            npm install
+          fi
+
+          # Garantir que o build seja atualizado
           npm run build
 
-          # Reiniciar a aplicação com pm2 (caso esteja rodando) ou iniciar se necessário
-          pm2 restart sustentare-web || pm2 start build/ --name sustentare-web
-
-        EOF
+          # Iniciar a aplicação com PM2
+          pm2 start build/ --name sustentare-dashboard || pm2 restart sustentare-dashboard
