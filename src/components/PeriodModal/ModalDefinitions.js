@@ -24,4 +24,11 @@ function dateToString(data){
     return `${dia}/${mes}/${ano}`
 }
 
-export {ESTADOS_MODAL, dateToString}
+function dateToIsoString(data){
+    let ano = data.getFullYear()
+    let mes = String(data.getMonth()+1).padStart(2,"0")
+    let dia = String(data.getDate()).padStart(2,"0")
+    return `${ano}-${mes}-${dia}`
+}
+
+export {ESTADOS_MODAL, dateToString, dateToIsoString}
