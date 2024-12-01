@@ -162,7 +162,8 @@ const Dashboard = () => {
         const agoraFormat = dateToIsoString(agora)
         sessionStorage.setItem("filtroPeriodo", JSON.stringify({"dataInicio": agoraFormat, "dataFim": agoraFormat}))
 
-        setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        const atualizacao = setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        return () => clearInterval(atualizacao)
     }, []);
 
     return (
