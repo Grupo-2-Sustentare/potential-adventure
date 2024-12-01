@@ -147,7 +147,8 @@ const DashboardColaboradores = () => {
         const agoraFormat = dateToIsoString(agora)
         sessionStorage.setItem("filtroPeriodo", JSON.stringify({"dataInicio": agoraFormat, "dataFim": agoraFormat}))
 
-        setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        const atualizacao = setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        return () => clearInterval(atualizacao)
     }, []); /*Executar 1 vez, no carregamento*/
 
     return (
