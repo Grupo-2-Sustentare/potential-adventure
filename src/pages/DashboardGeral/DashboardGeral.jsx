@@ -41,7 +41,7 @@ const Dashboard = () => {
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
-    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const TITULO_ENTRADAS_E_SAIDAS = "Quantidade total de produtos manipulados"
     const [entradasSaidas, setEntradasSaidas] = useState([])
     const [colsEntradasEhSaidas, setColsEntradasEhSaidas] = useState([])
 
@@ -216,7 +216,8 @@ const Dashboard = () => {
                         width="100vw"
                         height="220px"
                         backgroundColor="#f0f0f0"
-                        yLabel={"Valor em reais (R$)"}
+                        yLabel={"Quantidade total de produtos"}
+                        floatScale={true}
                     />
                 </div>
             </div>
