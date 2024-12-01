@@ -5,7 +5,7 @@ module.exports = function(app) {
         '/java-api',
         createProxyMiddleware({
             //10.0.3.103:8080
-            target: 'http://10.0.3.103:8080/',
+            target: 'http://localhost:8080/',
             changeOrigin: true,
         })
     )

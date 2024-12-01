@@ -1,12 +1,12 @@
 import axios from "axios";
 import {errorToast} from "../components/Toast/Toast";
 
-let API_URL = "http://localhost:8080/"
+let API_URL = "/java-api"
 
 async function get(entidade, params){
     params = params || {}
 
-    return axios.get(API_URL + entidade, {"params": params}).then((res) => {
+    return axios.get(API_URL + '/' + entidade, {"params": params}).then((res) => {
         if(res.data.length === 0){ // TODO - Trocar por "res.status === 204 "
             return null
         }
@@ -30,7 +30,7 @@ async function post(entidade, params, body){
     params = params || {}
     body = body || {}
 
-    return axios.post(API_URL + entidade, body).then((res) => {
+    return axios.post(API_URL + '/' + entidade, body).then((res) => {
         if(res.data.length === 0){
             alert("teste")
         }
