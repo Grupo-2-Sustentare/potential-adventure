@@ -9,9 +9,7 @@
     justify-content: center;
     align-items: center;
 }
-.aberto{
-    display: flex;
-}
+.aberto{ display: flex }
 
 .modal{
     position: relative;
@@ -19,14 +17,38 @@
     width: 50vw;
     background-color: var(--gunmetal);
     border-radius: 8px;
-    padding: 5vh 3vw;
+    padding: 5vh 6vw;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 16px;
     .fechar{
         position: absolute;
+        top: 32px;
         right: 3vw;
         cursor: pointer;
+    }
+    .voltar{
+        position: absolute;
+        top: 32px;
+        left: 3vw;
+        cursor: pointer;
+    }
+}
+
+.selecaoMetodo{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    > span{
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+        gap: 18px;
     }
 }

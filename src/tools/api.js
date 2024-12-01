@@ -37,19 +37,10 @@ async function post(entidade, params, body){
         return res
     }).catch((err) => {
         if (err.response === undefined){
-            errorToast(`Erro desconhecido. \nContate o suporte.`)
+            errorToast(`Problemas para se conectar com o servidor. \nContate o suporte.`)
             return
         }
-        switch (err.response.status) {
-            case 400:
-                errorToast(`Não foi possível se conectar com o sistema de login.\nContate o suporte.`)
-                break
-            case 401:
-                break
-            default:
-                errorToast(`Erro desconhecido, código ${err.response.status}\nContate o suporte.`)
-        }
-        return err;
+        errorToast(`Problemas para se conectar com o servidor., código ${err.response.status}\nContate o suporte.`)
     });
 }
 

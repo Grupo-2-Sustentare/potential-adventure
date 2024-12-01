@@ -18,7 +18,7 @@ function formatFiltro(valores){
 }
 
 function getFiltrosDashGeral(){
-    let baseFiltros = JSON.parse(sessionStorage.filtroMes)
+    let baseFiltros = JSON.parse(sessionStorage.filtroPeriodo)
 
     let cat = formatFiltro(sessionStorage.filtroCategorias)
     if (cat !== null){
@@ -33,7 +33,7 @@ function getFiltrosDashGeral(){
 }
 
 function getFiltrosDashColab(){
-    let baseFiltros = JSON.parse(sessionStorage.filtroMes)
+    let baseFiltros = JSON.parse(sessionStorage.filtroPeriodo)
 
     let colabs = formatFiltro(sessionStorage.filtroColaboradores)
     if (colabs !== null){
