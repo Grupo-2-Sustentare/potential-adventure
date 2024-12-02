@@ -40,6 +40,10 @@ async function post(entidade, params, body){
             errorToast(`Problemas para se conectar com o servidor. \nContate o suporte.`)
             return
         }
+        if (err.response.status === 401){
+            errorToast("Credenciais inválidas.")
+            return;
+        }
         errorToast(`Problemas para se conectar com o servidor., código ${err.response.status}\nContate o suporte.`)
     });
 }
