@@ -182,10 +182,10 @@ const Dashboard = () => {
                             getOpcoes={(v)=>atualizarFiltros(v,"categorias")} textoBase={"Categorias"}
                             opcoes={categorias}
                         />
-                        <CheckableList
+                        {/*<CheckableList
                             getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
                             opcoes={produtos}
-                        />
+                        />*/}
                         <Button insideText={"Alterar período"} onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}/>
                     </div>
                 </div>
