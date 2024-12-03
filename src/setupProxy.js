@@ -2,7 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // True quando local
 // False quando em nuvem
-const DEBUG = false
+const DEBUG = true
 
 // DEBUG ? 'http://localhost:8080' : '35.200.242.24:8080/
 module.exports = function(app) {
