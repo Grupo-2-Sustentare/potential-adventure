@@ -208,6 +208,7 @@ const Dashboard = () => {
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
+                        yLabel={"Quantidade de compras por tipo"}
                     />
                     <BarChart
                         labels={colsEntradasEhSaidas}
