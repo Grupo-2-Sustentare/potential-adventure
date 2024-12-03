@@ -2,7 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // True quando local
 // False quando em nuvem
-const DEBUG = true
+const DEBUG = false
 
 module.exports = function(app) {
     app.use(
