@@ -30,4 +30,12 @@ module.exports = function (app) {
             },
         })
     );
+
+        // app.use(
+    //     '/lambda-services',
+    //     createProxyMiddleware({
+    //         target: 'https://pk0cpzwo89.execute-api.us-east-1.amazonaws.com',
+    //         changeOrigin: true,
+    //     })
+    // );
 };
