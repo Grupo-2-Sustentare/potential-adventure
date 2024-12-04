@@ -15,6 +15,12 @@ import {
 import {EnumStatusKpis} from "../../components/KPI/EnumStatusKpis";
 import {useNavigate} from "react-router-dom";
 import PeriodModal from "../../components/PeriodModal/PeriodModal";
+import {
+    compareDates,
+    dateToIsoString,
+    dateToString,
+    ESTADOS_MODAL
+} from "../../components/PeriodModal/ModalDefinitions";
 
 const Dashboard = () => {
     // == Constantes
@@ -31,11 +37,11 @@ const Dashboard = () => {
     const [tempoReal, setTempoReal] = useState(false)
 
     // === Modal
-    const [modalAberta, setModalAberta] = useState(false)
+    const [estadoModal, setEstadoModal] = useState(ESTADOS_MODAL.FECHADA)
     const [dataAtual, setDataAtual] = useState(new Date())
 
     // === Dados dos gráficos
-    const TITULO_ENTRADAS_E_SAIDAS = "Entradas e Saídas"
+    const TITULO_ENTRADAS_E_SAIDAS = "Quantidade total de produtos manipulados"
     const [entradasSaidas, setEntradasSaidas] = useState([])
     const [colsEntradasEhSaidas, setColsEntradasEhSaidas] = useState([])
 
@@ -78,24 +84,26 @@ const Dashboard = () => {
         setKpiValorInvestido(dadosKpis.valorInvest)
     }
 
+    function atualizarInformacaoData(inicio, fim){
+        if (compareDates(inicio, fim)){
+            setPeriodoDados(`${dateToString(fim)}`)
+        } else {
+            setPeriodoDados(`de ${dateToString(inicio)} de a ${dateToString(fim)}`)
+        }
+
+        // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
+        let agora = new Date()
+        setTempoReal(compareDates(agora, fim))
+    }
+
     function atualizarFiltros(valor, nome_filtro) {
         switch (nome_filtro){
-            case "mês":
-                // Salvando a data atual (usada dentro do calendário para marcar a data selecionada atualmente)
-                // E o texto de período de dados.
-                setDataAtual(valor)
-                setPeriodoDados(`${FORMAT_DATA_MES.format(valor)} de ${valor.getFullYear()}`)
-
-                // Verificando se o mês e ano são os mesmos do atual, para atualizar o texto de "Dados em tempo real".
-                let agora = new Date()
-                if ((agora.getFullYear() === valor.getFullYear()) &&
-                    (agora.getMonth() === valor.getMonth())){
-                    setTempoReal(true)
-                } else{
-                    setTempoReal(false)
-                }
-
-                salvarFiltroPeriodo(valor)
+            case "data":
+                const inicio = valor.inicio
+                const fim = valor.fim
+                atualizarInformacaoData(inicio, fim)
+                // Salvando a data fim (usada dentro do calendário para marcar a data selecionada atualmente)
+                setDataAtual(fim)
                 break
             case "categorias":
                 sessionStorage.setItem("filtroCategorias", JSON.stringify(valor))
@@ -110,24 +118,6 @@ const Dashboard = () => {
     function validarSessao(){
         let sessao = sessionStorage.getItem("usuario")
         if (sessao === null) navigate("/")
-    }
-
-    // Mét-odo de formatação específica do filtro de período.
-    function salvarFiltroPeriodo(data){
-        // Pegando a data atual + 1 mês, dia 0 (último dia do mês atual)
-        let fimPeriodo = new Date(data.getFullYear(), data.getMonth()+1, 0)
-
-        function formatarData(data){
-            let ano = data.getFullYear()
-            let mes = String(data.getMonth()+1).padStart(2,"0")
-            let dia = String(data.getDate()).padStart(2,"0")
-            return `${ano}-${mes}-${dia}`
-        }
-
-        // Mandando filtro de período como esperado pelo back.
-        sessionStorage.setItem(
-            "filtroMes", JSON.stringify({"dataInicio": formatarData(data), "dataFim": formatarData(fimPeriodo)})
-        )
     }
 
     // ===  Mét-odo de atualização progressiva
@@ -162,25 +152,26 @@ const Dashboard = () => {
         atualizarDashboard().catch(console.error)
 
         // Limpando os session storages, preservando a de usuário.
-        let sessUsuario = sessionStorage.getItem("usuario")
+        const sessUsuario = sessionStorage.getItem("usuario")
         sessionStorage.clear()
         sessionStorage.setItem("usuario", sessUsuario)
 
         // Calculando o agora
-        let agora = new Date()
-        setPeriodoDados(`${FORMAT_DATA_MES.format(agora)} de ${agora.getFullYear()}`)
-        setTempoReal(true)
-        salvarFiltroPeriodo(new Date(agora.getFullYear(), agora.getMonth(), 1))
+        const agora = new Date()
+        atualizarInformacaoData(agora, agora)
+        const agoraFormat = dateToIsoString(agora)
+        sessionStorage.setItem("filtroPeriodo", JSON.stringify({"dataInicio": agoraFormat, "dataFim": agoraFormat}))
 
-        setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        const atualizacao = setInterval(atualizarDashboard, 30000) /*Executar à cada 30 seg*/
+        return () => clearInterval(atualizacao)
     }, []);
 
     return (
         <>
         <Navbar iconHome={"house"} iconEmployees={"users"} exit={"arrow-right-from-bracket"} />
             <PeriodModal
-                abertura={modalAberta} controleAbertura={setModalAberta}
-                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"mês" )}
+                estado={estadoModal} controleEstado={setEstadoModal}
+                valor={dataAtual} controleValor={(v)=>atualizarFiltros(v,"data" )}
             />
         <div className={styles.group}>
             <div className={styles.Global}>
@@ -191,11 +182,11 @@ const Dashboard = () => {
                             getOpcoes={(v)=>atualizarFiltros(v,"categorias")} textoBase={"Categorias"}
                             opcoes={categorias}
                         />
-                        <CheckableList
+                        {/*<CheckableList
                             getOpcoes={(v)=>atualizarFiltros(v,"produto")} textoBase={"Produtos"}
                             opcoes={produtos}
-                        />
-                        <Button insideText={"Alterar período"} onClick={()=>setModalAberta(true)}/>
+                        />*/}
+                        <Button insideText={"Alterar período"} onClick={()=>setEstadoModal(ESTADOS_MODAL.SELECAO)}/>
                     </div>
                 </div>
                 <div className={styles.Charts}>
@@ -217,6 +208,7 @@ const Dashboard = () => {
                         backgroundColor="#f0f0f0"
                         margin="auto"
                         alignItems="center"
+                        yLabel={"Quantidade de compras por tipo"}
                     />
                     <BarChart
                         labels={colsEntradasEhSaidas}
@@ -225,7 +217,8 @@ const Dashboard = () => {
                         width="100vw"
                         height="220px"
                         backgroundColor="#f0f0f0"
-                        yLabel={"Valor em reais (R$)"}
+                        yLabel={"Quantidade total de produtos"}
+                        floatScale={true}
                     />
                 </div>
             </div>

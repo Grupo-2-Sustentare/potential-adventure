@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
+    "http-proxy-middleware": "^3.0.3",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-chartjs-2": "^5.2.0",
@@ -24,7 +25,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set PORT=25565 && react-scripts start",
+    "start": "PORT=25565 react-scripts start",
+    "start_win": "set PORT=25565 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

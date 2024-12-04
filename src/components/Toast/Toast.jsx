@@ -30,7 +30,7 @@ function renderToast(text, variant){
             toast(component, TOAST_CONFIG)
             break
         case "error":
-            toast.error(component, TOAST_CONFIG)
+            toast(component, TOAST_CONFIG)
             break
     }
 }
